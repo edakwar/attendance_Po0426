@@ -15,8 +15,6 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-
-/* ── NAV ── */
 .nav{background:var(--s1);border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;gap:0;overflow-x:auto}
 .nav-brand{font-size:15px;font-weight:900;color:var(--text);white-space:nowrap;padding:14px 20px 14px 0;border-left:1px solid var(--border);margin-left:8px}
 .nav-brand span{color:var(--accent)}
@@ -24,8 +22,6 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
 .nav-tab:hover{color:var(--text)}
 .nav-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 .nav-badge{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;font-weight:700;margin-right:5px;vertical-align:middle}
-
-/* ── SHEETS STRIP ── */
 .sheets-strip{background:var(--s1);border-bottom:1px solid var(--border);padding:8px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .sheets-strip label{font-size:12px;color:var(--muted);white-space:nowrap}
 .sheets-strip input{flex:1;min-width:260px;background:var(--s2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Heebo',sans-serif;font-size:12px;padding:6px 10px;outline:none;direction:ltr}
@@ -35,16 +31,10 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
 .dot.err{background:var(--red)}
 .dot.spin{background:var(--yellow);animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-
-/* ── PAGE ── */
 .page{display:none;padding:20px;max-width:960px;margin:0 auto}
 .page.active{display:block}
-
-/* ── CARDS ── */
 .card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:14px}
 .card-title{font-size:14px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-
-/* ── SESSION BAR ── */
 .session-row{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
 .field{display:flex;flex-direction:column;gap:4px}
 .field label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
@@ -53,28 +43,20 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
 .field select option{background:var(--s2)}
 .field textarea{resize:vertical;min-height:60px}
 .field input.glow{border-color:var(--green)}
-
-/* ── STATS ── */
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
 .stat{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:14px;text-align:center}
 .stat-n{font-size:28px;font-weight:900;line-height:1}
 .stat-l{font-size:12px;color:var(--muted);margin-top:3px}
 .n-total{color:var(--text)} .n-present{color:var(--green)} .n-absent{color:var(--red)} .n-pct{color:var(--accent)}
-
-/* ── PROGRESS ── */
 .prog-wrap{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:12px 16px;margin-bottom:14px}
 .prog-lbl{font-size:12px;color:var(--muted);margin-bottom:7px;display:flex;justify-content:space-between}
 .prog-track{height:6px;background:var(--s2);border-radius:99px;overflow:hidden}
 .prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--green),var(--accent));transition:width .4s}
-
-/* ── CONTROLS ── */
 .controls-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
 .search-wrap{flex:1;min-width:180px;position:relative}
 .search-wrap input{width:100%;padding:10px 14px 10px 38px;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:'Heebo',sans-serif;font-size:14px;outline:none;transition:border-color .2s}
 .search-wrap input:focus{border-color:var(--accent)}
 .search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px;pointer-events:none}
-
-/* ── BUTTONS ── */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 15px;border-radius:var(--r);font-family:'Heebo',sans-serif;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .18s;white-space:nowrap}
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
 .btn-accent{background:var(--accent);color:#0d1117}
@@ -91,14 +73,10 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
 .btn-wa:hover:not(:disabled){background:#20bd5a;transform:translateY(-1px)}
 .btn-purple{background:var(--purple);color:#0d1117}
 .btn-purple:hover:not(:disabled){background:#d2a8ff;transform:translateY(-1px)}
-
-/* ── FILTER TABS ── */
-.filter-tabs{display:flex;gap:5px;margin-bottom:12px}
+.filter-tabs{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap}
 .ftab{padding:6px 13px;border-radius:7px;font-family:'Heebo',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--s1);color:var(--muted);transition:all .18s}
 .ftab.active{background:var(--accent);color:#0d1117;border-color:var(--accent)}
 .ftab:hover:not(.active){color:var(--text);border-color:var(--accent)}
-
-/* ── STUDENT CARDS ── */
 .s-list{display:flex;flex-direction:column;gap:6px}
 .s-card{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:11px 14px;display:flex;align-items:center;gap:12px;transition:all .2s;animation:slideIn .2s ease}
 @keyframes slideIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
@@ -112,7 +90,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
 .s-card.absent  .s-num{background:rgba(248,81,73,.12);color:var(--red)}
 .s-card.sick    .s-num{background:rgba(210,153,34,.12);color:var(--yellow)}
 .s-card.other   .s-num{background:rgba(188,140,255,.12);color:var(--purple)}
-.s-info{flex:1}
+.s-info{flex:1;min-width:0}
 .s-name{font-size:14px;font-weight:700}
 .s-meta{font-size:11px;color:var(--muted);margin-top:2px}
 .s-note{font-size:11px;color:var(--purple);margin-top:2px;font-style:italic}
@@ -124,21 +102,17 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
 .s-btn.other:hover,.s-btn.other.active{background:rgba(188,140,255,.15);color:var(--purple);border-color:var(--purple)}
 .s-note-input{background:var(--s2);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'Heebo',sans-serif;font-size:12px;padding:5px 9px;outline:none;width:130px;transition:border-color .2s}
 .s-note-input:focus{border-color:var(--purple)}
-
-/* ── STATUS BADGE ── */
 .sbadge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;flex-shrink:0}
 .sbadge.present{background:rgba(63,185,80,.15);color:var(--green)}
 .sbadge.absent{background:rgba(248,81,73,.15);color:var(--red)}
 .sbadge.sick{background:rgba(210,153,34,.15);color:var(--yellow)}
 .sbadge.other{background:rgba(188,140,255,.15);color:var(--purple)}
 .sbadge.pending{background:var(--s2);color:var(--muted)}
-
-/* ── TASKS ── */
 .task-item{background:var(--s1);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;margin-bottom:8px;transition:all .2s}
 .task-item.done{border-color:var(--green);opacity:.7}
-.task-header{display:flex;align-items:center;gap:10px}
+.task-header{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .task-cb{width:18px;height:18px;accent-color:var(--green);cursor:pointer;flex-shrink:0}
-.task-text{flex:1;font-size:14px;font-weight:600}
+.task-text{flex:1;min-width:100px;font-size:14px;font-weight:600}
 .task-text.done{text-decoration:line-through;color:var(--muted)}
 .task-meta{font-size:11px;color:var(--muted);margin-top:4px}
 .task-note-row{margin-top:8px;display:flex;gap:8px}
@@ -149,37 +123,23 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
 .prio-high{background:rgba(248,81,73,.15);color:var(--red)}
 .prio-med{background:rgba(210,153,34,.15);color:var(--yellow)}
 .prio-low{background:rgba(63,185,80,.15);color:var(--green)}
-
-/* ── SESSIONS HISTORY ── */
 .session-chip{display:inline-flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:5px 12px;margin:3px;font-size:12px;font-weight:600;cursor:pointer;transition:all .18s}
 .session-chip:hover,.session-chip.selected{border-color:var(--accent);color:var(--accent);background:rgba(88,166,255,.1)}
-
-/* ── SUMMARY TABLE ── */
 .sum-table{width:100%;border-collapse:collapse;font-size:13px}
 .sum-table th{background:var(--s2);padding:10px 12px;text-align:right;font-weight:700;color:var(--muted);border-bottom:2px solid var(--border)}
 .sum-table td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
 .sum-table tr:last-child td{border-bottom:none}
 .sum-table tr:hover td{background:rgba(88,166,255,.04)}
 .absent-reason{font-size:11px;color:var(--muted);margin-top:2px}
-
-/* ── WA REPORT ── */
 .wa-box{background:var(--s2);border:1px solid var(--border);border-radius:var(--r);padding:16px;font-family:monospace;font-size:13px;line-height:1.7;white-space:pre-wrap;direction:rtl;min-height:200px;color:var(--text)}
 .wa-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
-
-/* ── EMPTY ── */
 .empty{text-align:center;padding:40px 20px;color:var(--muted)}
 .empty-ico{font-size:40px;margin-bottom:10px}
-
-/* ── TOAST ── */
 .toast{position:fixed;bottom:20px;right:20px;background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:11px 16px;font-size:13px;font-weight:600;box-shadow:var(--shadow);z-index:999;animation:toastIn .2s ease}
 @keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-
-/* ── INSTRUCTOR TAGS ── */
 .instr-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(88,166,255,.12);border:1px solid rgba(88,166,255,.3);border-radius:6px;padding:3px 9px;font-size:12px;font-weight:600;color:var(--accent);margin:2px}
 .instr-tag .x{cursor:pointer;color:var(--muted);font-size:14px;line-height:1}
 .instr-tag .x:hover{color:var(--red)}
-
-/* ── MODAL ── */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;align-items:center;justify-content:center;padding:20px}
 .overlay.open{display:flex}
 .modal{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:560px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:var(--shadow);animation:modalIn .2s ease}
@@ -188,52 +148,22 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
 .modal-hdr h2{font-size:18px;font-weight:900}
 .modal-x{background:var(--s2);border:none;color:var(--muted);width:30px;height:30px;border-radius:7px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
 .modal-x:hover{color:var(--text)}
-
-@media(max-width:600px){
-  .stats-row{grid-template-columns:repeat(2,1fr)}
-  .s-actions{flex-direction:column;align-items:flex-start}
-}
-
-/* ── LOGIN SCREEN ── */
-#loginScreen{
-  position:fixed;inset:0;background:var(--bg);z-index:9999;
-  display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:0;
-}
-#loginScreen::before{
-  content:'';position:fixed;inset:0;
-  background-image:linear-gradient(rgba(88,166,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(88,166,255,.05) 1px,transparent 1px);
-  background-size:40px 40px;pointer-events:none;
-}
-.login-box{
-  background:var(--s1);border:1px solid var(--border);border-radius:20px;
-  padding:40px 36px;max-width:380px;width:90%;text-align:center;
-  box-shadow:0 24px 64px rgba(0,0,0,.6);position:relative;z-index:1;
-  animation:modalIn .3s ease;
-}
+@media(max-width:600px){.stats-row{grid-template-columns:repeat(2,1fr)}.s-actions{flex-direction:column;align-items:flex-start}}
+#loginScreen{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column}
+#loginScreen::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(88,166,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(88,166,255,.05) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+.login-box{background:var(--s1);border:1px solid var(--border);border-radius:20px;padding:40px 36px;max-width:380px;width:90%;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,.6);position:relative;z-index:1;animation:modalIn .3s ease}
 .login-logo{font-size:48px;margin-bottom:12px}
-.login-title{font-size:24px;font-weight:900;margin-bottom:4px;
-  background:linear-gradient(135deg,var(--text) 40%,var(--accent));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.login-title{font-size:24px;font-weight:900;margin-bottom:4px;background:linear-gradient(135deg,var(--text) 40%,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .login-sub{font-size:13px;color:var(--muted);margin-bottom:28px}
 .login-dots{display:flex;gap:10px;justify-content:center;margin-bottom:10px}
-.login-dot{
-  width:44px;height:56px;background:var(--s2);border:2px solid var(--border);
-  border-radius:10px;display:flex;align-items:center;justify-content:center;
-  font-size:22px;font-weight:900;color:var(--text);transition:all .15s;
-  cursor:default;user-select:none;
-}
+.login-dot{width:36px;height:46px;background:var(--s2);border:2px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:var(--text);transition:all .15s;cursor:default;user-select:none}
 .login-dot.filled{background:rgba(88,166,255,.15);border-color:var(--accent);color:var(--accent)}
 .login-dot.error{background:rgba(248,81,73,.15);border-color:var(--red);animation:shake .3s}
 @keyframes shake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 .login-hint{font-size:12px;color:var(--muted);height:18px;margin-bottom:20px;transition:color .2s}
 .login-hint.err{color:var(--red)}
 .login-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:260px;margin:0 auto}
-.kbtn{
-  height:54px;border-radius:12px;background:var(--s2);border:1px solid var(--border);
-  color:var(--text);font-family:'Heebo',sans-serif;font-size:20px;font-weight:700;
-  cursor:pointer;transition:all .15s;user-select:none;-webkit-tap-highlight-color:transparent;
-}
+.kbtn{height:54px;border-radius:12px;background:var(--s2);border:1px solid var(--border);color:var(--text);font-family:'Heebo',sans-serif;font-size:20px;font-weight:700;cursor:pointer;transition:all .15s;user-select:none;-webkit-tap-highlight-color:transparent}
 .kbtn:hover{background:var(--s3);border-color:var(--accent)}
 .kbtn:active{transform:scale(.93)}
 .kbtn.del{font-size:16px;color:var(--muted)}
@@ -248,12 +178,8 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
     <div class="login-logo">🎯</div>
     <div class="login-title">מערכת נוכחות</div>
     <div class="login-sub" id="loginSub">טוען…</div>
-
-    <!-- אינדיקטור ספרות — 4 עד 8 -->
     <div class="login-dots" id="loginDots"></div>
     <div class="login-hint" id="loginHint">&#8203;</div>
-
-    <!-- לוח מקשים -->
     <div class="login-keypad">
       <button class="kbtn" onclick="kbPress('1')">1</button>
       <button class="kbtn" onclick="kbPress('2')">2</button>
@@ -271,7 +197,6 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
   </div>
 </div>
 
-<!-- NAV -->
 <nav class="nav">
   <div class="nav-brand">🎯 <span>מערכת נוכחות</span></div>
   <button class="nav-tab active" onclick="goTab('attendance',this)">📋 נוכחות</button>
@@ -280,10 +205,9 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
   <button class="nav-tab" onclick="goTab('report',this)">💬 דוח וואטסאפ</button>
   <button class="nav-tab" onclick="goTab('feedback',this)">⭐ שימור ושיפור</button>
   <button class="nav-tab" onclick="goTab('students',this)">👥 חניכים</button>
-  <button class="nav-tab" onclick="goTab('archive',this)">🗃️ ארכיון דוחות</button>
+  <button class="nav-tab" onclick="goTab('archive',this)">🗃️ ארכיון</button>
 </nav>
 
-<!-- SHEETS STRIP -->
 <div class="sheets-strip">
   <label>📊 Google Sheets:</label>
   <input type="url" id="sheetsUrl" placeholder="https://script.google.com/macros/s/…/exec" oninput="saveUrl()" />
@@ -292,10 +216,9 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
   <span id="sheetsMsg" style="font-size:12px;color:var(--muted)">לא מחובר</span>
 </div>
 
-<!-- BACKUP STRIP -->
 <div class="sheets-strip" style="background:#0d1117;border-bottom-color:#21262d;gap:14px">
   <span style="font-size:12px;color:var(--muted);white-space:nowrap">💾 גיבוי:</span>
-  <button class="btn btn-ghost" style="padding:5px 12px;font-size:12px" onclick="exportBackup('full')">⬇️ ייצוא מלא (CSV)</button>
+  <button class="btn btn-ghost" style="padding:5px 12px;font-size:12px" onclick="exportBackup('full')">⬇️ ייצוא מלא</button>
   <button class="btn btn-ghost" style="padding:5px 12px;font-size:12px" onclick="exportBackup('students')">⬇️ רשימת חניכים</button>
   <label class="btn btn-ghost" style="padding:5px 12px;font-size:12px;cursor:pointer">
     ⬆️ טען גיבוי מלא
@@ -309,12 +232,8 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
   <span id="lastBackupLbl" style="font-size:11px;color:var(--muted);margin-right:auto"></span>
 </div>
 
-<!-- ══════════════════════════════════════════════ -->
-<!--  TAB 1 — ATTENDANCE                           -->
-<!-- ══════════════════════════════════════════════ -->
+<!-- TAB 1: ATTENDANCE -->
 <div class="page active" id="tab-attendance">
-
-  <!-- Session setup -->
   <div class="card">
     <div class="card-title">⚙️ פרטי השיעור</div>
     <div class="session-row">
@@ -323,11 +242,11 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
         <span id="todayDate" style="font-size:14px;font-weight:700;padding:7px 0"></span>
       </div>
       <div class="field">
-        <label>⭐ שם השיעור / פעילות</label>
-        <input type="text" id="sessionName" class="glow" placeholder="מפגש בוקר, אימון מנהיגות…" style="width:200px" />
+        <label>⭐ שם השיעור</label>
+        <input type="text" id="sessionName" class="glow" placeholder="מפגש בוקר..." style="width:200px" />
       </div>
       <div class="field">
-        <label>מדריכים / מרצים בשיעור</label>
+        <label>מדריכים / מרצים</label>
         <div style="display:flex;gap:6px;align-items:center">
           <input type="text" id="instrInput" placeholder="שם מדריך + Enter" style="width:150px" onkeydown="if(event.key==='Enter')addInstructor()" />
           <button class="btn btn-ghost" style="padding:7px 10px" onclick="addInstructor()">➕</button>
@@ -335,37 +254,34 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
         <div id="instrTags" style="margin-top:6px;min-height:24px"></div>
       </div>
       <div class="field" style="flex:1;min-width:200px">
-        <label>📝 הערות כלליות לשיעור</label>
-        <textarea id="sessionNotes" placeholder="הערות שיופיעו בדוח…" style="width:100%;min-height:52px;background:var(--s2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Heebo',sans-serif;font-size:13px;padding:7px 11px;outline:none;resize:vertical"></textarea>
+        <label>📝 הערות כלליות</label>
+        <textarea id="sessionNotes" placeholder="הערות..." style="width:100%;min-height:52px"></textarea>
       </div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-green"  onclick="markAll('present')">✅ הכל נוכח</button>
-      <button class="btn btn-red"    onclick="markAll('absent')">❌ הכל נעדר</button>
-      <button class="btn btn-ghost"  onclick="resetAll()">🔄 אפס</button>
+      <button class="btn btn-green" onclick="markAll('present')">✅ הכל נוכח</button>
+      <button class="btn btn-red" onclick="markAll('absent')">❌ הכל נעדר</button>
+      <button class="btn btn-ghost" onclick="resetAll()">🔄 אפס</button>
       <button class="btn btn-accent" onclick="openSaveModal()" style="margin-right:auto">💾 שמור שיעור</button>
     </div>
   </div>
 
-  <!-- Stats -->
   <div class="stats-row">
-    <div class="stat"><div class="stat-n n-total"   id="stTotal">0</div><div class="stat-l">סה"כ</div></div>
+    <div class="stat"><div class="stat-n n-total" id="stTotal">0</div><div class="stat-l">סה"כ</div></div>
     <div class="stat"><div class="stat-n n-present" id="stPresent">0</div><div class="stat-l">נוכחים</div></div>
-    <div class="stat"><div class="stat-n n-absent"  id="stAbsent">0</div><div class="stat-l">נעדרים / מרפאה / אחר</div></div>
-    <div class="stat"><div class="stat-n n-pct"     id="stPct">0%</div><div class="stat-l">נוכחות</div></div>
+    <div class="stat"><div class="stat-n n-absent" id="stAbsent">0</div><div class="stat-l">חריגים</div></div>
+    <div class="stat"><div class="stat-n n-pct" id="stPct">0%</div><div class="stat-l">נוכחות</div></div>
   </div>
 
-  <!-- Progress -->
   <div class="prog-wrap">
-    <div class="prog-lbl"><span>התקדמות בדיקה</span><span id="progTxt">0 / 0</span></div>
+    <div class="prog-lbl"><span>התקדמות</span><span id="progTxt">0 / 0</span></div>
     <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
   </div>
 
-  <!-- Controls -->
   <div class="controls-row">
     <div class="search-wrap">
       <span class="search-icon">🔍</span>
-      <input type="text" id="searchInput" placeholder="חיפוש לפי שם או מ"א…" oninput="renderList()" />
+      <input type="text" id="searchInput" placeholder="חיפוש..." oninput="renderList()" />
     </div>
   </div>
   <div class="filter-tabs">
@@ -376,281 +292,157 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
     <button class="ftab" onclick="setFilter('sick',this)">מרפאה</button>
     <button class="ftab" onclick="setFilter('other',this)">אחר</button>
   </div>
-
   <div class="s-list" id="studentList"></div>
 </div>
 
-<!-- ══════════════════════════════════════════════ -->
-<!--  TAB 2 — DUTY + TASKS                         -->
-<!-- ══════════════════════════════════════════════ -->
+<!-- TAB 2: DUTY + TASKS -->
 <div class="page" id="tab-duty">
-
-  <!-- Duty officer info -->
   <div class="card">
     <div class="card-title">🗂️ פרטי תורן היום</div>
     <div class="session-row">
       <div class="field">
         <label>שם התורן</label>
-        <select id="dutySelect" style="width:180px">
-          <option value="">— בחר חניך —</option>
-        </select>
+        <select id="dutySelect" style="width:180px"><option value="">— בחר —</option></select>
       </div>
       <div class="field" style="flex:1">
-        <label>הערות תורן כלליות</label>
-        <textarea id="dutyNotes" placeholder="רשום כאן הערות כלליות לדוח…" style="width:100%;min-height:50px"></textarea>
+        <label>הערות תורן</label>
+        <textarea id="dutyNotes" placeholder="הערות..." style="width:100%;min-height:50px"></textarea>
       </div>
     </div>
   </div>
 
-  <!-- Add task -->
   <div class="card">
     <div class="card-title">➕ הוספת משימה</div>
     <div class="session-row">
-      <div class="field" style="flex:1">
-        <label>תיאור המשימה</label>
-        <input type="text" id="taskInput" placeholder="תיאור המשימה שניתנה מהסגל…" style="width:100%" onkeydown="if(event.key==='Enter')addTask()" />
-      </div>
-      <div class="field">
-        <label>עדיפות</label>
-        <select id="taskPrio" style="width:110px">
-          <option value="high">🔴 גבוהה</option>
-          <option value="med" selected>🟡 בינונית</option>
-          <option value="low">🟢 נמוכה</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>ניתנה ע"י</label>
-        <input type="text" id="taskGiver" placeholder="שם המדריך" style="width:130px" />
-      </div>
-      <div class="field">
-        <label>📅 תאריך יעד</label>
-        <input type="date" id="taskDue" style="width:145px;background:var(--s2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Heebo',sans-serif;font-size:13px;padding:7px 11px;outline:none;color-scheme:dark" />
-      </div>
-      <div class="field" style="justify-content:flex-end">
-        <button class="btn btn-accent" onclick="addTask()">➕ הוסף משימה</button>
-      </div>
+      <div class="field" style="flex:1"><label>תיאור המשימה</label><input type="text" id="taskInput" placeholder="תיאור..." style="width:100%" onkeydown="if(event.key==='Enter')addTask()" /></div>
+      <div class="field"><label>עדיפות</label><select id="taskPrio" style="width:110px"><option value="high">🔴 גבוהה</option><option value="med" selected>🟡 בינונית</option><option value="low">🟢 נמוכה</option></select></div>
+      <div class="field"><label>ניתנה ע"י</label><input type="text" id="taskGiver" placeholder="שם" style="width:130px" /></div>
+      <div class="field"><label>📅 תאריך יעד</label><input type="date" id="taskDue" style="width:145px;color-scheme:dark" /></div>
+      <div class="field" style="justify-content:flex-end"><button class="btn btn-accent" onclick="addTask()">➕ הוסף</button></div>
     </div>
   </div>
 
-  <!-- Task list -->
   <div class="card">
     <div class="card-title">📌 רשימת משימות</div>
-    <div id="taskList"><div class="empty"><div class="empty-ico">📭</div><div>אין משימות עדיין</div></div></div>
+    <div id="taskList"><div class="empty"><div class="empty-ico">📭</div><div>אין משימות</div></div></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════ -->
-<!--  TAB 3 — DAY SUMMARY                          -->
-<!-- ══════════════════════════════════════════════ -->
+<!-- TAB 3: DAY SUMMARY -->
 <div class="page" id="tab-summary">
   <div class="card">
     <div class="card-title">📊 סיכום שיעורי היום</div>
     <div id="sessionChips" style="margin-bottom:14px"></div>
-    <div id="summaryContent">
-      <div class="empty"><div class="empty-ico">📅</div><div>שמור שיעורים כדי לראות סיכום</div></div>
-    </div>
+    <div id="summaryContent"><div class="empty"><div class="empty-ico">📅</div><div>שמור שיעורים כדי לראות סיכום</div></div></div>
   </div>
-
   <div class="card">
     <div class="card-title">📋 נעדרים מרובי שיעורים</div>
-    <div id="multiAbsent">
-      <div class="empty"><div class="empty-ico">✅</div><div>אין נעדרים מרובים</div></div>
-    </div>
+    <div id="multiAbsent"><div class="empty"><div class="empty-ico">✅</div><div>אין</div></div></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════ -->
-<!--  TAB 4 — WHATSAPP REPORT                      -->
-<!-- ══════════════════════════════════════════════ -->
+<!-- TAB 4: WA REPORT -->
 <div class="page" id="tab-report">
   <div class="card">
     <div class="card-title">💬 יצירת דוח וואטסאפ</div>
     <div class="session-row" style="margin-bottom:14px">
-      <div class="field">
-        <label>בחר שיעור לדוח</label>
-        <select id="reportSessionSelect" style="width:220px" onchange="buildWaReport()">
-          <option value="">— בחר שיעור —</option>
-        </select>
-      </div>
-      <div class="field" style="flex:1">
-        <label>הוסף הערה לדוח (אופציונלי)</label>
-        <input type="text" id="reportExtra" placeholder="הערה כללית לדוח…" style="width:100%" oninput="buildWaReport()" />
-      </div>
-      <div class="field">
-        <button class="btn btn-accent" style="margin-top:18px" onclick="buildWaReport()">🔄 רענן דוח</button>
-      </div>
+      <div class="field"><label>בחר שיעור</label><select id="reportSessionSelect" style="width:220px" onchange="buildWaReport()"><option value="">— בחר —</option></select></div>
+      <div class="field" style="flex:1"><label>הערה נוספת</label><input type="text" id="reportExtra" placeholder="..." style="width:100%" oninput="buildWaReport()" /></div>
+      <div class="field"><button class="btn btn-accent" style="margin-top:18px" onclick="buildWaReport()">🔄 רענן</button></div>
     </div>
-    <div class="wa-box" id="waBox">בחר שיעור מהרשימה למעלה כדי לייצר את הדוח…</div>
+    <div class="wa-box" id="waBox">בחר שיעור...</div>
     <div class="wa-actions">
-      <button class="btn btn-wa" onclick="copyWa()">📋 העתק לוואטסאפ</button>
+      <button class="btn btn-wa" onclick="copyWa()">📋 העתק</button>
       <button class="btn btn-ghost" onclick="shareWa()">📤 שתף</button>
-      <button class="btn btn-sheets" id="btnSaveSheets" onclick="saveAllToSheets()">📊 שמור הכל ב-Sheets</button>
+      <button class="btn btn-sheets" id="btnSaveSheets" onclick="saveAllToSheets()">📊 שמור ב-Sheets</button>
     </div>
   </div>
-
-  <!-- Day summary WA -->
   <div class="card">
-    <div class="card-title">📆 דוח סיכום יום מלא</div>
-    <button class="btn btn-purple" onclick="buildDaySummaryWa()">🔄 צור דוח יום מלא</button>
-    <div class="wa-box" id="waDayBox" style="margin-top:12px">לחץ "צור דוח" לסיכום כל השיעורים של היום…</div>
-    <div class="wa-actions">
-      <button class="btn btn-wa" onclick="copyWaDay()">📋 העתק</button>
-    </div>
+    <div class="card-title">📆 דוח סיכום יום</div>
+    <button class="btn btn-purple" onclick="buildDaySummaryWa()">🔄 צור דוח יום</button>
+    <div class="wa-box" id="waDayBox" style="margin-top:12px">לחץ "צור דוח"...</div>
+    <div class="wa-actions"><button class="btn btn-wa" onclick="copyWaDay()">📋 העתק</button></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════ -->
-<!--  TAB 5 — FEEDBACK (שימור ושיפור)             -->
-<!-- ══════════════════════════════════════════════ -->
+<!-- TAB 5: FEEDBACK -->
 <div class="page" id="tab-feedback">
   <div class="card">
     <div class="card-title">⭐ שימור ושיפור לפי תאריך</div>
-
-    <!-- בחירת תאריך -->
     <div style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:18px">
-      <div class="field">
-        <label>בחר תאריך</label>
-        <select id="fbDateSelect" style="width:200px" onchange="onFbDateChange()">
-          <option value="">— בחר תאריך —</option>
-        </select>
-      </div>
-      <div style="font-size:13px;color:var(--muted);padding-bottom:8px" id="fbDateHint">בחר תאריך לצפייה בשיעורים</div>
+      <div class="field"><label>בחר תאריך</label><select id="fbDateSelect" style="width:200px" onchange="onFbDateChange()"><option value="">— בחר —</option></select></div>
+      <div style="font-size:13px;color:var(--muted);padding-bottom:8px" id="fbDateHint">בחר תאריך</div>
     </div>
-
-    <!-- בחירת שיעור (מופיע אחרי בחירת תאריך) -->
     <div id="fbSessionPicker" style="display:none;margin-bottom:18px">
-      <div class="card-title" style="margin-bottom:10px">📚 שיעורים באותו יום</div>
+      <div class="card-title" style="margin-bottom:10px">📚 שיעורים ביום זה</div>
       <div id="fbSessionChips"></div>
     </div>
-
-    <!-- טופס שימור/שיפור (מופיע אחרי בחירת שיעור) -->
     <div id="fbForm" style="display:none">
       <div style="background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px">
-        <div style="font-size:15px;font-weight:800;margin-bottom:14px" id="fbFormTitle">📚 שם שיעור</div>
-
-        <div class="field" style="margin-bottom:12px">
-          <label>📝 הערות כלליות לשיעור</label>
-          <textarea id="fbNotes" rows="3" placeholder="הערות כלליות…" style="width:100%;background:var(--s1);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Heebo',sans-serif;font-size:13px;padding:8px 11px;outline:none;resize:vertical;margin-top:5px"></textarea>
-        </div>
-
+        <div style="font-size:15px;font-weight:800;margin-bottom:14px" id="fbFormTitle"></div>
+        <div class="field" style="margin-bottom:12px"><label>📝 הערות כלליות</label><textarea id="fbNotes" rows="3" style="width:100%;background:var(--s1);margin-top:5px"></textarea></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-          <div class="field">
-            <label style="color:var(--green)">⭐ לשימור — מה עבד טוב?</label>
-            <textarea id="fbKeep" rows="4" placeholder="מה עבד טוב ורוצים לשמר…" style="width:100%;margin-top:5px;background:var(--s1);border:1px solid rgba(63,185,80,.35);border-radius:8px;color:var(--text);font-family:'Heebo',sans-serif;font-size:13px;padding:8px 11px;outline:none;resize:vertical;transition:border-color .2s" onfocus="this.style.borderColor='#3fb950'" onblur="this.style.borderColor='rgba(63,185,80,.35)'"></textarea>
-          </div>
-          <div class="field">
-            <label style="color:var(--orange)">🔧 לשיפור — מה אפשר לשפר?</label>
-            <textarea id="fbImprove" rows="4" placeholder="נקודות לשיפור לפעם הבאה…" style="width:100%;margin-top:5px;background:var(--s1);border:1px solid rgba(240,136,62,.35);border-radius:8px;color:var(--text);font-family:'Heebo',sans-serif;font-size:13px;padding:8px 11px;outline:none;resize:vertical;transition:border-color .2s" onfocus="this.style.borderColor='#f0883e'" onblur="this.style.borderColor='rgba(240,136,62,.35)'"></textarea>
-          </div>
+          <div class="field"><label style="color:var(--green)">⭐ לשימור</label><textarea id="fbKeep" rows="4" style="width:100%;margin-top:5px;background:var(--s1);border-color:rgba(63,185,80,.35)"></textarea></div>
+          <div class="field"><label style="color:var(--orange)">🔧 לשיפור</label><textarea id="fbImprove" rows="4" style="width:100%;margin-top:5px;background:var(--s1);border-color:rgba(240,136,62,.35)"></textarea></div>
         </div>
-
         <button class="btn btn-green" onclick="saveFbForm()">💾 שמור הערות</button>
       </div>
-
-      <!-- תצוגת כל הפידבקים של היום -->
       <div id="fbAllSessions"></div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════ -->
-<!--  TAB 6 — STUDENTS MANAGEMENT                  -->
-<!-- ══════════════════════════════════════════════ -->
+<!-- TAB 6: STUDENTS -->
 <div class="page" id="tab-students">
-
-  <!-- הוספת חניך -->
   <div class="card">
     <div class="card-title" style="justify-content:space-between">
       <span>➕ הוספת חניך</span>
       <div style="display:flex;gap:8px">
-        <button class="btn btn-ghost" style="padding:5px 12px;font-size:12px" onclick="exportBackup('students')">⬇️ ייצוא CSV</button>
-        <label class="btn btn-ghost" style="padding:5px 12px;font-size:12px;cursor:pointer">
-          ⬆️ ייבוא CSV
-          <input type="file" accept=".csv" id="importStudentsFile2" style="display:none" onchange="importBackup(this,'students')" />
+        <button class="btn btn-ghost" style="padding:5px 12px;font-size:12px" onclick="exportBackup('students')">⬇️ ייצוא</button>
+        <label class="btn btn-ghost" style="padding:5px 12px;font-size:12px;cursor:pointer">⬆️ ייבוא
+          <input type="file" accept=".csv" style="display:none" onchange="importBackup(this,'students')" />
         </label>
       </div>
     </div>
     <div class="session-row">
-      <div class="field">
-        <label>שם מלא</label>
-        <input type="text" id="newName" placeholder="שם מלא של החניך" style="width:200px" />
-      </div>
-      <div class="field">
-        <label>מספר אישי</label>
-        <input type="text" id="newId" placeholder="מספר אישי" style="width:140px" />
-      </div>
-      <div class="field">
-        <label>מספר חדר</label>
-        <input type="text" id="newRoom" placeholder="מספר חדר" style="width:110px" />
-      </div>
-      <div class="field" style="justify-content:flex-end">
-        <button class="btn btn-green" onclick="addStudent()">➕ הוסף חניך</button>
-      </div>
+      <div class="field"><label>שם מלא</label><input type="text" id="newName" placeholder="שם" style="width:200px" /></div>
+      <div class="field"><label>מספר אישי</label><input type="text" id="newId" placeholder="מ\"א" style="width:140px" /></div>
+      <div class="field"><label>מספר חדר</label><input type="text" id="newRoom" placeholder="חדר" style="width:110px" /></div>
+      <div class="field" style="justify-content:flex-end"><button class="btn btn-green" onclick="addStudent()">➕ הוסף</button></div>
     </div>
   </div>
-
-  <!-- חיפוש וסינון -->
   <div class="controls-row" style="margin-bottom:12px">
-    <div class="search-wrap">
-      <span class="search-icon">🔍</span>
-      <input type="text" id="stuSearch" placeholder="חיפוש לפי שם, מ"א או חדר…" oninput="renderStudentMgmt()" />
-    </div>
-    <div class="field">
-      <select id="stuRoomFilter" onchange="renderStudentMgmt()" style="width:130px;background:var(--s1);border:1px solid var(--border);border-radius:var(--r);color:var(--text);font-family:'Heebo',sans-serif;font-size:13px;padding:10px 12px;outline:none">
-        <option value="">כל החדרים</option>
-      </select>
-    </div>
+    <div class="search-wrap"><span class="search-icon">🔍</span><input type="text" id="stuSearch" placeholder="חיפוש..." oninput="renderStudentMgmt()" /></div>
+    <div class="field"><select id="stuRoomFilter" onchange="renderStudentMgmt()" style="width:130px;background:var(--s1);padding:10px 12px"><option value="">כל החדרים</option></select></div>
     <div style="padding:10px 0;font-size:13px;color:var(--muted)" id="stuCount"></div>
   </div>
-
-  <!-- רשימת חניכים -->
-  <div class="card" style="padding:0;overflow:hidden">
-    <table class="sum-table" style="margin:0" id="stuTable">
-      <thead><tr>
-        <th>#</th><th>שם מלא</th><th>מספר אישי</th><th>חדר</th><th>פעולות</th>
-      </tr></thead>
+  <div class="card" style="padding:0;overflow-x:auto">
+    <table class="sum-table" style="margin:0">
+      <thead><tr><th>#</th><th>שם מלא</th><th>מ"א</th><th>חדר</th><th>פעולות</th></tr></thead>
       <tbody id="stuBody"></tbody>
     </table>
   </div>
-<!-- END TAB 6 -->
 </div>
 
-<!-- ══════════════════════════════════════════════ -->
-<!--  TAB 7 — REPORT ARCHIVE                       -->
-<!-- ══════════════════════════════════════════════ -->
+<!-- TAB 7: ARCHIVE -->
 <div class="page" id="tab-archive">
   <div class="card">
     <div class="card-title">🗃️ ארכיון דוחות לפי תאריכים</div>
     <div class="session-row" style="margin-bottom:14px">
-      <div class="field">
-        <label>בחר תאריך</label>
-        <select id="archiveDateSelect" style="width:220px" onchange="renderArchiveByDate()">
-          <option value="">— בחר תאריך —</option>
-        </select>
-      </div>
-      <div class="field" style="flex:1">
-        <label>חיפוש בטקסט</label>
-        <input type="text" id="archiveSearch" placeholder="חפש לפי שיעור, מדריך, הערה..." style="width:100%" oninput="renderArchiveByDate()" />
-      </div>
+      <div class="field"><label>בחר תאריך</label><select id="archiveDateSelect" style="width:220px" onchange="renderArchiveByDate()"><option value="">— בחר —</option></select></div>
+      <div class="field" style="flex:1"><label>חיפוש</label><input type="text" id="archiveSearch" placeholder="חפש..." style="width:100%" oninput="renderArchiveByDate()" /></div>
     </div>
-    <div id="archiveContent">
-      <div class="empty"><div class="empty-ico">🗄️</div><div>בחר תאריך כדי לראות את כל הדוחות של אותו יום</div></div>
-    </div>
+    <div id="archiveContent"><div class="empty"><div class="empty-ico">🗄️</div><div>בחר תאריך</div></div></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════ -->
-<!--  CONFIRM DELETE MODAL                         -->
-<!-- ══════════════════════════════════════════════ -->
+<!-- MODALS -->
 <div class="overlay" id="deleteModal">
   <div class="modal" style="max-width:420px">
-    <div class="modal-hdr">
-      <h2>🗑️ מחיקת חניך</h2>
-      <button class="modal-x" onclick="closeDeleteModal()">✕</button>
-    </div>
+    <div class="modal-hdr"><h2>🗑️ מחיקת חניך</h2><button class="modal-x" onclick="closeDeleteModal()">✕</button></div>
     <p style="font-size:15px;margin-bottom:6px">האם למחוק את החניך:</p>
     <div style="background:var(--s2);border-radius:8px;padding:12px 16px;margin-bottom:18px;font-size:16px;font-weight:700" id="deleteConfirmName"></div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:18px">פעולה זו אינה ניתנת לביטול. החניך יוסר מהרשימה.</p>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:18px">פעולה זו אינה ניתנת לביטול.</p>
     <div style="display:flex;gap:10px">
       <button class="btn btn-red" onclick="confirmDelete()">🗑️ כן, מחק</button>
       <button class="btn btn-ghost" onclick="closeDeleteModal()">ביטול</button>
@@ -658,45 +450,24 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════ -->
-<!--  EDIT STUDENT MODAL                           -->
-<!-- ══════════════════════════════════════════════ -->
 <div class="overlay" id="editStudentModal">
   <div class="modal" style="max-width:440px">
-    <div class="modal-hdr">
-      <h2>✏️ עריכת חניך</h2>
-      <button class="modal-x" onclick="closeEditModal()">✕</button>
-    </div>
+    <div class="modal-hdr"><h2>✏️ עריכת חניך</h2><button class="modal-x" onclick="closeEditModal()">✕</button></div>
     <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:18px">
-      <div class="field">
-        <label>שם מלא</label>
-        <input type="text" id="editName" style="width:100%" />
-      </div>
-      <div class="field">
-        <label>מספר אישי</label>
-        <input type="text" id="editId" style="width:100%" />
-      </div>
-      <div class="field">
-        <label>מספר חדר</label>
-        <input type="text" id="editRoom" style="width:100%" />
-      </div>
+      <div class="field"><label>שם מלא</label><input type="text" id="editName" style="width:100%" /></div>
+      <div class="field"><label>מספר אישי</label><input type="text" id="editId" style="width:100%" /></div>
+      <div class="field"><label>מספר חדר</label><input type="text" id="editRoom" style="width:100%" /></div>
     </div>
     <div style="display:flex;gap:10px">
-      <button class="btn btn-accent" onclick="confirmEdit()">✅ שמור שינויים</button>
+      <button class="btn btn-accent" onclick="confirmEdit()">✅ שמור</button>
       <button class="btn btn-ghost" onclick="closeEditModal()">ביטול</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════ -->
-<!--  SAVE SESSION MODAL                           -->
-<!-- ══════════════════════════════════════════════ -->
 <div class="overlay" id="saveModal">
   <div class="modal">
-    <div class="modal-hdr">
-      <h2>💾 שמירת שיעור</h2>
-      <button class="modal-x" onclick="closeSaveModal()">✕</button>
-    </div>
+    <div class="modal-hdr"><h2>💾 שמירת שיעור</h2><button class="modal-x" onclick="closeSaveModal()">✕</button></div>
     <div id="savePreview" style="font-size:14px;line-height:1.8;margin-bottom:16px"></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="btn btn-green" onclick="saveSession()">✅ שמור שיעור</button>
@@ -706,61 +477,44 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
 </div>
 
 <script>
-// ═══════════════════════════════════════════════
-//  LOGIN — קוד קבוע: 4110426
-//  • קוד 7 ספרות
-//  • נעילה אחרי 5 ניסיונות כושלים (5 דקות)
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+//  LOGIN — קוד קבוע 4110426
+// ═══════════════════════════════════════════════════════════════
 const ACCESS_CODE  = '4110426';
 const CODE_LEN     = ACCESS_CODE.length;
 const LS_LOCK_UNTIL= 'appLockUntil';
 const LS_ATTEMPTS  = 'appFailAttempts';
 const MAX_ATTEMPTS = 5;
 const LOCK_MINUTES = 5;
-
 let loginInput = '';
 
-// ── אתחול מסך הכניסה ────────────────────────────
 function initLogin(){
   const lockUntil = Number(localStorage.getItem(LS_LOCK_UNTIL)||0);
   if(Date.now() < lockUntil){
     const mins = Math.ceil((lockUntil-Date.now())/60000);
-    setHint(`🔒 המערכת נעולה ${mins} דקות נוספות`, true);
+    setHint(`🔒 נעול ל-${mins} דקות נוספות`, true);
     setSub('נסיונות כניסה חרגו');
     return;
   }
-  setSub(`הזן קוד כניסה (${CODE_LEN} ספרות)`);
+  setSub(`הזן קוד (${CODE_LEN} ספרות)`);
   setHint('\u200B');
   renderDots(0);
 }
-
-// ── עדכון תצוגה ─────────────────────────────────
-function setSub(t){
-  const el=document.getElementById('loginSub');
-  if(el) el.textContent=t;
-}
+function setSub(t){ const el=document.getElementById('loginSub'); if(el) el.textContent=t; }
 function setHint(t, isErr=false){
-  const el=document.getElementById('loginHint');
-  if(!el) return;
-  el.textContent=t;
-  el.className='login-hint'+(isErr?' err':'');
+  const el=document.getElementById('loginHint'); if(!el) return;
+  el.textContent=t; el.className='login-hint'+(isErr?' err':'');
 }
 function renderDots(filled, state='normal'){
-  const container=document.getElementById('loginDots');
-  if(!container) return;
+  const container=document.getElementById('loginDots'); if(!container) return;
   container.innerHTML='';
   for(let i=0;i<CODE_LEN;i++){
     const d=document.createElement('div');
-    d.style.cssText='width:36px;height:46px';
-    d.className='login-dot'
-      +(i<filled?' filled':'')
-      +(state==='error'?' error':'');
+    d.className='login-dot'+(i<filled?' filled':'')+(state==='error'?' error':'');
     d.textContent = i<filled ? '●' : '•';
     container.appendChild(d);
   }
 }
-
-// ── לחיצת מקש ───────────────────────────────────
 function kbPress(digit){
   const lockUntil = Number(localStorage.getItem(LS_LOCK_UNTIL)||0);
   if(Date.now()<lockUntil) return;
@@ -768,60 +522,41 @@ function kbPress(digit){
   loginInput += digit;
   renderDots(loginInput.length);
   setHint('\u200B');
-  if(loginInput.length===CODE_LEN){
-    setTimeout(checkLogin, 150);
-  }
+  if(loginInput.length===CODE_LEN) setTimeout(checkLogin, 150);
 }
-
 function kbDel(){
   if(!loginInput.length) return;
   loginInput = loginInput.slice(0,-1);
   renderDots(loginInput.length);
   setHint('\u200B');
 }
-
 function kbConfirm(){
   if(loginInput.length===CODE_LEN) checkLogin();
   else setHint(`הקוד הוא ${CODE_LEN} ספרות`, true);
 }
-
-// ── בדיקת קוד ───────────────────────────────────
 function checkLogin(){
   if(loginInput===ACCESS_CODE){
     localStorage.removeItem(LS_ATTEMPTS);
     localStorage.removeItem(LS_LOCK_UNTIL);
     hideLoginScreen();
-  } else {
-    loginFail();
-  }
+  } else loginFail();
 }
-
-// ── כישלון כניסה עם נעילה ────────────────────────
 function loginFail(){
   const attempts = Number(localStorage.getItem(LS_ATTEMPTS)||0) + 1;
   localStorage.setItem(LS_ATTEMPTS, attempts);
   const remaining = MAX_ATTEMPTS - attempts;
-
   if(attempts >= MAX_ATTEMPTS){
     const until = Date.now() + LOCK_MINUTES*60*1000;
     localStorage.setItem(LS_LOCK_UNTIL, until);
     localStorage.removeItem(LS_ATTEMPTS);
-    shakeAndReset(`🔒 נעול ל-${LOCK_MINUTES} דקות אחרי ${MAX_ATTEMPTS} ניסיונות כושלים`);
-  } else {
-    shakeAndReset(`קוד שגוי — נותרו ${remaining} ניסיונות`);
-  }
+    shakeAndReset(`🔒 נעול ל-${LOCK_MINUTES} דקות`);
+  } else shakeAndReset(`קוד שגוי — נותרו ${remaining} ניסיונות`);
 }
-
 function shakeAndReset(msg){
   renderDots(loginInput.length, 'error');
   setHint(msg, true);
-  setTimeout(()=>{
-    loginInput='';
-    renderDots(0);
-    setHint('\u200B');
-  }, 1200);
+  setTimeout(()=>{ loginInput=''; renderDots(0); setHint('\u200B'); }, 1200);
 }
-
 function hideLoginScreen(){
   loginInput='';
   const screen=document.getElementById('loginScreen');
@@ -829,8 +564,6 @@ function hideLoginScreen(){
   screen.style.opacity='0';
   setTimeout(()=>{ screen.style.display='none'; }, 360);
 }
-
-// ── מקלדת פיזית ─────────────────────────────────
 document.addEventListener('keydown', e=>{
   const screen=document.getElementById('loginScreen');
   if(!screen||screen.style.display==='none') return;
@@ -838,8 +571,6 @@ document.addEventListener('keydown', e=>{
   else if(e.key==='Backspace') kbDel();
   else if(e.key==='Enter') kbConfirm();
 });
-
-// ── הפיכת המקש הסמוי ל-✓ ───────────────────────
 document.addEventListener('DOMContentLoaded', ()=>{
   const emptyBtn = document.querySelector('.kbtn[style*="visibility:hidden"]');
   if(emptyBtn){
@@ -854,48 +585,85 @@ document.addEventListener('DOMContentLoaded', ()=>{
   initLogin();
 });
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════════════════════
+function escapeHtml(str){
+  if(typeof str!=="string") str=String(str==null?'':str);
+  return str.replace(/[&<>"'`]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;","`":"&#96;"}[c]));
+}
+function escapeAttr(str){
+  if(typeof str!=="string") str=String(str==null?'':str);
+  return str.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+}
+function todayStr(){
+  return new Date().toLocaleDateString('he-IL');
+}
+function makeSessionId(name, date){
+  return 'S_'+Date.now()+'_'+Math.random().toString(36).slice(2,7);
+}
+function normalizeSession(s){
+  const obj={...s};
+  if(!obj.sessionId) obj.sessionId=makeSessionId(obj.name, obj.date);
+  if(!obj.students && obj.rows) obj.students=obj.rows;
+  if(!obj.students) obj.students=[];
+  if(!obj.instructors) obj.instructors=[];
+  if(!obj.time) obj.time='';
+  if(obj.notes==null) obj.notes='';
+  if(obj.keep==null) obj.keep='';
+  if(obj.improve==null) obj.improve='';
+  return obj;
+}
+function normalizeSessions(arr){ return Array.isArray(arr)?arr.map(normalizeSession):[]; }
+function findSessionById(sessions, id){ return sessions.find(s=>s.sessionId===id); }
+function showToast(msg){
+  const t=document.createElement('div');
+  t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),3000);
+}
+
+// ═══════════════════════════════════════════════════════════════
 //  DATA — רשימת חניכים דינמית
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 const DEFAULT_STUDENTS = [
-  {id:"1967823",  name:"בידרדובסקי ירון",   room:""},
-  {id:"1966851",  name:"גורביץ דניאל",       room:""},
-  {id:"58788381", name:"דדון דנית",           room:""},
-  {id:"1968388",  name:"דהן יקיר יעקב",      room:""},
-  {id:"1967571",  name:"דרבאו אנדבט",        room:""},
-  {id:"1961954",  name:"כץ מאיה",            room:""},
-  {id:"1961756",  name:"מדרחי לאה שרה",      room:""},
-  {id:"1967638",  name:"סגל חן ניקול",       room:""},
-  {id:"1967360",  name:"סולימאן גוליאן",     room:""},
-  {id:"1967521",  name:"רלסטון חן ליעוז-ג'ייסון", room:""},
-  {id:"1967582",  name:"תבול מאור יהושע",    room:""},
-  {id:"1967710",  name:"אבו שקארה דניאל",    room:""},
-  {id:"1967199",  name:"אייזק אביב",         room:""},
-  {id:"1967065",  name:"אל עלי נגם",         room:""},
-  {id:"1967334",  name:"בן שבת נועם",        room:""},
-  {id:"1967585",  name:"ברדה רז",            room:""},
-  {id:"1966622",  name:"גולדמן יובל",        room:""},
-  {id:"1967515",  name:"גרינבלום יצחק",      room:""},
-  {id:"1967730",  name:"דכור אליאס",         room:""},
-  {id:"1967548",  name:"הולדר רחלי",         room:""},
-  {id:"1967579",  name:"זינגר ליאור",        room:""},
-  {id:"1967359",  name:"חאיק אמל",           room:""},
-  {id:"1964043",  name:"חלפין עומר",         room:""},
-  {id:"1967466",  name:"כהן אושר",           room:""},
-  {id:"1967544",  name:"מולא האיל",          room:""},
-  {id:"8439699",  name:"נומה שני",           room:""},
-  {id:"1968033",  name:"עמית טל",            room:""},
-  {id:"1967641",  name:"צ'יקנוב יקטרינה",   room:""},
-  {id:"1967260",  name:"צרפתי מיה",          room:""},
-  {id:"1967838",  name:"קוריישה דניאל",      room:""},
-  {id:"1968067",  name:"שאער איילת השחר",    room:""},
-  {id:"9345120",  name:"שביט שיראל",         room:""},
-  {id:"9219168",  name:"שוקר תהילה",         room:""},
-  {id:"1967984",  name:"שחאדה מאריוס",       room:""},
-  {id:"1949455",  name:"שקור קיסר",          room:""},
+  {id:"1967823",name:"בידרדובסקי ירון",room:""},
+  {id:"1966851",name:"גורביץ דניאל",room:""},
+  {id:"58788381",name:"דדון דנית",room:""},
+  {id:"1968388",name:"דהן יקיר יעקב",room:""},
+  {id:"1967571",name:"דרבאו אנדבט",room:""},
+  {id:"1961954",name:"כץ מאיה",room:""},
+  {id:"1961756",name:"מדרחי לאה שרה",room:""},
+  {id:"1967638",name:"סגל חן ניקול",room:""},
+  {id:"1967360",name:"סולימאן גוליאן",room:""},
+  {id:"1967521",name:"רלסטון חן ליעוז-ג'ייסון",room:""},
+  {id:"1967582",name:"תבול מאור יהושע",room:""},
+  {id:"1967710",name:"אבו שקארה דניאל",room:""},
+  {id:"1967199",name:"אייזק אביב",room:""},
+  {id:"1967065",name:"אל עלי נגם",room:""},
+  {id:"1967334",name:"בן שבת נועם",room:""},
+  {id:"1967585",name:"ברדה רז",room:""},
+  {id:"1966622",name:"גולדמן יובל",room:""},
+  {id:"1967515",name:"גרינבלום יצחק",room:""},
+  {id:"1967730",name:"דכור אליאס",room:""},
+  {id:"1967548",name:"הולדר רחלי",room:""},
+  {id:"1967579",name:"זינגר ליאור",room:""},
+  {id:"1967359",name:"חאיק אמל",room:""},
+  {id:"1964043",name:"חלפין עומר",room:""},
+  {id:"1967466",name:"כהן אושר",room:""},
+  {id:"1967544",name:"מולא האיל",room:""},
+  {id:"8439699",name:"נומה שני",room:""},
+  {id:"1968033",name:"עמית טל",room:""},
+  {id:"1967641",name:"צ'יקנוב יקטרינה",room:""},
+  {id:"1967260",name:"צרפתי מיה",room:""},
+  {id:"1967838",name:"קוריישה דניאל",room:""},
+  {id:"1968067",name:"שאער איילת השחר",room:""},
+  {id:"9345120",name:"שביט שיראל",room:""},
+  {id:"9219168",name:"שוקר תהילה",room:""},
+  {id:"1967984",name:"שחאדה מאריוס",room:""},
+  {id:"1949455",name:"שקור קיסר",room:""},
 ];
 
-// טען מ-localStorage — אם ריק, השתמש בברירת מחדל
 let STUDENTS_DATA = (()=>{
   try{
     const saved = localStorage.getItem('studentsList');
@@ -904,7 +672,6 @@ let STUDENTS_DATA = (()=>{
       if(Array.isArray(parsed) && parsed.length>0) return parsed;
     }
   }catch(e){}
-  // אתחול ראשון — שמור ברירת מחדל
   localStorage.setItem('studentsList', JSON.stringify(DEFAULT_STUDENTS));
   return DEFAULT_STUDENTS.map(s=>({...s}));
 })();
@@ -913,115 +680,49 @@ function saveStudentsList(){
   localStorage.setItem('studentsList', JSON.stringify(STUDENTS_DATA));
 }
 
-// ═══════════════════════════════════════════════
-//  STATE & HELPERS
-// ═══════════════════════════════════════════════
-function escapeHtml(str) {
-  if (typeof str !== "string") return "";
-  return str.replace(/[&<>"'`]/g, function (c) {
-    return ({
-      "&": "&amp;", "<": "&lt;", ">": "&gt;",
-      '"': "&quot;", "'": "&#39;", "`": "&#96;"
-    })[c];
-  });
-}
-function escapeAttr(str) {
-  if (typeof str !== "string") return "";
-  return str.replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-}
-function escapeId(str) {
-  if (typeof str !== "string") return "";
-  return str.replace(/[^a-zA-Z0-9_\-]/g, "_");
-}
-function todayDateObj() {
-  const d = new Date();
-  d.setHours(0,0,0,0);
-  return d;
-}
-function todayStr() {
-  return todayDateObj().toLocaleDateString('he-IL');
-}
-function getSessionId(session) {
-  if (session && session.sessionId) return session.sessionId;
-  // fallback: name+date
-  return encodeURIComponent((session.name||"") + "|" + (session.date||""));
-}
-function makeSessionId(name, date) {
-  return encodeURIComponent((name||"") + "|" + (date||"")) + "_" + Date.now();
-}
-function normalizeSession(s) {
-  const obj = {...s};
-  if (!obj.sessionId) obj.sessionId = makeSessionId(obj.name, obj.date);
-  if (!obj.students && obj.rows) obj.students = obj.rows;
-  if (!obj.students) obj.students = [];
-  if (!obj.instructors) obj.instructors = [];
-  if (!obj.time) obj.time = "";
-  if (!obj.notes) obj.notes = "";
-  if (!obj.keep) obj.keep = "";
-  if (!obj.improve) obj.improve = "";
-  return obj;
-}
-function normalizeSessions(arr) {
-  if (!Array.isArray(arr)) return [];
-  return arr.map(normalizeSession);
-}
-function findSessionById(sessions, id) {
-  return sessions.find(s => s.sessionId === id);
-}
-function indexSessionById(sessions) {
-  const map = {};
-  sessions.forEach(s => { map[s.sessionId] = s; });
-  return map;
-}
-
+// ═══════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════
 let students      = STUDENTS_DATA.map(s=>({...s,status:'pending',note:''}));
 let currentFilter = 'all';
 let instructors   = [];
 let savedSessions = normalizeSessions(JSON.parse(localStorage.getItem('sessions')||'[]'));
+// ודא שכל השיעורים הקיימים נשמרים עם sessionId
+localStorage.setItem('sessions', JSON.stringify(savedSessions));
+
 let tasks         = JSON.parse(localStorage.getItem('tasks')||'[]');
-// כתובת ה-Web App קבועה — מוטמעת ישירות
 const SHEETS_URL  = 'https://script.google.com/macros/s/AKfycbyp9mC0LHtRnO1xrLTyR6DEJl1G70wqIMQQEnCQh5OdDgWRGxGDcCiMRjydh31J3kP1Ng/exec';
 let sheetsUrl     = localStorage.getItem('sheetsUrl') || SHEETS_URL;
 let _deleteTarget = null;
 let _editTarget   = null;
 let _fbDate       = null;
 let _fbSessionId  = null;
-let _editingSessionId = null;
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 //  INIT
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 function init(){
-  // Display current date (refresh every minute)
-  function updateTodayDisplay() {
+  function updateTodayDisplay(){
     document.getElementById('todayDate').textContent =
-      todayDateObj().toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+      new Date().toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   }
   updateTodayDisplay();
   setInterval(updateTodayDisplay, 60000);
 
-  // populate duty select
-  const ds = document.getElementById('dutySelect');
-  ds.innerHTML='<option value="">— בחר חניך —</option>';
-  STUDENTS_DATA.forEach(s=>{
-    const o=document.createElement('option');
-    o.value=s.id; o.textContent=s.name; ds.appendChild(o);
-  });
+  refreshDutySelect();
 
-  // הצג כתובת Sheets
   const urlInput = document.getElementById('sheetsUrl');
-  if(urlInput){ urlInput.value=sheetsUrl; }
-  setDot('ok','מחובר אוטומטית');
+  if(urlInput) urlInput.value=sheetsUrl;
+  setDot('ok','מחובר');
 
   updateStats(); renderList(); renderTasks();
   refreshSessionSelects(); refreshSummary();
   renderStudentMgmt(); refreshFbDates();
+  updateTasksBadge(); updateLastBackupLabel();
 }
 
-// רענן רק את תפריט התורן — בלי לאפס את כל המצב
 function refreshDutySelect(){
-  const ds = document.getElementById('dutySelect');
-  if(!ds) return;
+  const ds = document.getElementById('dutySelect'); if(!ds) return;
   const cur = ds.value;
   ds.innerHTML='<option value="">— בחר חניך —</option>';
   STUDENTS_DATA.forEach(s=>{
@@ -1031,36 +732,11 @@ function refreshDutySelect(){
     ds.appendChild(o);
   });
 }
-async function autoSaveToSheets(sessionData){
-  try{
-    const payload={
-      action:'saveAttendance',
-      date: sessionData.date,
-      duty: '',
-      sessions:[{
-        name:sessionData.name, time:sessionData.time,
-        instructors:sessionData.instructors,
-        notes:sessionData.notes||'',
-        keep:sessionData.keep||'', improve:sessionData.improve||'',
-        rows:sessionData.students.map(st=>({
-          id:st.id, name:st.name,
-          status:st.status==='present'?'נוכח':st.status==='absent'?'נעדר':st.status==='sick'?'מרפאה':st.status==='other'?'אחר':'לא סומן',
-          note:st.note||''
-        }))
-      }],
-      tasks:[]
-    };
-    await fetch(sheetsUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    showToast('📊 נשמר גם ב-Google Sheets');
-  }catch(e){
-    console.warn('Sheets auto-save failed:',e);
-  }
-}
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 //  TABS
-// ═══════════════════════════════════════════════
-function goTab(id,el){
+// ═══════════════════════════════════════════════════════════════
+function goTab(id, el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
@@ -1072,33 +748,30 @@ function goTab(id,el){
   if(id==='archive')  refreshArchiveDates();
 }
 
-// ═══════════════════════════════════════════════
-//  ATTENDANCE CORE
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+//  ATTENDANCE
+// ═══════════════════════════════════════════════════════════════
 function setStatus(id, status){
   const s=students.find(s=>s.id===id);
   if(!s) return;
   s.status = s.status===status?'pending':status;
   updateStats(); renderList();
 }
-function setNote(id, val){
-  const s=students.find(s=>s.id===id);
-  if(s) s.note=val;
-}
+function setNote(id, val){ const s=students.find(s=>s.id===id); if(s) s.note=val; }
 function markAll(st){ students.forEach(s=>s.status=st); updateStats(); renderList(); }
-function resetAll(){  students.forEach(s=>{s.status='pending';s.note='';}); updateStats(); renderList(); }
-function setFilter(f,el){
+function resetAll(){ students.forEach(s=>{s.status='pending';s.note='';}); updateStats(); renderList(); }
+function setFilter(f, el){
   currentFilter=f;
   document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active'); renderList();
+  el.classList.add('active');
+  renderList();
 }
-
 function updateStats(){
-  const total   = students.length;
+  const total = students.length;
   const present = students.filter(s=>s.status==='present').length;
   const notPres = students.filter(s=>['absent','sick','other'].includes(s.status)).length;
-  const marked  = students.filter(s=>s.status!=='pending').length;
-  const pct     = total>0?Math.round((present/total)*100):0;
+  const marked = students.filter(s=>s.status!=='pending').length;
+  const pct = total>0?Math.round((present/total)*100):0;
   document.getElementById('stTotal').textContent   = total;
   document.getElementById('stPresent').textContent = present;
   document.getElementById('stAbsent').textContent  = notPres;
@@ -1106,7 +779,6 @@ function updateStats(){
   document.getElementById('progTxt').textContent   = `${marked} / ${total}`;
   document.getElementById('progFill').style.width  = (total>0?(marked/total)*100:0)+'%';
 }
-
 function renderList(){
   const q = document.getElementById('searchInput').value.trim().toLowerCase();
   const list = students.filter(s=>{
@@ -1115,11 +787,10 @@ function renderList(){
     return ok && mf;
   });
   const el = document.getElementById('studentList');
-  if(!list.length){el.innerHTML=`<div class="empty"><div class="empty-ico">🔍</div><div>לא נמצאו</div></div>`;return;}
-
+  if(!list.length){ el.innerHTML=`<div class="empty"><div class="empty-ico">🔍</div><div>לא נמצאו</div></div>`; return; }
   el.innerHTML = list.map(s=>`
-    <div class="s-card ${s.status!=='pending'?escapeHtml(s.status):''}" id="card-${escapeId(s.id)}">
-      <div class="s-num">${escapeHtml(s.id.slice(-4))}</div>
+    <div class="s-card ${s.status!=='pending'?s.status:''}">
+      <div class="s-num">${escapeHtml(String(s.id).slice(-4))}</div>
       <div class="s-info">
         <div class="s-name">${escapeHtml(s.name)}</div>
         <div class="s-meta">מ"א: ${escapeHtml(s.id)}</div>
@@ -1127,21 +798,18 @@ function renderList(){
       </div>
       <div class="s-actions">
         <button class="s-btn present ${s.status==='present'?'active':''}" onclick="setStatus('${escapeAttr(s.id)}','present')">✅ נוכח</button>
-        <button class="s-btn absent  ${s.status==='absent'?'active':''}"  onclick="setStatus('${escapeAttr(s.id)}','absent')">❌ נעדר</button>
-        <button class="s-btn sick    ${s.status==='sick'?'active':''}"    onclick="setStatus('${escapeAttr(s.id)}','sick')">🏥 מרפאה</button>
-        <button class="s-btn other   ${s.status==='other'?'active':''}"   onclick="setStatus('${escapeAttr(s.id)}','other')">📝 אחר</button>
-        <input class="s-note-input" type="text" placeholder="הערה…" value="${escapeAttr(s.note||'')}"
-          onchange="setNote('${escapeAttr(s.id)}',this.value)" oninput="setNote('${escapeAttr(s.id)}',this.value)" />
+        <button class="s-btn absent ${s.status==='absent'?'active':''}" onclick="setStatus('${escapeAttr(s.id)}','absent')">❌ נעדר</button>
+        <button class="s-btn sick ${s.status==='sick'?'active':''}" onclick="setStatus('${escapeAttr(s.id)}','sick')">🏥 מרפאה</button>
+        <button class="s-btn other ${s.status==='other'?'active':''}" onclick="setStatus('${escapeAttr(s.id)}','other')">📝 אחר</button>
+        <input class="s-note-input" type="text" placeholder="הערה…" value="${escapeAttr(s.note||'')}" oninput="setNote('${escapeAttr(s.id)}',this.value)" />
       </div>
-      <span class="sbadge ${escapeHtml(s.status)}">
-        ${s.status==='present'?'נוכח':s.status==='absent'?'נעדר':s.status==='sick'?'מרפאה':s.status==='other'?'אחר':'ממתין'}
-      </span>
+      <span class="sbadge ${s.status}">${s.status==='present'?'נוכח':s.status==='absent'?'נעדר':s.status==='sick'?'מרפאה':s.status==='other'?'אחר':'ממתין'}</span>
     </div>`).join('');
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 //  INSTRUCTORS
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 function addInstructor(){
   const inp=document.getElementById('instrInput');
   const name=inp.value.trim();
@@ -1160,126 +828,112 @@ function renderInstructors(){
   ).join('');
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 //  SAVE SESSION
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 function openSaveModal(){
   const name=document.getElementById('sessionName').value.trim();
-  if(!name){showToast('⚠️ הזן שם שיעור תחילה');document.getElementById('sessionName').focus();return;}
-
+  if(!name){ showToast('⚠️ הזן שם שיעור'); document.getElementById('sessionName').focus(); return; }
   const present=students.filter(s=>s.status==='present');
   const absent =students.filter(s=>s.status==='absent');
   const sick   =students.filter(s=>s.status==='sick');
   const other  =students.filter(s=>s.status==='other');
-  const pct    =Math.round((present.length/students.length)*100);
+  const pct    =students.length>0?Math.round((present.length/students.length)*100):0;
   const notes  =document.getElementById('sessionNotes').value.trim();
-  const keep   ='';
-  const improve='';
-
+  const today = todayStr();
+  const existing = savedSessions.find(s=>s.name===name&&s.date===today);
+  const actionWord = existing ? 'עדכון' : 'שמירה';
   document.getElementById('savePreview').innerHTML=`
+    <div style="background:${existing?'rgba(210,153,34,.12)':'rgba(63,185,80,.12)'};border:1px solid ${existing?'var(--yellow)':'var(--green)'};border-radius:8px;padding:8px 12px;margin-bottom:14px;font-size:13px;font-weight:700">${existing?'⚠️ שיעור קיים — יעודכן':'✅ שיעור חדש — ייווצר'}</div>
     <b>שיעור:</b> ${escapeHtml(name)}<br>
-    <b>תאריך:</b> ${escapeHtml(todayStr())}<br>
-    <b>מדריכים / מרצים:</b> ${instructors.length?escapeHtml(instructors.join(', ')):'לא הוזנו'}<br>
-    ${notes?`<b>הערות שיעור:</b> ${escapeHtml(notes)}<br>`:''}
-    <b>נוכחים:</b> ${present.length} מתוך ${students.length} (${pct}%)<br>
-    <b>נעדרים:</b> ${absent.length} | <b>מרפאה:</b> ${sick.length} | <b>אחר:</b> ${other.length}
+    <b>תאריך:</b> ${escapeHtml(today)}<br>
+    <b>מדריכים:</b> ${instructors.length?escapeHtml(instructors.join(', ')):'לא הוזנו'}<br>
+    ${notes?`<b>הערות:</b> ${escapeHtml(notes)}<br>`:''}
+    <b>נוכחים:</b> ${present.length} / ${students.length} (${pct}%)<br>
+    <b>חריגים:</b> נעדר ${absent.length} | מרפאה ${sick.length} | אחר ${other.length}
   `;
   document.getElementById('saveModal').classList.add('open');
 }
 function closeSaveModal(){ document.getElementById('saveModal').classList.remove('open'); }
-
 function saveSession(){
-  const name   = document.getElementById('sessionName').value.trim();
-  const time   = new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
-  const notes  = document.getElementById('sessionNotes').value.trim();
-  // keep/improve נערכים בטאב שימור ושיפור — לא כאן
+  const name = document.getElementById('sessionName').value.trim();
+  const time = new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
+  const notes = document.getElementById('sessionNotes').value.trim();
   const today = todayStr();
   let existing = savedSessions.find(s=>s.name===name&&s.date===today);
   const keep    = existing?.keep    || '';
   const improve = existing?.improve || '';
-
-  // assign unique sessionId (preserve if updating)
-  let sessionId = existing?.sessionId || makeSessionId(name, today);
-  const idx = savedSessions.findIndex(s=>s.sessionId===sessionId);
+  const sessionId = existing?.sessionId || makeSessionId(name, today);
   const sessionData = normalizeSession({
-    sessionId,
-    name, date:today, time,
-    instructors:[...instructors],
-    notes, keep, improve,
+    sessionId, name, date:today, time,
+    instructors:[...instructors], notes, keep, improve,
     students: students.map(s=>({...s}))
   });
+  const idx = savedSessions.findIndex(s=>s.sessionId===sessionId);
   if(idx>=0) savedSessions[idx]=sessionData;
   else savedSessions.push(sessionData);
-
-  localStorage.setItem('sessions',JSON.stringify(savedSessions));
-
-  // שמור אוטומטית ב-Google Sheets אם מחובר
+  localStorage.setItem('sessions', JSON.stringify(savedSessions));
   if(sheetsUrl) autoSaveToSheets(sessionData);
-
   closeSaveModal();
   refreshSessionSelects();
   refreshSummary();
-  showToast(`✅ שיעור "${escapeHtml(name)}" נשמר`);
+  showToast(`✅ "${name}" נשמר`);
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 //  TASKS
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 function addTask(){
   const txt=document.getElementById('taskInput').value.trim();
-  if(!txt){showToast('⚠️ הזן תיאור משימה');return;}
-  const prio =document.getElementById('taskPrio').value;
+  if(!txt){ showToast('⚠️ הזן תיאור'); return; }
+  const prio=document.getElementById('taskPrio').value;
   const giver=document.getElementById('taskGiver').value.trim();
-  const due  =document.getElementById('taskDue').value; // YYYY-MM-DD or ''
-  const now  =new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
+  const due=document.getElementById('taskDue').value;
+  const now=new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
   tasks.push({id:Date.now(),text:txt,prio,giver,due,done:false,doneNote:'',time:now});
   document.getElementById('taskInput').value='';
   document.getElementById('taskGiver').value='';
   document.getElementById('taskDue').value='';
-  localStorage.setItem('tasks',JSON.stringify(tasks));
+  localStorage.setItem('tasks', JSON.stringify(tasks));
   renderTasks(); updateTasksBadge();
   showToast('📌 משימה נוספה');
 }
-
-function toggleTask(id,checked){
+function toggleTask(id, checked){
   const t=tasks.find(t=>t.id===id);
-  if(t){t.done=checked; localStorage.setItem('tasks',JSON.stringify(tasks)); renderTasks(); updateTasksBadge();}
+  if(t){ t.done=checked; localStorage.setItem('tasks',JSON.stringify(tasks)); renderTasks(); updateTasksBadge(); }
 }
-function setTaskNote(id,val){
+function setTaskNote(id, val){
   const t=tasks.find(t=>t.id===id);
-  if(t){t.doneNote=val; localStorage.setItem('tasks',JSON.stringify(tasks));}
+  if(t){ t.doneNote=val; localStorage.setItem('tasks',JSON.stringify(tasks)); }
 }
 function deleteTask(id){
+  if(!confirm('למחוק את המשימה?')) return;
   tasks=tasks.filter(t=>t.id!==id);
-  localStorage.setItem('tasks',JSON.stringify(tasks));
+  localStorage.setItem('tasks', JSON.stringify(tasks));
   renderTasks(); updateTasksBadge();
 }
 function updateTasksBadge(){
   const pending=tasks.filter(t=>!t.done).length;
   const badge=document.getElementById('tasksBadge');
-  if(pending>0){badge.textContent=pending;badge.style.display='inline-flex';}
+  if(pending>0){ badge.textContent=pending; badge.style.display='inline-flex'; }
   else badge.style.display='none';
 }
-
 const prioLabel={high:'🔴 גבוהה',med:'🟡 בינונית',low:'🟢 נמוכה'};
 const prioClass={high:'prio-high',med:'prio-med',low:'prio-low'};
-
 function formatDue(due){
   if(!due) return '';
-  const d   = new Date(due);
-  const now = new Date(); now.setHours(0,0,0,0);
-  const diff= Math.round((d-now)/(1000*60*60*24));
-  const label = d.toLocaleDateString('he-IL',{day:'numeric',month:'numeric',year:'numeric'});
-  if(diff<0)  return `<span style="color:var(--red);font-weight:700">⚠️ עבר המועד: ${label}</span>`;
-  if(diff===0)return `<span style="color:var(--yellow);font-weight:700">🔔 היום: ${label}</span>`;
-  if(diff===1)return `<span style="color:var(--yellow)">📅 מחר: ${label}</span>`;
+  const d=new Date(due);
+  const now=new Date(); now.setHours(0,0,0,0);
+  const diff=Math.round((d-now)/(1000*60*60*24));
+  const label=d.toLocaleDateString('he-IL',{day:'numeric',month:'numeric',year:'numeric'});
+  if(diff<0) return `<span style="color:var(--red);font-weight:700">⚠️ עבר: ${label}</span>`;
+  if(diff===0) return `<span style="color:var(--yellow);font-weight:700">🔔 היום: ${label}</span>`;
+  if(diff===1) return `<span style="color:var(--yellow)">📅 מחר: ${label}</span>`;
   return `<span style="color:var(--muted)">📅 יעד: ${label}</span>`;
 }
-
 function renderTasks(){
   const el=document.getElementById('taskList');
-  if(!tasks.length){el.innerHTML=`<div class="empty"><div class="empty-ico">📭</div><div>אין משימות</div></div>`;return;}
-  // sort: pending first (overdue on top), then done
+  if(!tasks.length){ el.innerHTML=`<div class="empty"><div class="empty-ico">📭</div><div>אין משימות</div></div>`; return; }
   const sorted=[...tasks].sort((a,b)=>{
     if(a.done!==b.done) return a.done?1:-1;
     if(a.due&&b.due) return a.due.localeCompare(b.due);
@@ -1288,56 +942,53 @@ function renderTasks(){
   });
   el.innerHTML=sorted.map(t=>{
     const dueHtml=formatDue(t.due||'');
+    const overdue = !t.done && t.due && new Date(t.due)<new Date(new Date().setHours(0,0,0,0));
     return `
-    <div class="task-item ${t.done?'done':''}" style="${!t.done&&t.due&&new Date(t.due)<new Date(new Date().setHours(0,0,0,0))?'border-right:3px solid var(--red)':''}">
+    <div class="task-item ${t.done?'done':''}" style="${overdue?'border-right:3px solid var(--red)':''}">
       <div class="task-header">
         <input type="checkbox" class="task-cb" ${t.done?'checked':''} onchange="toggleTask(${t.id},this.checked)" />
-        <span class="task-text ${t.done?'done':''}">${t.text}</span>
+        <span class="task-text ${t.done?'done':''}">${escapeHtml(t.text)}</span>
         <span class="task-priority ${prioClass[t.prio]}">${prioLabel[t.prio]}</span>
         <button class="btn btn-ghost" style="padding:3px 8px;font-size:11px" onclick="deleteTask(${t.id})">🗑️</button>
       </div>
       <div class="task-meta" style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:5px">
-        <span>${t.giver?`ניתנה ע"י: ${t.giver} | `:''}נוסף: ${t.time}</span>
+        <span>${t.giver?`ניתנה ע"י: ${escapeHtml(t.giver)} | `:''}נוסף: ${escapeHtml(t.time)}</span>
         ${dueHtml?`<span>${dueHtml}</span>`:''}
       </div>
-      ${t.done && t.doneNote ? `<div class="task-done-note">✅ ${t.doneNote}</div>` : ''}
-      ${t.done && !t.doneNote ? `
+      ${t.done ? `
         <div class="task-note-row">
-          <input type="text" placeholder="הוסף פירוט ביצוע (אופציונלי)…" value="${t.doneNote||''}"
-            oninput="setTaskNote(${t.id},this.value)" onchange="setTaskNote(${t.id},this.value)" />
-        </div>` : ''}
+          <input type="text" placeholder="פירוט ביצוע…" value="${escapeAttr(t.doneNote||'')}" oninput="setTaskNote(${t.id},this.value)" />
+        </div>
+        ${t.doneNote?`<div class="task-done-note">✅ ${escapeHtml(t.doneNote)}</div>`:''}
+      ` : ''}
     </div>`;
   }).join('');
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 //  SUMMARY
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 function refreshSessionSelects(){
   const todaySessions=savedSessions.filter(s=>s.date===todayStr());
-  // chips
   const chips=document.getElementById('sessionChips');
   if(chips) chips.innerHTML = todaySessions.length
     ? todaySessions.map(s=>`<span class="session-chip">${escapeHtml(s.name)} <span style="color:var(--muted);font-weight:400">${escapeHtml(s.time)}</span></span>`).join('')
-    : '<span style="color:var(--muted);font-size:13px">אין שיעורים שמורים להיום</span>';
+    : '<span style="color:var(--muted);font-size:13px">אין שיעורים להיום</span>';
 }
-
 function refreshSummary(){
   refreshSessionSelects();
   const todaySessions=savedSessions.filter(s=>s.date===todayStr());
   const el=document.getElementById('summaryContent');
-
   if(!todaySessions.length){
-    el.innerHTML=`<div class="empty"><div class="empty-ico">📅</div><div>שמור שיעורים כדי לראות סיכום</div></div>`;
-    document.getElementById('multiAbsent').innerHTML=`<div class="empty"><div class="empty-ico">✅</div><div>אין נעדרים מרובים</div></div>`;
+    el.innerHTML=`<div class="empty"><div class="empty-ico">📅</div><div>שמור שיעורים</div></div>`;
+    document.getElementById('multiAbsent').innerHTML=`<div class="empty"><div class="empty-ico">✅</div><div>אין</div></div>`;
     return;
   }
-
-  let html=`<table class="sum-table"><thead><tr><th>שיעור</th><th>שעה</th><th>מדריכים / מרצים</th><th>הערות</th><th>⭐ לשימור</th><th>🔧 לשיפור</th><th>נוכחים</th><th>נעדרים / מרפאה / אחר</th><th>פעולות</th></tr></thead><tbody>`;
+  let html=`<div style="overflow-x:auto"><table class="sum-table"><thead><tr><th>שיעור</th><th>שעה</th><th>מדריכים</th><th>הערות</th><th>⭐</th><th>🔧</th><th>נוכחים</th><th>חריגים</th><th>פעולות</th></tr></thead><tbody>`;
   todaySessions.forEach(s=>{
     const present=s.students.filter(st=>st.status==='present').length;
     const notPres=s.students.filter(st=>['absent','sick','other'].includes(st.status));
-    const pct=Math.round((present/s.students.length)*100);
+    const pct=s.students.length>0?Math.round((present/s.students.length)*100):0;
     html+=`<tr>
       <td><b>${escapeHtml(s.name)}</b></td>
       <td>${escapeHtml(s.time)}</td>
@@ -1350,10 +1001,10 @@ function refreshSummary(){
         const icon=st.status==='absent'?'❌':st.status==='sick'?'🏥':'📝';
         return `${icon} ${escapeHtml(st.name)}${st.note?` <span class="absent-reason">(${escapeHtml(st.note)})</span>`:''}`;
       }).join('<br>')||'<span style="color:var(--green)">כולם נכחו</span>'}</td>
-      <td><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="openSessionEditor('${escapeAttr(s.sessionId)}')">✏️ ערוך</button></td>
+      <td><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="openSessionEditor('${escapeAttr(s.sessionId)}')">✏️</button></td>
     </tr>`;
   });
-  html+=`</tbody></table>`;
+  html+=`</tbody></table></div>`;
   el.innerHTML=html;
 
   const absentMap={};
@@ -1366,273 +1017,127 @@ function refreshSummary(){
   });
   const multi=Object.values(absentMap).filter(v=>v.sessions.length>1);
   const mel=document.getElementById('multiAbsent');
-  if(!multi.length){
-    mel.innerHTML=`<div class="empty"><div class="empty-ico">✅</div><div>אין נעדרים מרובים</div></div>`;
-    return;
-  }
-  mel.innerHTML=`<table class="sum-table"><thead><tr><th>שם חניך</th><th>נעדר משיעורים</th><th>סיבות</th></tr></thead><tbody>`+
+  if(!multi.length){ mel.innerHTML=`<div class="empty"><div class="empty-ico">✅</div><div>אין</div></div>`; return; }
+  mel.innerHTML=`<div style="overflow-x:auto"><table class="sum-table"><thead><tr><th>חניך</th><th>שיעורים</th><th>סיבות</th></tr></thead><tbody>`+
     multi.map(v=>`<tr><td><b>${escapeHtml(v.name)}</b></td><td>${v.sessions.map(escapeHtml).join(', ')}</td><td>${v.reasons.map(escapeHtml).join(' | ')}</td></tr>`).join('')+
-    `</tbody></table>`;
+    `</tbody></table></div>`;
 }
 
 function openSessionEditor(sessionId){
   const session = findSessionById(savedSessions, sessionId);
   if(!session) return;
-
-  _editingSessionId = sessionId;
-
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-feedback').classList.add('active');
-
-  const feedbackTabBtn = Array.from(document.querySelectorAll('.nav-tab')).find(btn => btn.textContent.includes('שימור ושיפור'));
-  if(feedbackTabBtn) feedbackTabBtn.classList.add('active');
-
+  const fbBtn = Array.from(document.querySelectorAll('.nav-tab')).find(b=>b.textContent.includes('שימור'));
+  if(fbBtn) fbBtn.classList.add('active');
   const dateSel = document.getElementById('fbDateSelect');
-  if(dateSel){
-    dateSel.value = session.date;
-    onFbDateChange();
-  }
-
-  const chip = Array.from(document.querySelectorAll('#fbSessionChips .session-chip')).find(c => {
-    const click = c.getAttribute('onclick') || '';
-    return click.includes(sessionId);
-  });
-
-  if(chip){
-    selectFbSession(sessionId, chip);
-  } else {
-    _fbSessionId = sessionId;
-    document.getElementById('fbFormTitle').textContent=`📚 ${escapeHtml(session.name)} — ${escapeHtml(session.time)}`;
-    document.getElementById('fbNotes').value   = session.notes||'';
-    document.getElementById('fbKeep').value    = session.keep||'';
-    document.getElementById('fbImprove').value = session.improve||'';
-    document.getElementById('fbForm').style.display='block';
-    renderFbAllSessions();
-  }
-}
-
-function refreshArchiveDates(){
-  const sel = document.getElementById('archiveDateSelect');
-  if(!sel) return;
-
-  const cur = sel.value;
-  const dates=[...new Set(savedSessions.map(s=>s.date))].sort((a,b)=>{
-    const pa=a.split('.').reverse().join('-');
-    const pb=b.split('.').reverse().join('-');
-    return pb.localeCompare(pa);
-  });
-
-  sel.innerHTML='<option value="">— בחר תאריך —</option>'+dates.map(d=>`<option value="${escapeAttr(d)}" ${d===cur?'selected':''}>${escapeHtml(d)}</option>`).join('');
-
-  if(cur) renderArchiveByDate();
-}
-
-function renderArchiveByDate(){
-  const date = document.getElementById('archiveDateSelect')?.value || '';
-  const query = (document.getElementById('archiveSearch')?.value || '').trim().toLowerCase();
-  const el = document.getElementById('archiveContent');
-  if(!el) return;
-
-  if(!date){
-    el.innerHTML=`<div class="empty"><div class="empty-ico">🗄️</div><div>בחר תאריך כדי לראות את כל הדוחות של אותו יום</div></div>`;
-    return;
-  }
-
-  let sessions = savedSessions.filter(s=>s.date===date);
-
-  if(query){
-    sessions = sessions.filter(s=>{
-      const haystack = [
-        s.name,
-        s.time,
-        ...(s.instructors||[]),
-        s.notes||'',
-        s.keep||'',
-        s.improve||'',
-        ...(s.students||[]).flatMap(st=>[st.name, st.id, st.note||'', st.status||''])
-      ].join(' ').toLowerCase();
-      return haystack.includes(query);
+  refreshFbDates();
+  dateSel.value = session.date;
+  onFbDateChange();
+  setTimeout(()=>{
+    const chip = Array.from(document.querySelectorAll('#fbSessionChips .session-chip')).find(c=>{
+      return (c.getAttribute('onclick')||'').includes(sessionId);
     });
-  }
-
-  if(!sessions.length){
-    el.innerHTML=`<div class="empty"><div class="empty-ico">📭</div><div>לא נמצאו דוחות בתאריך זה</div></div>`;
-    return;
-  }
-
-  el.innerHTML = sessions.map(s=>{
-    const present=s.students.filter(st=>st.status==='present');
-    const absent=s.students.filter(st=>st.status==='absent');
-    const sick=s.students.filter(st=>st.status==='sick');
-    const other=s.students.filter(st=>st.status==='other');
-    const pct=Math.round((present.length/s.students.length)*100);
-    return `
-      <div class="card" style="margin-bottom:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
-          <div>
-            <div style="font-size:16px;font-weight:900">📚 ${escapeHtml(s.name)}</div>
-            <div style="font-size:12px;color:var(--muted)">📅 ${escapeHtml(s.date)} | ⏰ ${escapeHtml(s.time)}${s.instructors&&s.instructors.length?` | 👨‍🏫 ${escapeHtml(s.instructors.join(', '))}`:''}</div>
-          </div>
-          <button class="btn btn-ghost" style="padding:5px 11px;font-size:12px" onclick="openSessionEditor('${escapeAttr(s.sessionId)}')">✏️ ערוך</button>
-        </div>
-        ${s.notes?`<div style="font-size:13px;color:var(--muted);margin-bottom:6px">📝 <b>הערות:</b> ${escapeHtml(s.notes)}</div>`:''}
-        ${s.keep?`<div style="font-size:13px;color:var(--green);margin-bottom:6px">⭐ <b>לשימור:</b> ${escapeHtml(s.keep)}</div>`:''}
-        ${s.improve?`<div style="font-size:13px;color:var(--orange);margin-bottom:10px">🔧 <b>לשיפור:</b> ${escapeHtml(s.improve)}</div>`:''}
-        <div style="font-size:13px;font-weight:700;margin-bottom:8px">📊 סיכום: ${present.length}/${s.students.length} נוכחים (${pct}%)</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div>
-            <div style="font-size:12px;color:var(--green);font-weight:700;margin-bottom:4px">✅ נוכחים (${present.length})</div>
-            <div style="font-size:12px;line-height:1.6">${present.length ? present.map(st=>escapeHtml(st.name)).join('<br>') : '—'}</div>
-          </div>
-          <div>
-            <div style="font-size:12px;color:var(--red);font-weight:700;margin-bottom:4px">❌ / 🏥 / 📝 חריגים (${absent.length+sick.length+other.length})</div>
-            <div style="font-size:12px;line-height:1.6">${[...absent,...sick,...other].length ? [...absent,...sick,...other].map(st=>`${st.status==='absent'?'❌':st.status==='sick'?'🏥':'📝'} ${escapeHtml(st.name)}${st.note?` (${escapeHtml(st.note)})`:''}`).join('<br>') : '—'}</div>
-          </div>
-        </div>
-      </div>`;
-  }).join('');
+    if(chip) selectFbSession(sessionId, chip);
+  }, 50);
 }
 
-// ═══════════════════════════════════════════════
-//  WHATSAPP REPORT
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+//  WA REPORT
+// ═══════════════════════════════════════════════════════════════
 function refreshReportSelect(){
   const sel=document.getElementById('reportSessionSelect');
   const todaySessions=savedSessions.filter(s=>s.date===todayStr());
-  sel.innerHTML='<option value="">— בחר שיעור —</option>';
+  sel.innerHTML='<option value="">— בחר —</option>';
   todaySessions.forEach(s=>{
     const o=document.createElement('option');
-    o.value=s.sessionId; o.textContent=`${s.name} (${s.time})`; sel.appendChild(o);
+    o.value=s.sessionId; o.textContent=`${s.name} (${s.time})`;
+    sel.appendChild(o);
   });
 }
-
 function buildWaReport(){
-  const selSessionId=document.getElementById('reportSessionSelect').value;
-  const extra  =document.getElementById('reportExtra').value.trim();
-  if(!selSessionId){document.getElementById('waBox').textContent='בחר שיעור מהרשימה…';return;}
-
-  const s=findSessionById(savedSessions, selSessionId);
-  if(!s){return;}
-
+  const selId=document.getElementById('reportSessionSelect').value;
+  const extra=document.getElementById('reportExtra').value.trim();
+  if(!selId){ document.getElementById('waBox').textContent='בחר שיעור…'; return; }
+  const s=findSessionById(savedSessions, selId);
+  if(!s) return;
   const present=s.students.filter(st=>st.status==='present');
-  const absent =s.students.filter(st=>st.status==='absent');
-  const sick   =s.students.filter(st=>st.status==='sick');
-  const other  =s.students.filter(st=>st.status==='other');
-  const pct    =Math.round((present.length/s.students.length)*100);
-  const dutyId =document.getElementById('dutySelect').value;
-  const duty   =STUDENTS_DATA.find(st=>st.id===dutyId);
+  const absent=s.students.filter(st=>st.status==='absent');
+  const sick=s.students.filter(st=>st.status==='sick');
+  const other=s.students.filter(st=>st.status==='other');
+  const pct=s.students.length>0?Math.round((present.length/s.students.length)*100):0;
+  const dutyId=document.getElementById('dutySelect').value;
+  const duty=STUDENTS_DATA.find(st=>st.id===dutyId);
   const dutyNotes=document.getElementById('dutyNotes').value.trim();
 
   let msg='';
-  msg+=`📋 *דוח נוכחות*\n`;
-  msg+=`━━━━━━━━━━━━━━━━━━\n`;
+  msg+=`📋 *דוח נוכחות*\n━━━━━━━━━━━━━━━━━━\n`;
   msg+=`📚 *שיעור:* ${s.name}\n`;
   msg+=`📅 *תאריך:* ${s.date}  ⏰ ${s.time}\n`;
-  if(s.instructors&&s.instructors.length) msg+=`👨‍🏫 *מדריכים / מרצים:* ${s.instructors.join(', ')}\n`;
+  if(s.instructors&&s.instructors.length) msg+=`👨‍🏫 *מדריכים:* ${s.instructors.join(', ')}\n`;
   if(duty) msg+=`🗂️ *תורן:* ${duty.name}\n`;
-  if(s.notes) msg+=`📝 *הערות שיעור:* ${s.notes}\n`;
+  if(s.notes) msg+=`📝 *הערות:* ${s.notes}\n`;
   if(s.keep||s.improve){
     msg+=`\n`;
-    if(s.keep)    msg+=`⭐ *לשימור:* ${s.keep}\n`;
+    if(s.keep) msg+=`⭐ *לשימור:* ${s.keep}\n`;
     if(s.improve) msg+=`🔧 *לשיפור:* ${s.improve}\n`;
   }
-  msg+=`\n`;
-  msg+=`📊 *סיכום:* ${present.length}/${s.students.length} נוכחים (${pct}%)\n`;
-  msg+=`\n`;
+  msg+=`\n📊 *סיכום:* ${present.length}/${s.students.length} נוכחים (${pct}%)\n\n`;
+  if(present.length){ msg+=`✅ *נוכחים (${present.length}):*\n`; present.forEach((st,i)=>msg+=`${i+1}. ${st.name}\n`); msg+=`\n`; }
+  if(absent.length){ msg+=`❌ *נעדרים (${absent.length}):*\n`; absent.forEach((st,i)=>msg+=`${i+1}. ${st.name}${st.note?` – ${st.note}`:''}\n`); msg+=`\n`; }
+  if(sick.length){ msg+=`🏥 *מרפאה (${sick.length}):*\n`; sick.forEach((st,i)=>msg+=`${i+1}. ${st.name}${st.note?` – ${st.note}`:''}\n`); msg+=`\n`; }
+  if(other.length){ msg+=`📝 *אחר (${other.length}):*\n`; other.forEach((st,i)=>msg+=`${i+1}. ${st.name}${st.note?` – ${st.note}`:''}\n`); msg+=`\n`; }
 
-  if(present.length){
-    msg+=`✅ *נוכחים (${present.length}):*\n`;
-    present.forEach((st,i)=>msg+=`${i+1}. ${st.name}\n`);
-    msg+=`\n`;
-  }
-  if(absent.length){
-    msg+=`❌ *נעדרים (${absent.length}):*\n`;
-    absent.forEach((st,i)=>msg+=`${i+1}. ${st.name}${st.note?` – ${st.note}`:''}\n`);
-    msg+=`\n`;
-  }
-  if(sick.length){
-    msg+=`🏥 *מרפאה (${sick.length}):*\n`;
-    sick.forEach((st,i)=>msg+=`${i+1}. ${st.name}${st.note?` – ${st.note}`:''}\n`);
-    msg+=`\n`;
-  }
-  if(other.length){
-    msg+=`📝 *אחר (${other.length}):*\n`;
-    other.forEach((st,i)=>msg+=`${i+1}. ${st.name}${st.note?` – ${st.note}`:''}\n`);
-    msg+=`\n`;
-  }
-
-  // Tasks
   const doneTasks=tasks.filter(t=>t.done);
   const pendingTasks=tasks.filter(t=>!t.done);
   if(doneTasks.length||pendingTasks.length){
-    msg+=`━━━━━━━━━━━━━━━━━━\n`;
-    msg+=`📌 *משימות תורן:*\n`;
+    msg+=`━━━━━━━━━━━━━━━━━━\n📌 *משימות תורן:*\n`;
     if(doneTasks.length){
       msg+=`\n✅ *בוצע:*\n`;
-      doneTasks.forEach((t,i)=>{
-        msg+=`${i+1}. ${t.text}`;
-        if(t.doneNote) msg+=` — ${t.doneNote}`;
-        msg+=`\n`;
-      });
+      doneTasks.forEach((t,i)=>{ msg+=`${i+1}. ${t.text}`; if(t.doneNote) msg+=` — ${t.doneNote}`; msg+=`\n`; });
     }
     if(pendingTasks.length){
-      msg+=`\n⏳ *בביצוע / ממתין:*\n`;
+      msg+=`\n⏳ *ממתין:*\n`;
       pendingTasks.forEach((t,i)=>{
         msg+=`${i+1}. ${t.text}`;
-        if(t.due){ const dl=new Date(t.due).toLocaleDateString('he-IL'); msg+=` (יעד: ${dl})`; }
+        if(t.due){ msg+=` (יעד: ${new Date(t.due).toLocaleDateString('he-IL')})`; }
         msg+=`\n`;
       });
     }
     msg+=`\n`;
   }
-
-  if(dutyNotes){
-    msg+=`━━━━━━━━━━━━━━━━━━\n`;
-    msg+=`📒 *הערות תורן:*\n${dutyNotes}\n\n`;
-  }
-  if(extra){
-    msg+=`💬 *הערה:* ${extra}\n\n`;
-  }
-  msg+=`━━━━━━━━━━━━━━━━━━\n`;
-  msg+=`🕐 נשלח: ${new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}`;
-
+  if(dutyNotes) msg+=`━━━━━━━━━━━━━━━━━━\n📒 *הערות תורן:*\n${dutyNotes}\n\n`;
+  if(extra) msg+=`💬 *הערה:* ${extra}\n\n`;
+  msg+=`━━━━━━━━━━━━━━━━━━\n🕐 נשלח: ${new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}`;
   document.getElementById('waBox').textContent=msg;
 }
-
 function buildDaySummaryWa(){
-  const todaySessions=savedSessions.filter(s=>s.date===todayStr);
-  if(!todaySessions.length){document.getElementById('waDayBox').textContent='אין שיעורים שמורים להיום.';return;}
-
+  const today = todayStr();
+  const todaySessions=savedSessions.filter(s=>s.date===today);
+  if(!todaySessions.length){ document.getElementById('waDayBox').textContent='אין שיעורים להיום.'; return; }
   const dutyId=document.getElementById('dutySelect').value;
-  const duty  =STUDENTS_DATA.find(st=>st.id===dutyId);
+  const duty=STUDENTS_DATA.find(st=>st.id===dutyId);
   const dutyNotes=document.getElementById('dutyNotes').value.trim();
 
-  let msg='';
-  msg+=`📆 *סיכום יום — ${todayStr}*\n`;
-  msg+=`━━━━━━━━━━━━━━━━━━\n\n`;
+  let msg=`📆 *סיכום יום — ${today}*\n━━━━━━━━━━━━━━━━━━\n\n`;
   if(duty) msg+=`🗂️ *תורן יום:* ${duty.name}\n\n`;
-
   todaySessions.forEach((s,idx)=>{
     const present=s.students.filter(st=>st.status==='present');
     const notPres=s.students.filter(st=>['absent','sick','other'].includes(st.status));
-    const pct=Math.round((present.length/s.students.length)*100);
+    const pct=s.students.length>0?Math.round((present.length/s.students.length)*100):0;
     msg+=`*${idx+1}. ${s.name}* (${s.time})\n`;
-    if(s.instructors&&s.instructors.length) msg+=`   👨‍🏫 *מדריכים / מרצים:* ${s.instructors.join(', ')}\n`;
-    if(s.notes)   msg+=`   📝 *הערות:* ${s.notes}\n`;
-    if(s.keep)    msg+=`   ⭐ *לשימור:* ${s.keep}\n`;
+    if(s.instructors&&s.instructors.length) msg+=`   👨‍🏫 *מדריכים:* ${s.instructors.join(', ')}\n`;
+    if(s.notes) msg+=`   📝 *הערות:* ${s.notes}\n`;
+    if(s.keep) msg+=`   ⭐ *לשימור:* ${s.keep}\n`;
     if(s.improve) msg+=`   🔧 *לשיפור:* ${s.improve}\n`;
-    msg+=`   ✅ ${present.length}/${s.students.length} נוכחים (${pct}%)\n`;
-    if(notPres.length){
-      notPres.forEach(st=>{
-        const icon=st.status==='absent'?'❌':st.status==='sick'?'🏥':'📝';
-        msg+=`   ${icon} ${st.name}${st.note?` – ${st.note}`:''}\n`;
-      });
-    }
+    msg+=`   ✅ ${present.length}/${s.students.length} (${pct}%)\n`;
+    notPres.forEach(st=>{
+      const icon=st.status==='absent'?'❌':st.status==='sick'?'🏥':'📝';
+      msg+=`   ${icon} ${st.name}${st.note?` – ${st.note}`:''}\n`;
+    });
     msg+=`\n`;
   });
-
-  // absent across multiple sessions
   const absentMap={};
   todaySessions.forEach(s=>{
     s.students.filter(st=>['absent','sick','other'].includes(st.status)).forEach(st=>{
@@ -1646,198 +1151,146 @@ function buildDaySummaryWa(){
     multi.forEach(v=>msg+=`   • ${v.name} (${v.count} שיעורים)\n`);
     msg+=`\n`;
   }
-
-  // Tasks summary
   const doneTasks=tasks.filter(t=>t.done);
   const pendingTasks=tasks.filter(t=>!t.done);
   if(doneTasks.length||pendingTasks.length){
-    msg+=`━━━━━━━━━━━━━━━━━━\n`;
-    msg+=`📌 *סיכום משימות תורן:*\n`;
-    if(doneTasks.length){
-      msg+=`✅ בוצע (${doneTasks.length}):\n`;
-      doneTasks.forEach((t,i)=>{msg+=`${i+1}. ${t.text}`;if(t.doneNote)msg+=` — ${t.doneNote}`;msg+=`\n`;});
-    }
-    if(pendingTasks.length){
-      msg+=`⏳ לא בוצע (${pendingTasks.length}):\n`;
-      pendingTasks.forEach((t,i)=>{
-        msg+=`${i+1}. ${t.text}`;
-        if(t.due){ const dl=new Date(t.due).toLocaleDateString('he-IL'); msg+=` (יעד: ${dl})`; }
-        msg+=`\n`;
-      });
-    }
+    msg+=`━━━━━━━━━━━━━━━━━━\n📌 *משימות:*\n`;
+    if(doneTasks.length){ msg+=`✅ בוצע (${doneTasks.length}):\n`; doneTasks.forEach((t,i)=>{msg+=`${i+1}. ${t.text}`;if(t.doneNote)msg+=` — ${t.doneNote}`;msg+=`\n`;}); }
+    if(pendingTasks.length){ msg+=`⏳ לא בוצע (${pendingTasks.length}):\n`; pendingTasks.forEach((t,i)=>{msg+=`${i+1}. ${t.text}`;if(t.due)msg+=` (יעד: ${new Date(t.due).toLocaleDateString('he-IL')})`;msg+=`\n`;}); }
     msg+=`\n`;
   }
-
-  if(dutyNotes){
-    msg+=`━━━━━━━━━━━━━━━━━━\n`;
-    msg+=`📒 *הערות תורן:*\n${dutyNotes}\n\n`;
-  }
-
-  msg+=`━━━━━━━━━━━━━━━━━━\n`;
-  msg+=`🕐 נשלח: ${new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}`;
-
+  if(dutyNotes) msg+=`━━━━━━━━━━━━━━━━━━\n📒 *הערות תורן:*\n${dutyNotes}\n\n`;
+  msg+=`━━━━━━━━━━━━━━━━━━\n🕐 נשלח: ${new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}`;
   document.getElementById('waDayBox').textContent=msg;
 }
-
-function copyWa(){
-  const txt=document.getElementById('waBox').textContent;
-  navigator.clipboard.writeText(txt).then(()=>showToast('📋 הועתק לוואטסאפ!'));
-}
-function copyWaDay(){
-  const txt=document.getElementById('waDayBox').textContent;
-  navigator.clipboard.writeText(txt).then(()=>showToast('📋 הועתק!'));
-}
+function copyWa(){ navigator.clipboard.writeText(document.getElementById('waBox').textContent).then(()=>showToast('📋 הועתק!')); }
+function copyWaDay(){ navigator.clipboard.writeText(document.getElementById('waDayBox').textContent).then(()=>showToast('📋 הועתק!')); }
 function shareWa(){
   const txt=document.getElementById('waBox').textContent;
-  if(navigator.share) navigator.share({text:txt});
-  else copyWa();
+  if(navigator.share) navigator.share({text:txt}); else copyWa();
 }
 
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 //  GOOGLE SHEETS
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 function saveUrl(){
   sheetsUrl=document.getElementById('sheetsUrl').value.trim();
-  localStorage.setItem('sheetsUrl',sheetsUrl);
+  localStorage.setItem('sheetsUrl', sheetsUrl);
 }
-function setDot(state,msg){
+function setDot(state, msg){
   const dot=document.getElementById('dot');
   const lbl=document.getElementById('sheetsMsg');
-  dot.className='dot'; if(state==='ok')dot.classList.add('ok'); if(state==='err')dot.classList.add('err'); if(state==='spin')dot.classList.add('spin');
+  dot.className='dot';
+  if(state==='ok') dot.classList.add('ok');
+  if(state==='err') dot.classList.add('err');
+  if(state==='spin') dot.classList.add('spin');
   lbl.textContent=msg;
 }
 async function testConn(){
   const url=document.getElementById('sheetsUrl').value.trim();
-  if(!url){showToast('⚠️ הדבק כתובת Web App');return;}
+  if(!url){ showToast('⚠️ הדבק כתובת'); return; }
   sheetsUrl=url; localStorage.setItem('sheetsUrl',url);
   setDot('spin','בודק…');
   try{
-    // Use normal fetch and check response, not no-cors
-    const resp = await fetch(url+'?action=ping',{method:'GET'});
-    if(resp.ok){
-      setDot('ok','✓ מחובר'); showToast('✅ חיבור תקין');
-    }else{
-      setDot('err','שגיאת חיבור'); showToast('❌ שגיאת חיבור');
-    }
-  }catch(e){setDot('err','שגיאת חיבור'); showToast('❌ שגיאת חיבור');}
+    await fetch(url+'?action=ping',{method:'GET',mode:'no-cors'});
+    setDot('ok','✓ מחובר'); showToast('✅ חיבור נשלח');
+  }catch(e){ setDot('err','שגיאה'); showToast('❌ שגיאה'); }
 }
-
+async function autoSaveToSheets(sessionData){
+  try{
+    const payload={
+      action:'saveAttendance',
+      date:sessionData.date, duty:'',
+      sessions:[{
+        sessionId:sessionData.sessionId, name:sessionData.name, time:sessionData.time,
+        instructors:sessionData.instructors, notes:sessionData.notes||'',
+        keep:sessionData.keep||'', improve:sessionData.improve||'',
+        rows:sessionData.students.map(st=>({
+          id:st.id, name:st.name,
+          status:st.status==='present'?'נוכח':st.status==='absent'?'נעדר':st.status==='sick'?'מרפאה':st.status==='other'?'אחר':'לא סומן',
+          note:st.note||''
+        }))
+      }],
+      tasks:[]
+    };
+    await fetch(sheetsUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  }catch(e){ console.warn('Sheets failed:',e); }
+}
 async function saveAllToSheets(){
-  if(!sheetsUrl){showToast('⚠️ אין חיבור ל-Sheets');return;}
+  if(!sheetsUrl){ showToast('⚠️ אין חיבור'); return; }
   const btn=document.getElementById('btnSaveSheets');
   btn.disabled=true; btn.textContent='⏳ שומר…';
-  const todaySessions=savedSessions.filter(s=>s.date===todayStr());
+  const today = todayStr();
+  const todaySessions=savedSessions.filter(s=>s.date===today);
   const dutyId=document.getElementById('dutySelect').value;
   const duty=STUDENTS_DATA.find(s=>s.id===dutyId);
   const payload={
-    action:'saveAttendance',
-    date:todayStr(),
-    duty:duty?duty.name:'',
-    sessions: todaySessions.map(s=>({
-      sessionId: s.sessionId,
-      name:s.name, time:s.time,
-      instructors:s.instructors,
-      notes: s.notes||'',
-      keep: s.keep||'',
-      improve: s.improve||'',
-      rows:s.students.map(st=>({id:st.id,name:st.name,status:st.status==='present'?'נוכח':st.status==='absent'?'נעדר':st.status==='sick'?'מרפאה':st.status==='other'?'אחר':'לא סומן',note:st.note||''}))
+    action:'saveAttendance', date:today, duty:duty?duty.name:'',
+    sessions:todaySessions.map(s=>({
+      sessionId:s.sessionId, name:s.name, time:s.time,
+      instructors:s.instructors, notes:s.notes||'', keep:s.keep||'', improve:s.improve||'',
+      rows:s.students.map(st=>({
+        id:st.id, name:st.name,
+        status:st.status==='present'?'נוכח':st.status==='absent'?'נעדר':st.status==='sick'?'מרפאה':st.status==='other'?'אחר':'לא סומן',
+        note:st.note||''
+      }))
     })),
-    tasks: tasks.map(t=>({text:t.text,prio:t.prio,done:t.done,doneNote:t.doneNote||'',giver:t.giver||''}))
+    tasks:tasks.map(t=>({text:t.text,prio:t.prio,done:t.done,doneNote:t.doneNote||'',giver:t.giver||'',due:t.due||''}))
   };
   try{
-    const resp = await fetch(sheetsUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    if(resp.ok){
-      showToast('📊 נשמר ב-Google Sheets!');
-    }else{
-      showToast('❌ שגיאה בשמירה');
-    }
-  }catch(e){showToast('❌ שגיאה בשמירה');}
-  finally{btn.disabled=false;btn.textContent='📊 שמור הכל ב-Sheets';}
+    await fetch(sheetsUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    showToast('📊 נשמר ב-Sheets!');
+  }catch(e){ showToast('❌ שגיאה'); }
+  finally{ btn.disabled=false; btn.textContent='📊 שמור ב-Sheets'; }
 }
 
-// ═══════════════════════════════════════════════
-//  UTILS
-// ═══════════════════════════════════════════════
-function showToast(msg){
-  const t=document.createElement('div');
-  t.className='toast'; t.textContent=msg;
-  document.body.appendChild(t);
-  setTimeout(()=>t.remove(),3000);
-}
-
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 //  STUDENT MANAGEMENT
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
 function addStudent(){
-  const name = document.getElementById('newName').value.trim();
-  const id   = document.getElementById('newId').value.trim();
-  const room = document.getElementById('newRoom').value.trim();
-  if(!name||!id){ showToast('⚠️ יש למלא שם ומספר אישי'); return; }
-  if(STUDENTS_DATA.find(s=>s.id===id)){ showToast('⚠️ מספר אישי כבר קיים'); return; }
-
-  STUDENTS_DATA.push({id, name, room});
+  const name=document.getElementById('newName').value.trim();
+  const id=document.getElementById('newId').value.trim();
+  const room=document.getElementById('newRoom').value.trim();
+  if(!name||!id){ showToast('⚠️ שם ומ"א חובה'); return; }
+  if(STUDENTS_DATA.find(s=>s.id===id)){ showToast('⚠️ מ"א כבר קיים'); return; }
+  STUDENTS_DATA.push({id,name,room});
   saveStudentsList();
-
-  // רענן רשימת סימון נוכחות (שמור סטטוסים קיימים)
-  if(!students.find(s=>s.id===id)){
-    students.push({id, name, room, status:'pending', note:''});
-  }
-
-  // Update savedSessions students for today
-  savedSessions.forEach(sess=>{
-    if(sess.date===todayStr() && !sess.students.find(s=>s.id===id)){
-      sess.students.push({id, name, room, status:'pending', note:''});
-    }
-  });
-  localStorage.setItem('sessions',JSON.stringify(savedSessions));
-
+  if(!students.find(s=>s.id===id)) students.push({id,name,room,status:'pending',note:''});
   document.getElementById('newName').value='';
   document.getElementById('newId').value='';
   document.getElementById('newRoom').value='';
-
   renderStudentMgmt();
   refreshDutySelect();
   updateStats();
   renderList();
-  showToast(`✅ חניך "${escapeHtml(name)}" נוסף`);
+  showToast(`✅ "${name}" נוסף`);
 }
-
 function openDeleteModal(id){
   const s=STUDENTS_DATA.find(s=>s.id===id);
   if(!s) return;
   _deleteTarget=id;
-  document.getElementById('deleteConfirmName').textContent=`${escapeHtml(s.name)}  (מ"א: ${escapeHtml(s.id)})`;
+  document.getElementById('deleteConfirmName').textContent=`${s.name} (מ"א: ${s.id})`;
   document.getElementById('deleteModal').classList.add('open');
 }
 function closeDeleteModal(){ document.getElementById('deleteModal').classList.remove('open'); _deleteTarget=null; }
 function confirmDelete(){
   if(!_deleteTarget) return;
-  const idx = STUDENTS_DATA.findIndex(s=>s.id===_deleteTarget);
+  const idx=STUDENTS_DATA.findIndex(s=>s.id===_deleteTarget);
   if(idx>=0) STUDENTS_DATA.splice(idx,1);
   saveStudentsList();
-
-  // הסר גם ממערך הנוכחות
-  const si = students.findIndex(s=>s.id===_deleteTarget);
+  const si=students.findIndex(s=>s.id===_deleteTarget);
   if(si>=0) students.splice(si,1);
-
-  // Remove from all savedSessions
-  savedSessions.forEach(sess=>{
-    sess.students = sess.students.filter(s=>s.id!==_deleteTarget);
-  });
-  localStorage.setItem('sessions',JSON.stringify(savedSessions));
-
   closeDeleteModal();
   renderStudentMgmt();
   refreshDutySelect();
   updateStats();
   renderList();
-  showToast('🗑️ חניך נמחק');
+  showToast('🗑️ נמחק');
 }
-
 function openEditModal(id){
   const s=STUDENTS_DATA.find(s=>s.id===id);
   if(!s) return;
-  _editTarget=id; // שמור את המזהה המקורי
+  _editTarget=id;
   document.getElementById('editName').value=s.name;
   document.getElementById('editId').value=s.id;
   document.getElementById('editRoom').value=s.room||'';
@@ -1846,61 +1299,44 @@ function openEditModal(id){
 function closeEditModal(){ document.getElementById('editStudentModal').classList.remove('open'); _editTarget=null; }
 function confirmEdit(){
   if(!_editTarget) return;
-  const idx = STUDENTS_DATA.findIndex(s=>s.id===_editTarget);
-  if(idx<0){ showToast('⚠️ חניך לא נמצא'); return; }
-
-  const newName = document.getElementById('editName').value.trim();
-  const newId   = document.getElementById('editId').value.trim();
-  const newRoom = document.getElementById('editRoom').value.trim();
-  if(!newName||!newId){ showToast('⚠️ שם ומספר אישי הם שדות חובה'); return; }
-
-  const duplicate = STUDENTS_DATA.findIndex(s=>s.id===newId);
-  if(duplicate>=0 && duplicate!==idx){ showToast('⚠️ מספר אישי כבר קיים לחניך אחר'); return; }
-
-  // עדכן ב-STUDENTS_DATA
-  STUDENTS_DATA[idx] = { ...STUDENTS_DATA[idx], name:newName, id:newId, room:newRoom };
+  const idx=STUDENTS_DATA.findIndex(s=>s.id===_editTarget);
+  if(idx<0){ showToast('⚠️ לא נמצא'); return; }
+  const newName=document.getElementById('editName').value.trim();
+  const newId=document.getElementById('editId').value.trim();
+  const newRoom=document.getElementById('editRoom').value.trim();
+  if(!newName||!newId){ showToast('⚠️ שם ומ"א חובה'); return; }
+  const dup=STUDENTS_DATA.findIndex(s=>s.id===newId);
+  if(dup>=0 && dup!==idx){ showToast('⚠️ מ"א כבר תפוס'); return; }
+  const oldId=_editTarget;
+  STUDENTS_DATA[idx]={...STUDENTS_DATA[idx], name:newName, id:newId, room:newRoom};
   saveStudentsList();
-
-  // עדכן גם ב-students (מערך הנוכחות) — שמור סטטוס ו-note
-  const si = students.findIndex(s=>s.id===_editTarget);
-  if(si>=0){
-    students[si] = { ...students[si], name:newName, id:newId, room:newRoom };
-  }
-
-  // Update all savedSessions (historical) for this student
+  const si=students.findIndex(s=>s.id===oldId);
+  if(si>=0) students[si]={...students[si], name:newName, id:newId, room:newRoom};
   savedSessions.forEach(sess=>{
     sess.students.forEach(st=>{
-      if(st.id===_editTarget){
-        st.name=newName; st.id=newId; st.room=newRoom;
-      }
+      if(st.id===oldId){ st.name=newName; st.id=newId; st.room=newRoom; }
     });
   });
-  localStorage.setItem('sessions',JSON.stringify(savedSessions));
-
-  _editTarget = null;
+  localStorage.setItem('sessions', JSON.stringify(savedSessions));
+  _editTarget=null;
   closeEditModal();
   renderStudentMgmt();
   refreshDutySelect();
   renderList();
-  showToast(`✅ פרטי "${escapeHtml(newName)}" עודכנו`);
+  showToast(`✅ "${newName}" עודכן`);
 }
-
 function renderStudentMgmt(){
-  const searchQ = (document.getElementById('stuSearch')?.value||'').trim().toLowerCase();
-  const roomF   = document.getElementById('stuRoomFilter')?.value||'';
-
-  // update room filter options
+  const searchQ=(document.getElementById('stuSearch')?.value||'').trim().toLowerCase();
+  const roomF=document.getElementById('stuRoomFilter')?.value||'';
   const roomSel=document.getElementById('stuRoomFilter');
   const rooms=[...new Set(STUDENTS_DATA.map(s=>s.room||'').filter(Boolean))].sort();
   const curRoom=roomSel.value;
   roomSel.innerHTML='<option value="">כל החדרים</option>'+rooms.map(r=>`<option value="${escapeAttr(r)}" ${r===curRoom?'selected':''}>${escapeHtml(r)}</option>`).join('');
-
   const list=STUDENTS_DATA.filter(s=>{
     const mq=!searchQ||s.name.toLowerCase().includes(searchQ)||s.id.includes(searchQ)||(s.room||'').includes(searchQ);
     const mr=!roomF||(s.room||'')===roomF;
     return mq&&mr;
   });
-
   document.getElementById('stuCount').textContent=`${list.length} חניכים`;
   const tbody=document.getElementById('stuBody');
   tbody.innerHTML=list.map((s,i)=>`
@@ -1908,134 +1344,385 @@ function renderStudentMgmt(){
       <td style="color:var(--muted);font-size:12px">${i+1}</td>
       <td style="font-weight:700">${escapeHtml(s.name)}</td>
       <td style="font-family:monospace;font-size:12px">${escapeHtml(s.id)}</td>
-      <td style="text-align:center">
-        ${s.room?`<span style="background:rgba(88,166,255,.15);color:var(--accent);border-radius:6px;padding:2px 9px;font-size:12px;font-weight:700">${escapeHtml(s.room)}</span>`:'<span style="color:var(--muted)">—</span>'}
-      </td>
+      <td style="text-align:center">${s.room?`<span style="background:rgba(88,166,255,.15);color:var(--accent);border-radius:6px;padding:2px 9px;font-size:12px;font-weight:700">${escapeHtml(s.room)}</span>`:'<span style="color:var(--muted)">—</span>'}</td>
       <td>
         <div style="display:flex;gap:6px">
-          <button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="openEditModal('${escapeAttr(s.id)}')">✏️ עריכה</button>
+          <button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="openEditModal('${escapeAttr(s.id)}')">✏️ ערוך</button>
           <button class="btn btn-ghost" style="padding:4px 10px;font-size:12px;color:var(--red);border-color:var(--red)" onclick="openDeleteModal('${escapeAttr(s.id)}')">🗑️ מחק</button>
         </div>
       </td>
     </tr>`).join('');
 }
 
-// ═══════════════════════════════════════════════
-//  FEEDBACK TAB (שימור ושיפור)
-// ═══════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+//  FEEDBACK
+// ═══════════════════════════════════════════════════════════════
 function refreshFbDates(){
   const dates=[...new Set(savedSessions.map(s=>s.date))].sort((a,b)=>{
-    const pa=a.split('.').reverse().join('-'), pb=b.split('.').reverse().join('-');
+    const pa=a.split('.').reverse().join('-');
+    const pb=b.split('.').reverse().join('-');
     return pb.localeCompare(pa);
   });
   const sel=document.getElementById('fbDateSelect');
   const cur=sel.value;
-  sel.innerHTML='<option value="">— בחר תאריך —</option>'+dates.map(d=>`<option value="${escapeAttr(d)}" ${d===cur?'selected':''}>${escapeHtml(d)}</option>`).join('');
+  sel.innerHTML='<option value="">— בחר —</option>'+dates.map(d=>`<option value="${escapeAttr(d)}" ${d===cur?'selected':''}>${escapeHtml(d)}</option>`).join('');
   if(cur) onFbDateChange();
 }
-
 function onFbDateChange(){
   _fbDate=document.getElementById('fbDateSelect').value;
   _fbSessionId=null;
   const picker=document.getElementById('fbSessionPicker');
-  const form  =document.getElementById('fbForm');
-  if(!_fbDate){picker.style.display='none';form.style.display='none';return;}
-
+  const form=document.getElementById('fbForm');
+  if(!_fbDate){ picker.style.display='none'; form.style.display='none'; return; }
   const daySessions=savedSessions.filter(s=>s.date===_fbDate);
-  document.getElementById('fbDateHint').textContent=`${daySessions.length} שיעורים ביום זה`;
+  document.getElementById('fbDateHint').textContent=`${daySessions.length} שיעורים`;
   picker.style.display='block';
   form.style.display='none';
-
   document.getElementById('fbSessionChips').innerHTML=daySessions.map(s=>`
     <span class="session-chip" onclick="selectFbSession('${escapeAttr(s.sessionId)}',this)">
       📚 ${escapeHtml(s.name)} <span style="color:var(--muted);font-weight:400">${escapeHtml(s.time)}</span>
       ${(s.keep||s.improve||s.notes)?'<span style="color:var(--green);font-size:10px;margin-right:4px">●</span>':''}
     </span>`).join('');
 }
-
 function selectFbSession(sessionId, el){
   document.querySelectorAll('#fbSessionChips .session-chip').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
+  if(el) el.classList.add('selected');
   _fbSessionId=sessionId;
   const s=findSessionById(savedSessions, sessionId);
   if(!s) return;
-  document.getElementById('fbFormTitle').textContent=`📚 ${escapeHtml(s.name)} — ${escapeHtml(s.time)}`;
-  document.getElementById('fbNotes').value   = s.notes||'';
-  document.getElementById('fbKeep').value    = s.keep||'';
-  document.getElementById('fbImprove').value = s.improve||'';
+  document.getElementById('fbFormTitle').textContent=`📚 ${s.name} — ${s.time}`;
+  document.getElementById('fbNotes').value=s.notes||'';
+  document.getElementById('fbKeep').value=s.keep||'';
+  document.getElementById('fbImprove').value=s.improve||'';
   document.getElementById('fbForm').style.display='block';
   renderFbAllSessions();
 }
-
 function saveFbForm(){
-  if(!_fbDate||!_fbSessionId){showToast('⚠️ בחר תאריך ושיעור תחילה');return;}
+  if(!_fbDate||!_fbSessionId){ showToast('⚠️ בחר שיעור'); return; }
   const s=findSessionById(savedSessions, _fbSessionId);
   if(!s) return;
-  s.notes   = document.getElementById('fbNotes').value.trim();
-  s.keep    = document.getElementById('fbKeep').value.trim();
-  s.improve = document.getElementById('fbImprove').value.trim();
-  localStorage.setItem('sessions',JSON.stringify(savedSessions));
-  onFbDateChange(); // refresh chips (update dot indicators)
-  selectFbSession(_fbSessionId, document.querySelector('#fbSessionChips .session-chip.selected'));
+  s.notes=document.getElementById('fbNotes').value.trim();
+  s.keep=document.getElementById('fbKeep').value.trim();
+  s.improve=document.getElementById('fbImprove').value.trim();
+  localStorage.setItem('sessions', JSON.stringify(savedSessions));
+  if(sheetsUrl) autoSaveToSheets(s);
+  onFbDateChange();
+  const chip=document.querySelector(`#fbSessionChips .session-chip[onclick*="${_fbSessionId}"]`);
+  if(chip) selectFbSession(_fbSessionId, chip);
   renderFbAllSessions();
-  showToast(`✅ הערות נשמרו לשיעור "${escapeHtml(s.name)}"`);
+  showToast(`✅ הערות נשמרו`);
 }
-
 function renderFbAllSessions(){
   const el=document.getElementById('fbAllSessions');
-  if(!_fbDate){el.innerHTML='';return;}
+  if(!_fbDate){ el.innerHTML=''; return; }
   const daySessions=savedSessions.filter(s=>s.date===_fbDate&&(s.notes||s.keep||s.improve));
-  if(!daySessions.length){el.innerHTML='';return;}
+  if(!daySessions.length){ el.innerHTML=''; return; }
   el.innerHTML=`
-    <div class="card-title" style="margin-top:16px;margin-bottom:10px">📋 סיכום פידבק יום ${escapeHtml(_fbDate)}</div>
+    <div class="card-title" style="margin-top:16px;margin-bottom:10px">📋 סיכום פידבק ${escapeHtml(_fbDate)}</div>
     ${daySessions.map(s=>`
       <div style="background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin-bottom:8px">
         <div style="font-weight:700;margin-bottom:8px">📚 ${escapeHtml(s.name)} <span style="font-weight:400;color:var(--muted);font-size:12px">${escapeHtml(s.time)}</span></div>
-        ${s.notes  ?`<div style="font-size:13px;color:var(--muted);margin-bottom:5px">📝 ${escapeHtml(s.notes)}</div>`:''}
-        ${s.keep   ?`<div style="font-size:13px;color:var(--green);margin-bottom:5px">⭐ <b>לשימור:</b> ${escapeHtml(s.keep)}</div>`:''}
+        ${s.notes?`<div style="font-size:13px;color:var(--muted);margin-bottom:5px">📝 ${escapeHtml(s.notes)}</div>`:''}
+        ${s.keep?`<div style="font-size:13px;color:var(--green);margin-bottom:5px">⭐ <b>לשימור:</b> ${escapeHtml(s.keep)}</div>`:''}
         ${s.improve?`<div style="font-size:13px;color:var(--orange)">🔧 <b>לשיפור:</b> ${escapeHtml(s.improve)}</div>`:''}
       </div>`).join('')}`;
 }
 
-// ═══════════════════════════════════════════════
-//  BACKUP — EXPORT & IMPORT
-// ═══════════════════════════════════════════════
-
-// ── עדכן תצוגת גיבוי אחרון ──
-function updateLastBackupLabel(){
-  const ts = localStorage.getItem('lastBackupTime');
-  const el = document.getElementById('lastBackupLbl');
-  if(el) el.textContent = ts ? `גיבוי אחרון: ${ts}` : '';
+// ═══════════════════════════════════════════════════════════════
+//  ARCHIVE
+// ═══════════════════════════════════════════════════════════════
+function refreshArchiveDates(){
+  const sel=document.getElementById('archiveDateSelect');
+  if(!sel) return;
+  const cur=sel.value;
+  const dates=[...new Set(savedSessions.map(s=>s.date))].sort((a,b)=>{
+    const pa=a.split('.').reverse().join('-');
+    const pb=b.split('.').reverse().join('-');
+    return pb.localeCompare(pa);
+  });
+  sel.innerHTML='<option value="">— בחר תאריך —</option>'+dates.map(d=>`<option value="${escapeAttr(d)}" ${d===cur?'selected':''}>${escapeHtml(d)}</option>`).join('');
+  if(cur) renderArchiveByDate();
+}
+function renderArchiveByDate(){
+  const date=document.getElementById('archiveDateSelect')?.value||'';
+  const query=(document.getElementById('archiveSearch')?.value||'').trim().toLowerCase();
+  const el=document.getElementById('archiveContent');
+  if(!el) return;
+  if(!date){ el.innerHTML=`<div class="empty"><div class="empty-ico">🗄️</div><div>בחר תאריך</div></div>`; return; }
+  let sessions=savedSessions.filter(s=>s.date===date);
+  if(query){
+    sessions=sessions.filter(s=>{
+      const hay=[s.name,s.time,...(s.instructors||[]),s.notes||'',s.keep||'',s.improve||'',...(s.students||[]).flatMap(st=>[st.name,st.id,st.note||'',st.status||''])].join(' ').toLowerCase();
+      return hay.includes(query);
+    });
+  }
+  if(!sessions.length){ el.innerHTML=`<div class="empty"><div class="empty-ico">📭</div><div>לא נמצאו דוחות</div></div>`; return; }
+  el.innerHTML=sessions.map(s=>{
+    const present=s.students.filter(st=>st.status==='present');
+    const absent=s.students.filter(st=>st.status==='absent');
+    const sick=s.students.filter(st=>st.status==='sick');
+    const other=s.students.filter(st=>st.status==='other');
+    const pct=s.students.length>0?Math.round((present.length/s.students.length)*100):0;
+    const exceptions=[...absent,...sick,...other];
+    return `
+      <div class="card" style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+          <div>
+            <div style="font-size:16px;font-weight:900">📚 ${escapeHtml(s.name)}</div>
+            <div style="font-size:12px;color:var(--muted)">📅 ${escapeHtml(s.date)} | ⏰ ${escapeHtml(s.time)}${s.instructors&&s.instructors.length?` | 👨‍🏫 ${escapeHtml(s.instructors.join(', '))}`:''}</div>
+          </div>
+          <button class="btn btn-ghost" style="padding:5px 11px;font-size:12px" onclick="openSessionEditor('${escapeAttr(s.sessionId)}')">✏️ ערוך</button>
+        </div>
+        ${s.notes?`<div style="font-size:13px;color:var(--muted);margin-bottom:6px">📝 <b>הערות:</b> ${escapeHtml(s.notes)}</div>`:''}
+        ${s.keep?`<div style="font-size:13px;color:var(--green);margin-bottom:6px">⭐ <b>לשימור:</b> ${escapeHtml(s.keep)}</div>`:''}
+        ${s.improve?`<div style="font-size:13px;color:var(--orange);margin-bottom:10px">🔧 <b>לשיפור:</b> ${escapeHtml(s.improve)}</div>`:''}
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px">📊 ${present.length}/${s.students.length} (${pct}%)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <div style="font-size:12px;color:var(--green);font-weight:700;margin-bottom:4px">✅ נוכחים (${present.length})</div>
+            <div style="font-size:12px;line-height:1.6">${present.length?present.map(st=>escapeHtml(st.name)).join('<br>'):'—'}</div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--red);font-weight:700;margin-bottom:4px">חריגים (${exceptions.length})</div>
+            <div style="font-size:12px;line-height:1.6">${exceptions.length?exceptions.map(st=>`${st.status==='absent'?'❌':st.status==='sick'?'🏥':'📝'} ${escapeHtml(st.name)}${st.note?` (${escapeHtml(st.note)})`:''}`).join('<br>'):'—'}</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
 }
 
-// ── ייצוא CSV ──────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+//  BACKUP — EXPORT & IMPORT (מלא)
+// ═══════════════════════════════════════════════════════════════
+function updateLastBackupLabel(){
+  const ts=localStorage.getItem('lastBackupTime');
+  const el=document.getElementById('lastBackupLbl');
+  if(el) el.textContent=ts?`גיבוי אחרון: ${ts}`:'';
+}
+function q(v){ return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'; }
+function download(content, filename, type){
+  const blob=new Blob([content],{type});
+  const url=URL.createObjectURL(blob);
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+  if(isIOS){
+    const w=window.open(url,'_blank');
+    if(!w) window.location.href=url;
+    setTimeout(()=>URL.revokeObjectURL(url),10000);
+    return;
+  }
+  const a=document.createElement('a');
+  a.href=url; a.download=filename; a.style.display='none';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),5000);
+}
+function dateToSort(heDate){
+  if(!heDate) return 0;
+  const parts=heDate.split('.');
+  if(parts.length<3) return 0;
+  return new Date(`${parts[2]}-${parts[1].padStart(2,'0')}-${parts[0].padStart(2,'0')}`).getTime()||0;
+}
 function exportBackup(type='full'){
-  const now   = new Date();
-  const stamp = now.toLocaleDateString('he-IL').replace(/\./g,'-')
-              + '_' + now.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'}).replace(':','-');
-  const BOM = '\uFEFF';
+  const now=new Date();
+  const stamp=now.toLocaleDateString('he-IL').replace(/\./g,'-')+'_'+now.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'}).replace(':','-');
+  const BOM='\uFEFF';
 
   if(type==='students'){
-    // ── רשימת חניכים בלבד ──
-    let csv = BOM;
-    csv += `[STUDENTS]\n`;
-    csv += `מספר אישי,שם מלא,חדר\n`;
-    STUDENTS_DATA.forEach(s => csv += `${q(s.id)},${q(s.name)},${q(s.room)}\n`);
-    // ... rest unchanged
+    let csv=BOM;
+    csv+=`[STUDENTS]\n`;
+    csv+=`מספר אישי,שם מלא,חדר\n`;
+    STUDENTS_DATA.forEach(s=>{ csv+=`${q(s.id)},${q(s.name)},${q(s.room||'')}\n`; });
+    download(csv, `חניכים_${stamp}.csv`, 'text/csv;charset=utf-8;');
+    showBackupStatus('✅ רשימת חניכים יוצאה','ok');
+    return;
   }
-  // ... rest unchanged
+
+  // full backup
+  let csv=BOM;
+  csv+=`[META]\n`;
+  csv+=`גרסה,2.0\n`;
+  csv+=`תאריך ייצוא,${now.toLocaleDateString('he-IL')} ${now.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}\n`;
+  csv+=`סה"כ שיעורים,${savedSessions.length}\n`;
+  csv+=`סה"כ חניכים,${STUDENTS_DATA.length}\n`;
+  csv+=`סה"כ משימות,${tasks.length}\n\n`;
+
+  csv+=`[STUDENTS]\n`;
+  csv+=`מספר אישי,שם מלא,חדר\n`;
+  STUDENTS_DATA.forEach(s=>{ csv+=`${q(s.id)},${q(s.name)},${q(s.room||'')}\n`; });
+  csv+=`\n`;
+
+  const sortedSessions=[...savedSessions].sort((a,b)=>dateToSort(a.date)-dateToSort(b.date));
+  csv+=`[SESSIONS]\n`;
+  csv+=`sessionId,תאריך,שם שיעור,שעה,מדריכים,הערות,לשימור,לשיפור\n`;
+  sortedSessions.forEach(s=>{
+    csv+=`${q(s.sessionId)},${q(s.date)},${q(s.name)},${q(s.time)},${q((s.instructors||[]).join(' | '))},${q(s.notes||'')},${q(s.keep||'')},${q(s.improve||'')}\n`;
+  });
+  csv+=`\n`;
+
+  csv+=`[ATTENDANCE]\n`;
+  csv+=`sessionId,תאריך,שיעור,מספר אישי,שם מלא,סטטוס,הערה\n`;
+  sortedSessions.forEach(s=>{
+    (s.students||[]).forEach(st=>{
+      csv+=`${q(s.sessionId)},${q(s.date)},${q(s.name)},${q(st.id)},${q(st.name)},${q(st.status)},${q(st.note||'')}\n`;
+    });
+  });
+  csv+=`\n`;
+
+  csv+=`[TASKS]\n`;
+  csv+=`מזהה,משימה,עדיפות,ניתנה ע"י,תאריך יעד,סטטוס,פירוט ביצוע,שעה\n`;
+  tasks.forEach(t=>{
+    const dueLabel=t.due?new Date(t.due).toLocaleDateString('he-IL'):'';
+    csv+=`${q(String(t.id))},${q(t.text)},${q(t.prio)},${q(t.giver||'')},${q(dueLabel)},${q(t.done?'בוצע':'ממתין')},${q(t.doneNote||'')},${q(t.time||'')}\n`;
+  });
+
+  const fname=`גיבוי_נוכחות_${stamp}.csv`;
+  download(csv, fname, 'text/csv;charset=utf-8;');
+  const tsLabel=`${now.toLocaleDateString('he-IL')} ${now.toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}`;
+  localStorage.setItem('lastBackupTime', tsLabel);
+  updateLastBackupLabel();
+  showBackupStatus(`✅ ${fname}`,'ok');
+}
+function parseCsvLine(line){
+  const result=[]; let cur=''; let inQ=false;
+  for(let i=0;i<line.length;i++){
+    const c=line[i];
+    if(c==='"'){
+      if(inQ&&line[i+1]==='"'){ cur+='"'; i++; }
+      else inQ=!inQ;
+    } else if(c===','&&!inQ){ result.push(cur); cur=''; }
+    else cur+=c;
+  }
+  result.push(cur);
+  return result;
+}
+function parseBackupCsv(text){
+  const lines=text.split('\n').map(l=>l.trimEnd());
+  let section=null;
+  const stus=[], sessions=[], attendance=[], tsks=[];
+  let headers=[];
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i];
+    if(!line.trim()){ section=null; headers=[]; continue; }
+    if(line.startsWith('[')&&line.endsWith(']')){ section=line.slice(1,-1); headers=[]; continue; }
+    const cols=parseCsvLine(line);
+    if(!headers.length){ headers=cols; continue; }
+    const row={};
+    headers.forEach((h,i)=>{ row[h]=cols[i]||''; });
+    if(section==='STUDENTS'){
+      if(row['מספר אישי']) stus.push({id:row['מספר אישי'],name:row['שם מלא'],room:row['חדר']||''});
+    }
+    if(section==='SESSIONS'){
+      if(row['שם שיעור']){
+        sessions.push({
+          sessionId:row['sessionId']||makeSessionId(row['שם שיעור'],row['תאריך']),
+          date:row['תאריך'], name:row['שם שיעור'], time:row['שעה'],
+          instructors: row['מדריכים']?row['מדריכים'].split(' | ').filter(Boolean):[],
+          notes:row['הערות']||'', keep:row['לשימור']||'', improve:row['לשיפור']||'',
+          students:[]
+        });
+      }
+    }
+    if(section==='ATTENDANCE'){
+      if(row['מספר אישי']){
+        attendance.push({
+          sessionId:row['sessionId']||'',
+          date:row['תאריך'], sessionName:row['שיעור'],
+          id:row['מספר אישי'], name:row['שם מלא'],
+          status:row['סטטוס'], note:row['הערה']||''
+        });
+      }
+    }
+    if(section==='TASKS'){
+      if(row['משימה']){
+        tsks.push({
+          id:Number(row['מזהה'])||Date.now()+Math.random(),
+          text:row['משימה'], prio:row['עדיפות']||'med',
+          giver:row['ניתנה ע"י']||'', due:'',
+          done:row['סטטוס']==='בוצע', doneNote:row['פירוט ביצוע']||'',
+          time:row['שעה']||''
+        });
+      }
+    }
+  }
+  // attach attendance to sessions
+  attendance.forEach(a=>{
+    let s = a.sessionId ? sessions.find(s=>s.sessionId===a.sessionId) : null;
+    if(!s) s = sessions.find(s=>s.date===a.date && s.name===a.sessionName);
+    if(s) s.students.push({id:a.id,name:a.name,status:a.status,note:a.note});
+  });
+  return { students:stus, sessions, tasks:tsks };
+}
+function applyBackup(data, merge=false){
+  if(!data.students.length&&!data.sessions.length) throw new Error('אין נתונים בקובץ');
+  if(merge){
+    data.students.forEach(s=>{ if(!STUDENTS_DATA.find(ex=>ex.id===s.id)) STUDENTS_DATA.push(s); });
+    data.sessions.forEach(s=>{
+      if(!savedSessions.find(ex=>ex.sessionId===s.sessionId || (ex.date===s.date&&ex.name===s.name))) savedSessions.push(s);
+    });
+    data.tasks.forEach(t=>{ if(!tasks.find(ex=>ex.id===t.id)) tasks.push(t); });
+  } else {
+    STUDENTS_DATA.length=0; data.students.forEach(s=>STUDENTS_DATA.push(s));
+    savedSessions.length=0; data.sessions.forEach(s=>savedSessions.push(s));
+    tasks.length=0; data.tasks.forEach(t=>tasks.push(t));
+  }
+  saveStudentsList();
+  localStorage.setItem('sessions', JSON.stringify(savedSessions));
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+  students=STUDENTS_DATA.map(s=>({...s,status:'pending',note:''}));
+  init();
+}
+function importBackup(input, type='full'){
+  const file=input.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const text=e.target.result.replace(/^\uFEFF/,'');
+      const result=parseBackupCsv(text);
+      if(type==='students'){
+        if(!result.students.length) throw new Error('לא נמצאו חניכים');
+        const merge=confirm(`נמצאו ${result.students.length} חניכים.\n\nאישור = מזג (הוסף חדשים)\nביטול = החלף הכל`);
+        if(merge){
+          let added=0;
+          result.students.forEach(s=>{
+            if(!STUDENTS_DATA.find(ex=>ex.id===s.id)){ STUDENTS_DATA.push(s); added++; }
+          });
+          saveStudentsList();
+          students=STUDENTS_DATA.map(s=>({...s,status:'pending',note:''}));
+          init();
+          showBackupStatus(`✅ מוזגו ${added} חניכים`,'ok');
+        } else {
+          STUDENTS_DATA.length=0;
+          result.students.forEach(s=>STUDENTS_DATA.push(s));
+          saveStudentsList();
+          students=STUDENTS_DATA.map(s=>({...s,status:'pending',note:''}));
+          init();
+          showBackupStatus(`✅ רשימה הוחלפה — ${result.students.length}`,'ok');
+        }
+      } else {
+        const merge=confirm(`נמצאו:\n• ${result.students.length} חניכים\n• ${result.sessions.length} שיעורים\n• ${result.tasks.length} משימות\n\nאישור = מזג\nביטול = החלף הכל`);
+        applyBackup(result, merge);
+        showBackupStatus(`✅ שוחזר — ${result.students.length} חניכים, ${result.sessions.length} שיעורים, ${result.tasks.length} משימות`,'ok');
+      }
+    }catch(err){
+      showBackupStatus('❌ '+err.message,'err');
+      console.error(err);
+    }
+    input.value='';
+  };
+  reader.readAsText(file,'UTF-8');
+}
+function showBackupStatus(msg, type){
+  const el=document.getElementById('backupStatus');
+  if(!el) return;
+  el.textContent=msg;
+  el.style.color = type==='err'?'var(--red)':'var(--green)';
+  setTimeout(()=>{ el.textContent=''; el.style.color='var(--muted)'; }, 7000);
 }
 
-// ── IMPORT BACKUP PATCHES ──
-// Patch: normalize session ids and structure on import
-function importBackup(input, type) {
-  // ... original code before parsing
-  // After parsing restored sessions:
-  // if (type === "full") {
-  //   let restoredSessions = ...;
-  //   // PATCH: normalize sessions, assign sessionId if missing
-  //   restoredSessions = normalizeSessions(restoredSessions);
-  //   // merge/replace logic as before
-  // }
-  // ... rest unchanged
-}
+// ═══════════════════════════════════════════════════════════════
+//  START
+// ═══════════════════════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
