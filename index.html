@@ -866,6 +866,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
     emptyBtn.onclick = kbConfirm;
   }
   initLogin();
+  try{
+    init();
+  }catch(e){
+    console.error('App init failed:', e);
+  }
 });
 
 // ═══════════════════════════════════════════════
