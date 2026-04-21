@@ -2227,7 +2227,8 @@ function copyWaDay(){
     showToast('⚠️ אין דוח להעתקה');
     return;
   }
-  navigator.clipboard.writeText(txt)
+  const rtlTxt = '\u202B' + txt + '\u202C';
+  navigator.clipboard.writeText(rtlTxt)
     .then(()=>showToast('📋 דוח יומי הועתק'))
     .catch(()=>showToast('❌ שגיאה בהעתקה'));
 }
@@ -2238,10 +2239,13 @@ function shareWaDay(){
     showToast('⚠️ אין דוח לשיתוף');
     return;
   }
+  const rtlTxt = '\u202B' + txt + '\u202C';
   if(navigator.share){
-    navigator.share({text:txt}).catch(()=>{});
+    navigator.share({text:rtlTxt}).catch(()=>{});
   }else{
-    copyWaDay();
+    navigator.clipboard.writeText(rtlTxt)
+      .then(()=>showToast('📋 דוח יומי הועתק'))
+      .catch(()=>showToast('❌ שגיאה בהעתקה'));
   }
 }
 
@@ -2415,7 +2419,8 @@ function copyWa(){
     showToast('⚠️ אין דוח להעתקה');
     return;
   }
-  navigator.clipboard.writeText(txt)
+  const rtlTxt = '\u202B' + txt + '\u202C';
+  navigator.clipboard.writeText(rtlTxt)
     .then(()=>showToast('📋 דוח שיעור הועתק'))
     .catch(()=>showToast('❌ שגיאה בהעתקה'));
 }
@@ -2430,10 +2435,13 @@ function shareWa(){
     showToast('⚠️ אין דוח לשיתוף');
     return;
   }
+  const rtlTxt = '\u202B' + txt + '\u202C';
   if(navigator.share){
-    navigator.share({text:txt}).catch(()=>{});
+    navigator.share({text:rtlTxt}).catch(()=>{});
   }else{
-    copyWa();
+    navigator.clipboard.writeText(rtlTxt)
+      .then(()=>showToast('📋 דוח שיעור הועתק'))
+      .catch(()=>showToast('❌ שגיאה בהעתקה'));
   }
 }
 
