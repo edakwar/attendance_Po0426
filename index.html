@@ -268,13 +268,6 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
       <button class="kbtn" onclick="kbPress('0')">0</button>
       <button class="kbtn del" onclick="kbDel()">⌫</button>
     </div>
-
-    <!-- כפתור שינוי קוד (מוצג רק אחרי כניסה מוצלחת) -->
-    <button id="changeCodeBtn" onclick="startChangeCode()"
-      style="display:none;margin-top:18px;background:none;border:none;color:var(--muted);
-             font-family:'Heebo',sans-serif;font-size:12px;cursor:pointer;text-decoration:underline">
-      שינוי קוד כניסה
-    </button>
   </div>
 </div>
 
@@ -287,7 +280,6 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
   <button class="nav-tab" onclick="goTab('report',this)">💬 דוח וואטסאפ</button>
   <button class="nav-tab" onclick="goTab('feedback',this)">⭐ שימור ושיפור</button>
   <button class="nav-tab" onclick="goTab('students',this)">👥 חניכים</button>
-  <button class="nav-tab" onclick="startChangeCode()" style="margin-right:auto;color:var(--muted);font-size:12px">🔑 שינוי קוד</button>
 </nav>
 
 <!-- SHEETS STRIP -->
@@ -689,41 +681,21 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
 
 <script>
 // ═══════════════════════════════════════════════
-//  LOGIN — מאובטח עם SHA-256
-//  • פעם ראשונה: הגדרת קוד + אימות כפול
-//  • כניסות הבאות: השוואת hash בלבד
-//  • הקוד עצמו לעולם לא נשמר — רק ה-hash
+//  LOGIN — קוד קבוע: 4110426
+//  • קוד 7 ספרות
 //  • נעילה אחרי 5 ניסיונות כושלים (5 דקות)
-//  • קוד 4–8 ספרות לבחירתך
 // ═══════════════════════════════════════════════
-const LS_HASH      = 'appCodeHash';
-const LS_SALT      = 'appCodeSalt';
+const ACCESS_CODE  = '4110426';
+const CODE_LEN     = ACCESS_CODE.length;
 const LS_LOCK_UNTIL= 'appLockUntil';
 const LS_ATTEMPTS  = 'appFailAttempts';
 const MAX_ATTEMPTS = 5;
 const LOCK_MINUTES = 5;
-const MIN_LEN = 4;
-const MAX_LEN = 8;
 
-// מצבי מסך: 'login' | 'setup1' | 'setup2' | 'change_old' | 'change_new1' | 'change_new2'
-let loginMode   = 'login';
-let loginInput  = '';
-let setupFirst  = '';   // שמור ערך ראשון בהגדרת קוד
-
-// ── SHA-256 באמצעות Web Crypto API ──────────────
-async function sha256(str){
-  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-
-// ── salt אקראי ──────────────────────────────────
-function genSalt(){
-  return Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
+let loginInput = '';
 
 // ── אתחול מסך הכניסה ────────────────────────────
-async function initLogin(){
-  // בדוק נעילה
+function initLogin(){
   const lockUntil = Number(localStorage.getItem(LS_LOCK_UNTIL)||0);
   if(Date.now() < lockUntil){
     const mins = Math.ceil((lockUntil-Date.now())/60000);
@@ -731,34 +703,29 @@ async function initLogin(){
     setSub('נסיונות כניסה חרגו');
     return;
   }
-
-  const hasHash = !!localStorage.getItem(LS_HASH);
-  if(hasHash){
-    loginMode = 'login';
-    setSub('הזן קוד כניסה');
-    setHint('\u200B');
-  } else {
-    loginMode = 'setup1';
-    setSub('ברוך הבא! הגדר קוד כניסה');
-    setHint(`בחר קוד בין ${MIN_LEN} ל-${MAX_LEN} ספרות`);
-  }
+  setSub(`הזן קוד כניסה (${CODE_LEN} ספרות)`);
+  setHint('\u200B');
   renderDots(0);
 }
 
 // ── עדכון תצוגה ─────────────────────────────────
-function setSub(t){ document.getElementById('loginSub').textContent=t; }
+function setSub(t){
+  const el=document.getElementById('loginSub');
+  if(el) el.textContent=t;
+}
 function setHint(t, isErr=false){
   const el=document.getElementById('loginHint');
-  el.textContent=t; el.className='login-hint'+(isErr?' err':'');
+  if(!el) return;
+  el.textContent=t;
+  el.className='login-hint'+(isErr?' err':'');
 }
 function renderDots(filled, state='normal'){
-  const max = loginMode.startsWith('setup')||loginMode.startsWith('change_new') ? MAX_LEN : MAX_LEN;
-  const show = Math.max(MIN_LEN, filled || MIN_LEN);
   const container=document.getElementById('loginDots');
+  if(!container) return;
   container.innerHTML='';
-  for(let i=0;i<show;i++){
+  for(let i=0;i<CODE_LEN;i++){
     const d=document.createElement('div');
-    d.style.cssText=`width:${i<4?44:36}px;height:${i<4?56:46}px`;
+    d.style.cssText='width:36px;height:46px';
     d.className='login-dot'
       +(i<filled?' filled':'')
       +(state==='error'?' error':'');
@@ -768,24 +735,15 @@ function renderDots(filled, state='normal'){
 }
 
 // ── לחיצת מקש ───────────────────────────────────
-async function kbPress(digit){
+function kbPress(digit){
   const lockUntil = Number(localStorage.getItem(LS_LOCK_UNTIL)||0);
   if(Date.now()<lockUntil) return;
-  if(loginInput.length>=MAX_LEN) return;
-
+  if(loginInput.length>=CODE_LEN) return;
   loginInput += digit;
   renderDots(loginInput.length);
-
-  // הצג כמה עוד צריך
-  if(loginMode!=='login' && loginInput.length < MIN_LEN){
-    setHint(`עוד ${MIN_LEN-loginInput.length} ספרות לפחות`);
-  } else {
-    setHint('\u200B');
-  }
-
-  // בדוק אם אפשר לאשר (לפחות MIN_LEN ספרות)
-  if(loginInput.length >= MIN_LEN){
-    // נתן ל-user להמשיך עד MAX_LEN — כאן לא מאשרים אוטומטית
+  setHint('\u200B');
+  if(loginInput.length===CODE_LEN){
+    setTimeout(checkLogin, 150);
   }
 }
 
@@ -796,32 +754,17 @@ function kbDel(){
   setHint('\u200B');
 }
 
-// ── כפתור אישור (Enter / לחיצה ארוכה) ──────────
-async function kbConfirm(){
-  if(loginInput.length < MIN_LEN){
-    setHint(`קוד חייב להכיל לפחות ${MIN_LEN} ספרות`, true);
-    return;
-  }
-
-  if(loginMode==='login')         await doLogin();
-  else if(loginMode==='setup1')   doSetup1();
-  else if(loginMode==='setup2')   await doSetup2();
-  else if(loginMode==='change_old')  await doChangeOld();
-  else if(loginMode==='change_new1') doChangeNew1();
-  else if(loginMode==='change_new2') await doChangeNew2();
+function kbConfirm(){
+  if(loginInput.length===CODE_LEN) checkLogin();
+  else setHint(`הקוד הוא ${CODE_LEN} ספרות`, true);
 }
 
-// ── כניסה רגילה ─────────────────────────────────
-async function doLogin(){
-  const salt    = localStorage.getItem(LS_SALT)||'';
-  const stored  = localStorage.getItem(LS_HASH)||'';
-  const attempt = await sha256(loginInput + salt);
-
-  if(attempt === stored){
-    // הצלחה — אפס ניסיונות
+// ── בדיקת קוד ───────────────────────────────────
+function checkLogin(){
+  if(loginInput===ACCESS_CODE){
     localStorage.removeItem(LS_ATTEMPTS);
     localStorage.removeItem(LS_LOCK_UNTIL);
-    loginSuccess();
+    hideLoginScreen();
   } else {
     loginFail();
   }
@@ -853,96 +796,12 @@ function shakeAndReset(msg){
   }, 1200);
 }
 
-// ── הגדרת קוד — שלב 1 ───────────────────────────
-function doSetup1(){
-  setupFirst = loginInput;
-  loginInput = '';
-  loginMode  = 'setup2';
-  setSub('אמת את הקוד שבחרת');
-  setHint('הזן את הקוד שוב לאישור');
-  renderDots(0);
-}
-
-// ── הגדרת קוד — שלב 2 (אימות) ──────────────────
-async function doSetup2(){
-  if(loginInput !== setupFirst){
-    setupFirst='';
-    loginInput='';
-    loginMode='setup1';
-    setSub('הקודים לא תואמים — נסה שוב');
-    setHint(`בחר קוד בין ${MIN_LEN} ל-${MAX_LEN} ספרות`, true);
-    renderDots(0);
-    return;
-  }
-  await saveCode(loginInput);
-  loginSuccess();
-}
-
-// ── שמור hash של הקוד ────────────────────────────
-async function saveCode(code){
-  const salt = genSalt();
-  const hash = await sha256(code + salt);
-  localStorage.setItem(LS_SALT, salt);
-  localStorage.setItem(LS_HASH, hash);
-}
-
-// ── שינוי קוד — ישן ─────────────────────────────
-async function doChangeOld(){
-  const salt   = localStorage.getItem(LS_SALT)||'';
-  const stored = localStorage.getItem(LS_HASH)||'';
-  const attempt= await sha256(loginInput + salt);
-  if(attempt!==stored){ shakeAndReset('קוד נוכחי שגוי'); return; }
-  loginInput='';
-  loginMode='change_new1';
-  setSub('הזן קוד חדש');
-  setHint(`בחר קוד בין ${MIN_LEN} ל-${MAX_LEN} ספרות`);
-  renderDots(0);
-}
-
-// ── שינוי קוד — חדש שלב 1 ───────────────────────
-function doChangeNew1(){
-  setupFirst=loginInput; loginInput='';
-  loginMode='change_new2';
-  setSub('אמת את הקוד החדש');
-  setHint('הזן שוב לאישור');
-  renderDots(0);
-}
-
-// ── שינוי קוד — חדש שלב 2 ───────────────────────
-async function doChangeNew2(){
-  if(loginInput!==setupFirst){
-    setupFirst=''; loginInput=''; loginMode='change_new1';
-    setSub('הקודים לא תואמים — נסה שוב');
-    setHint(`הזן קוד חדש (${MIN_LEN}-${MAX_LEN} ספרות)`, true);
-    renderDots(0); return;
-  }
-  await saveCode(loginInput);
-  // חזור למסך כניסה
-  hideLoginScreen();
-  showToast('✅ הקוד עודכן בהצלחה');
-}
-
-// ── הצלחת כניסה ─────────────────────────────────
-function loginSuccess(){
-  hideLoginScreen();
-}
-
 function hideLoginScreen(){
-  loginInput=''; setupFirst='';
+  loginInput='';
   const screen=document.getElementById('loginScreen');
   screen.style.transition='opacity .35s';
   screen.style.opacity='0';
   setTimeout(()=>{ screen.style.display='none'; }, 360);
-}
-
-// ── פתח מסך שינוי קוד ───────────────────────────
-function startChangeCode(){
-  document.getElementById('loginScreen').style.display='flex';
-  document.getElementById('loginScreen').style.opacity='1';
-  loginMode='change_old'; loginInput=''; setupFirst='';
-  setSub('הזן את הקוד הנוכחי');
-  setHint('לאימות לפני שינוי');
-  renderDots(0);
 }
 
 // ── מקלדת פיזית ─────────────────────────────────
@@ -954,10 +813,8 @@ document.addEventListener('keydown', e=>{
   else if(e.key==='Enter') kbConfirm();
 });
 
-// ── הוסף כפתור ✓ לוח המקשים ─────────────────────
-// (מחליף את הכפתור הסמוי)
+// ── הפיכת המקש הסמוי ל-✓ ───────────────────────
 document.addEventListener('DOMContentLoaded', ()=>{
-  // מחלף את הכפתור הריק ב-✓
   const emptyBtn = document.querySelector('.kbtn[style*="visibility:hidden"]');
   if(emptyBtn){
     emptyBtn.style.visibility='visible';
@@ -972,45 +829,63 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 
 // ═══════════════════════════════════════════════
-//  DATA
+//  DATA — רשימת חניכים דינמית
 // ═══════════════════════════════════════════════
-const STUDENTS_DATA = [
-  {id:"1967823",  name:"בידרדובסקי ירון"},
-  {id:"1966851",  name:"גורביץ דניאל"},
-  {id:"58788381", name:"דדון דנית"},
-  {id:"1968388",  name:"דהן יקיר יעקב"},
-  {id:"1967571",  name:"דרבאו אנדבט"},
-  {id:"1961954",  name:"כץ מאיה"},
-  {id:"1961756",  name:"מדרחי לאה שרה"},
-  {id:"1967638",  name:"סגל חן ניקול"},
-  {id:"1967360",  name:"סולימאן גוליאן"},
-  {id:"1967521",  name:"רלסטון חן ליעוז-ג'ייסון"},
-  {id:"1967582",  name:"תבול מאור יהושע"},
-  {id:"1967710",  name:"אבו שקארה דניאל"},
-  {id:"1967199",  name:"אייזק אביב"},
-  {id:"1967065",  name:"אל עלי נגם"},
-  {id:"1967334",  name:"בן שבת נועם"},
-  {id:"1967585",  name:"ברדה רז"},
-  {id:"1966622",  name:"גולדמן יובל"},
-  {id:"1967515",  name:"גרינבלום יצחק"},
-  {id:"1967730",  name:"דכור אליאס"},
-  {id:"1967548",  name:"הולדר רחלי"},
-  {id:"1967579",  name:"זינגר ליאור"},
-  {id:"1967359",  name:"חאיק אמל"},
-  {id:"1964043",  name:"חלפין עומר"},
-  {id:"1967466",  name:"כהן אושר"},
-  {id:"1967544",  name:"מולא האיל"},
-  {id:"8439699",  name:"נומה שני"},
-  {id:"1968033",  name:"עמית טל"},
-  {id:"1967641",  name:"צ'יקנוב יקטרינה"},
-  {id:"1967260",  name:"צרפתי מיה"},
-  {id:"1967838",  name:"קוריישה דניאל"},
-  {id:"1968067",  name:"שאער איילת השחר"},
-  {id:"9345120",  name:"שביט שיראל"},
-  {id:"9219168",  name:"שוקר תהילה"},
-  {id:"1967984",  name:"שחאדה מאריוס"},
-  {id:"1949455",  name:"שקור קיסר"},
+const DEFAULT_STUDENTS = [
+  {id:"1967823",  name:"בידרדובסקי ירון",   room:""},
+  {id:"1966851",  name:"גורביץ דניאל",       room:""},
+  {id:"58788381", name:"דדון דנית",           room:""},
+  {id:"1968388",  name:"דהן יקיר יעקב",      room:""},
+  {id:"1967571",  name:"דרבאו אנדבט",        room:""},
+  {id:"1961954",  name:"כץ מאיה",            room:""},
+  {id:"1961756",  name:"מדרחי לאה שרה",      room:""},
+  {id:"1967638",  name:"סגל חן ניקול",       room:""},
+  {id:"1967360",  name:"סולימאן גוליאן",     room:""},
+  {id:"1967521",  name:"רלסטון חן ליעוז-ג'ייסון", room:""},
+  {id:"1967582",  name:"תבול מאור יהושע",    room:""},
+  {id:"1967710",  name:"אבו שקארה דניאל",    room:""},
+  {id:"1967199",  name:"אייזק אביב",         room:""},
+  {id:"1967065",  name:"אל עלי נגם",         room:""},
+  {id:"1967334",  name:"בן שבת נועם",        room:""},
+  {id:"1967585",  name:"ברדה רז",            room:""},
+  {id:"1966622",  name:"גולדמן יובל",        room:""},
+  {id:"1967515",  name:"גרינבלום יצחק",      room:""},
+  {id:"1967730",  name:"דכור אליאס",         room:""},
+  {id:"1967548",  name:"הולדר רחלי",         room:""},
+  {id:"1967579",  name:"זינגר ליאור",        room:""},
+  {id:"1967359",  name:"חאיק אמל",           room:""},
+  {id:"1964043",  name:"חלפין עומר",         room:""},
+  {id:"1967466",  name:"כהן אושר",           room:""},
+  {id:"1967544",  name:"מולא האיל",          room:""},
+  {id:"8439699",  name:"נומה שני",           room:""},
+  {id:"1968033",  name:"עמית טל",            room:""},
+  {id:"1967641",  name:"צ'יקנוב יקטרינה",   room:""},
+  {id:"1967260",  name:"צרפתי מיה",          room:""},
+  {id:"1967838",  name:"קוריישה דניאל",      room:""},
+  {id:"1968067",  name:"שאער איילת השחר",    room:""},
+  {id:"9345120",  name:"שביט שיראל",         room:""},
+  {id:"9219168",  name:"שוקר תהילה",         room:""},
+  {id:"1967984",  name:"שחאדה מאריוס",       room:""},
+  {id:"1949455",  name:"שקור קיסר",          room:""},
 ];
+
+// טען מ-localStorage — אם ריק, השתמש בברירת מחדל
+let STUDENTS_DATA = (()=>{
+  try{
+    const saved = localStorage.getItem('studentsList');
+    if(saved){
+      const parsed = JSON.parse(saved);
+      if(Array.isArray(parsed) && parsed.length>0) return parsed;
+    }
+  }catch(e){}
+  // אתחול ראשון — שמור ברירת מחדל
+  localStorage.setItem('studentsList', JSON.stringify(DEFAULT_STUDENTS));
+  return DEFAULT_STUDENTS.map(s=>({...s}));
+})();
+
+function saveStudentsList(){
+  localStorage.setItem('studentsList', JSON.stringify(STUDENTS_DATA));
+}
 
 // ═══════════════════════════════════════════════
 //  STATE
@@ -1055,7 +930,19 @@ function init(){
   renderStudentMgmt(); refreshFbDates();
 }
 
-// שמירה אוטומטית ב-Sheets לאחר כל שיעור
+// רענן רק את תפריט התורן — בלי לאפס את כל המצב
+function refreshDutySelect(){
+  const ds = document.getElementById('dutySelect');
+  if(!ds) return;
+  const cur = ds.value;
+  ds.innerHTML='<option value="">— בחר חניך —</option>';
+  STUDENTS_DATA.forEach(s=>{
+    const o=document.createElement('option');
+    o.value=s.id; o.textContent=s.name;
+    if(s.id===cur) o.selected=true;
+    ds.appendChild(o);
+  });
+}
 async function autoSaveToSheets(sessionData){
   try{
     const payload={
@@ -1377,8 +1264,6 @@ function refreshSummary(){
   html+=`</tbody></table>`;
   el.innerHTML=html;
 
-  renderFeedbackList();
-
   // Multi-absent
   const absentMap={};
   todaySessions.forEach(s=>{
@@ -1658,19 +1543,28 @@ function showToast(msg){
 //  STUDENT MANAGEMENT
 // ═══════════════════════════════════════════════
 function addStudent(){
-  const name=document.getElementById('newName').value.trim();
-  const id  =document.getElementById('newId').value.trim();
-  const room=document.getElementById('newRoom').value.trim();
-  if(!name||!id){showToast('⚠️ יש למלא שם ומספר אישי');return;}
-  if(STUDENTS_DATA.find(s=>s.id===id)){showToast('⚠️ מספר אישי כבר קיים');return;}
-  STUDENTS_DATA.push({id,name,room});
+  const name = document.getElementById('newName').value.trim();
+  const id   = document.getElementById('newId').value.trim();
+  const room = document.getElementById('newRoom').value.trim();
+  if(!name||!id){ showToast('⚠️ יש למלא שם ומספר אישי'); return; }
+  if(STUDENTS_DATA.find(s=>s.id===id)){ showToast('⚠️ מספר אישי כבר קיים'); return; }
+
+  STUDENTS_DATA.push({id, name, room});
   saveStudentsList();
-  students=STUDENTS_DATA.map(s=>({...s,status:'pending',note:''}));
+
+  // רענן רשימת סימון נוכחות (שמור סטטוסים קיימים)
+  if(!students.find(s=>s.id===id)){
+    students.push({id, name, room, status:'pending', note:''});
+  }
+
   document.getElementById('newName').value='';
   document.getElementById('newId').value='';
   document.getElementById('newRoom').value='';
+
   renderStudentMgmt();
-  init(); // refresh duty dropdown
+  refreshDutySelect();
+  updateStats();
+  renderList();
   showToast(`✅ חניך "${name}" נוסף`);
 }
 
@@ -1684,12 +1578,19 @@ function openDeleteModal(id){
 function closeDeleteModal(){ document.getElementById('deleteModal').classList.remove('open'); _deleteTarget=null; }
 function confirmDelete(){
   if(!_deleteTarget) return;
-  STUDENTS_DATA.splice(STUDENTS_DATA.findIndex(s=>s.id===_deleteTarget),1);
+  const idx = STUDENTS_DATA.findIndex(s=>s.id===_deleteTarget);
+  if(idx>=0) STUDENTS_DATA.splice(idx,1);
   saveStudentsList();
-  students=STUDENTS_DATA.map(s=>({...s,status:'pending',note:''}));
+
+  // הסר גם ממערך הנוכחות
+  const si = students.findIndex(s=>s.id===_deleteTarget);
+  if(si>=0) students.splice(si,1);
+
   closeDeleteModal();
   renderStudentMgmt();
-  init();
+  refreshDutySelect();
+  updateStats();
+  renderList();
   showToast('🗑️ חניך נמחק');
 }
 
@@ -1705,23 +1606,32 @@ function openEditModal(id){
 function closeEditModal(){ document.getElementById('editStudentModal').classList.remove('open'); _editTarget=null; }
 function confirmEdit(){
   if(!_editTarget) return;
-  // מצא לפי אינדקס — מבטיח שגם שינוי id עובד
-  const idx=STUDENTS_DATA.findIndex(s=>s.id===_editTarget);
+  const idx = STUDENTS_DATA.findIndex(s=>s.id===_editTarget);
   if(idx<0){ showToast('⚠️ חניך לא נמצא'); return; }
-  const newName=document.getElementById('editName').value.trim();
-  const newId  =document.getElementById('editId').value.trim();
-  const newRoom=document.getElementById('editRoom').value.trim();
-  if(!newName||!newId){showToast('⚠️ שם ומספר אישי הם שדות חובה');return;}
-  // בדוק שה-id החדש לא כבר תפוס ע"י חניך אחר
-  const duplicate=STUDENTS_DATA.findIndex(s=>s.id===newId);
-  if(duplicate>=0 && duplicate!==idx){showToast('⚠️ מספר אישי כבר קיים לחניך אחר');return;}
-  STUDENTS_DATA[idx]={...STUDENTS_DATA[idx], name:newName, id:newId, room:newRoom};
+
+  const newName = document.getElementById('editName').value.trim();
+  const newId   = document.getElementById('editId').value.trim();
+  const newRoom = document.getElementById('editRoom').value.trim();
+  if(!newName||!newId){ showToast('⚠️ שם ומספר אישי הם שדות חובה'); return; }
+
+  const duplicate = STUDENTS_DATA.findIndex(s=>s.id===newId);
+  if(duplicate>=0 && duplicate!==idx){ showToast('⚠️ מספר אישי כבר קיים לחניך אחר'); return; }
+
+  // עדכן ב-STUDENTS_DATA
+  STUDENTS_DATA[idx] = { ...STUDENTS_DATA[idx], name:newName, id:newId, room:newRoom };
   saveStudentsList();
-  students=STUDENTS_DATA.map(s=>({...s,status:'pending',note:''}));
-  _editTarget=null;
+
+  // עדכן גם ב-students (מערך הנוכחות) — שמור סטטוס ו-note
+  const si = students.findIndex(s=>s.id===_editTarget);
+  if(si>=0){
+    students[si] = { ...students[si], name:newName, id:newId, room:newRoom };
+  }
+
+  _editTarget = null;
   closeEditModal();
   renderStudentMgmt();
-  init();
+  refreshDutySelect();
+  renderList();
   showToast(`✅ פרטי "${newName}" עודכנו`);
 }
 
