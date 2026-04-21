@@ -343,7 +343,8 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
       <button class="btn btn-green"  onclick="markAll('present')">✅ הכל נוכח</button>
       <button class="btn btn-red"    onclick="markAll('absent')">❌ הכל נעדר</button>
       <button class="btn btn-ghost"  onclick="resetAll()">🔄 אפס</button>
-      <button class="btn btn-accent" onclick="openSaveModal()" style="margin-right:auto">💾 שמור שיעור</button>
+    <button class="btn btn-accent" onclick="openSaveModal()" style="margin-right:auto">💾 שמור שיעור</button>
+    <button class="btn btn-red" onclick="if(_editingSessionId) safeDeleteSessionReport(_editingSessionId); else showToast('⚠️ לא נבחר דיווח לעריכה')">🗑️ מחק דיווח בעריכה</button>
     </div>
   </div>
 
@@ -488,13 +489,24 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 
-  <!-- Day summary WA -->
+   <!-- Day summary WA -->
   <div class="card">
     <div class="card-title">📆 דוח סיכום יום מלא</div>
-    <button class="btn btn-purple" onclick="buildDaySummaryWa()">🔄 צור דוח יום מלא</button>
-    <div class="wa-box" id="waDayBox" style="margin-top:12px">לחץ "צור דוח" לסיכום כל השיעורים של היום…</div>
+    <div class="session-row" style="margin-bottom:14px">
+      <div class="field">
+        <label>בחר תאריך לדוח יומי</label>
+        <select id="dayReportDate" style="width:220px" onchange="buildDaySummaryWa()">
+          <option value="">— בחר תאריך —</option>
+        </select>
+      </div>
+      <div class="field" style="justify-content:flex-end">
+        <button class="btn btn-purple" style="margin-top:18px" onclick="buildDaySummaryWa()">🔄 צור דוח יום מלא</button>
+      </div>
+    </div>
+    <div class="wa-box" id="waDayBox" style="margin-top:12px">בחר תאריך כדי ליצור דוח יומי…</div>
     <div class="wa-actions">
       <button class="btn btn-wa" onclick="copyWaDay()">📋 העתק</button>
+      <button class="btn btn-ghost" onclick="shareWaDay()">📤 שתף</button>
     </div>
   </div>
 </div>
@@ -552,6 +564,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
     </div>
   </div>
 </div>
+
 
 <!-- ══════════════════════════════════════════════ -->
 <!--  TAB 6 — STUDENTS MANAGEMENT                  -->
@@ -954,6 +967,9 @@ let _editTarget   = null;
 let _fbDate       = null;
 let _fbSession    = null;
 let _editingSessionId = null;
+let _editingOriginalSessionId = null;
+
+
 
 function getCurrentDateObj(){
   return new Date();
@@ -992,6 +1008,9 @@ function normalizeSession(session){
     instructors: Array.isArray(session.instructors) ? session.instructors : [],
     students: Array.isArray(session.students) ? session.students : []
   };
+}
+function findSessionById(list, sessionId){
+  return (list || []).find(s => String(s.sessionId) === String(sessionId)) || null;
 }
 
 function getCurrentDraft(){
@@ -1373,6 +1392,13 @@ async function autoSaveToSheets(sessionData){
     console.warn('Sheets auto-save failed:',e);
   }
 }
+const savedUrl = safeStorage.getItem('sheetsUrl');
+if(savedUrl && savedUrl.trim() && savedUrl.trim()===SHEETS_URL){
+  sheetsUrl = savedUrl.trim();
+}else{
+  sheetsUrl = SHEETS_URL;
+  safeStorage.setItem('sheetsUrl', SHEETS_URL);
+}
 // ═══════════════════════════════════════════════
 //  TABS
 // ═══════════════════════════════════════════════
@@ -1380,9 +1406,10 @@ function goTab(id,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+id).classList.add('active');
-  el.classList.add('active');
+  if(el) el.classList.add('active');
   if(id==='summary')  refreshSummary();
   if(id==='report')   refreshReportSelect();
+  if(id==='report')   refreshDayReportDates();
   if(id==='feedback') refreshFbDates();
   if(id==='students') renderStudentMgmt();
   if(id==='archive')  refreshArchiveDates();
@@ -1523,19 +1550,33 @@ function saveSession(){
   const time   = new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
   const notes  = document.getElementById('sessionNotes').value.trim();
   const currentDate = getTodayStr();
-  const existingByName = savedSessions.find(s=>s.name===name&&s.date===currentDate);
-  const keep    = existingByName?.keep    || '';
-  const improve = existingByName?.improve || '';
+  const editingSession = _editingSessionId ? findSessionById(savedSessions, _editingSessionId) : null;
+  const existingByName = !editingSession ? savedSessions.find(s=>s.name===name&&s.date===currentDate) : null;
+  const keep    = document.getElementById('fbKeep')?.value?.trim() || editingSession?.keep || existingByName?.keep || '';
+  const improve = document.getElementById('fbImprove')?.value?.trim() || editingSession?.improve || existingByName?.improve || '';
+  const sessionId = _editingSessionId || uid();
+  const sessionTime = editingSession?.time || time;
+  const sessionDate = editingSession?.date || currentDate;
 
   const sessionData = normalizeSession({
-    sessionId: uid(),
-    name, date:currentDate, time,
+    sessionId,
+    name,
+    date:sessionDate,
+    time:sessionTime,
     instructors:[...instructors],
-    notes, keep, improve,
+    notes,
+    keep,
+    improve,
     students: students.map(s=>({...s}))
   });
 
-  savedSessions.push(sessionData);
+  if(_editingSessionId){
+    const idx = savedSessions.findIndex(s=>s.sessionId===_editingSessionId);
+    if(idx>=0) savedSessions[idx] = sessionData;
+    else savedSessions.push(sessionData);
+  }else{
+    savedSessions.push(sessionData);
+  }
 
   persistSessions();
 
@@ -1545,10 +1586,52 @@ function saveSession(){
   refreshSessionSelects();
   refreshSummary();
   refreshReportSelect();
+  refreshDayReportDates();
   refreshFbDates();
   refreshArchiveDates();
-  showToast(`✅ שיעור "${name}" נשמר`);
+  showToast(_editingSessionId ? `✅ שיעור "${name}" עודכן` : `✅ שיעור "${name}" נשמר`);
   clearDraft();
+  _editingSessionId = null;
+  _editingOriginalSessionId = null;
+}
+
+function deleteSessionReport(sessionId){
+  const session = findSessionById(savedSessions, sessionId);
+  if(!session){
+    showToast('⚠️ השיעור לא נמצא');
+    return;
+  }
+
+  const ok = confirm(`למחוק את הדיווח של "${session.name}" מתאריך ${session.date}?`);
+  if(!ok) return;
+
+  savedSessions = savedSessions.filter(s=>s.sessionId!==sessionId);
+  persistSessions();
+
+  if(_editingSessionId===sessionId) _editingSessionId = null;
+  if(_editingOriginalSessionId===sessionId) _editingOriginalSessionId = null;
+  if(_fbSession===sessionId) _fbSession = null;
+
+  refreshSessionSelects();
+  refreshSummary();
+  refreshReportSelect();
+  refreshDayReportDates();
+  refreshFbDates();
+  refreshArchiveDates();
+
+  const fbForm = document.getElementById('fbForm');
+  if(fbForm) fbForm.style.display='none';
+
+  document.getElementById('sessionName').value = '';
+  document.getElementById('sessionNotes').value = '';
+  instructors = [];
+  renderInstructors();
+  rebuildStudentsFromMaster();
+  updateStats();
+  renderList();
+  clearDraft();
+
+  showToast('🗑️ הדיווח נמחק');
 }
 
 // ═══════════════════════════════════════════════
@@ -1688,7 +1771,7 @@ function refreshSummary(){
         const icon=st.status==='absent'?'❌':st.status==='sick'?'🏥':'📝';
         return `${icon} ${escHtml(st.name)}${st.note?` <span class="absent-reason">(${escHtml(st.note)})</span>`:''}`;
       }).join('<br>')||'<span style="color:var(--green)">כולם נכחו</span>'}</td>
-      <td><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="openSessionEditor('${safeAttr(s.sessionId)}')">✏️ ערוך</button></td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="safeOpenSessionEditor('${safeAttr(s.sessionId)}')">✏️ ערוך</button><button class="btn btn-red" style="padding:4px 10px;font-size:12px" onclick="safeDeleteSessionReport('${safeAttr(s.sessionId)}')">🗑️ מחק</button></td>
     </tr>`;
   });
   html+=`</tbody></table>`;
@@ -1713,43 +1796,113 @@ function refreshSummary(){
     `</tbody></table>`;
 }
 
+function safeOpenSessionEditor(sessionId){
+  try{
+    openSessionEditor(sessionId);
+  }catch(e){
+    console.error('openSessionEditor failed:', e);
+    showToast(`❌ שגיאה בפתיחת דיווח לעריכה: ${e && e.message ? e.message : e}`);
+  }
+}
+
+function safeDeleteSessionReport(sessionId){
+  try{
+    deleteSessionReport(sessionId);
+  }catch(e){
+    console.error('deleteSessionReport failed:', e);
+    showToast(`❌ שגיאה במחיקת דיווח: ${e && e.message ? e.message : e}`);
+  }
+}
+
 function openSessionEditor(sessionId){
   const session = findSessionById(savedSessions, sessionId);
-  if(!session) return;
+  if(!session){
+    showToast('⚠️ השיעור לא נמצא');
+    return;
+  }
 
   _editingSessionId = sessionId;
+  _editingOriginalSessionId = sessionId;
+  _fbSession = sessionId;
 
-  const feedbackBtn = Array.from(document.querySelectorAll('.nav-tab')).find(btn => btn.textContent.includes('שימור ושיפור'));
-  if(feedbackBtn){
-    goTab('feedback', feedbackBtn);
+  const attendanceBtn = Array.from(document.querySelectorAll('.nav-tab')).find(btn => btn.textContent.includes('נוכחות'));
+  if(attendanceBtn){
+    goTab('attendance', attendanceBtn);
   }else{
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-    document.getElementById('tab-feedback').classList.add('active');
+    document.getElementById('tab-attendance').classList.add('active');
   }
 
-  const dateSel = document.getElementById('fbDateSelect');
-  if(dateSel){
-    dateSel.value = session.date;
-    onFbDateChange();
-  }
+  const sessionNameEl = document.getElementById('sessionName');
+  const sessionNotesEl = document.getElementById('sessionNotes');
+  if(sessionNameEl) sessionNameEl.value = session.name || '';
+  if(sessionNotesEl) sessionNotesEl.value = session.notes || '';
 
-  const chip = Array.from(document.querySelectorAll('#fbSessionChips .session-chip')).find(c => {
-    const click = c.getAttribute('onclick') || '';
-    return click.includes(sessionId);
+  instructors = Array.isArray(session.instructors) ? [...session.instructors] : [];
+  renderInstructors();
+
+  students = STUDENTS_DATA.map(base=>{
+    const saved = (session.students||[]).find(st=>String(st.id)===String(base.id)) || {};
+    return {
+      ...base,
+      status: saved.status || 'pending',
+      note: saved.note || ''
+    };
   });
 
-  if(chip){
-    selectFbSession(sessionId, chip);
-  } else {
-    _fbSession = sessionId;
-    document.getElementById('fbFormTitle').textContent=`📚 ${session.name} — ${session.time}`;
-    document.getElementById('fbNotes').value   = session.notes||'';
-    document.getElementById('fbKeep').value    = session.keep||'';
-    document.getElementById('fbImprove').value = session.improve||'';
-    document.getElementById('fbForm').style.display='block';
-    renderFbAllSessions();
+  const fbNotesEl = document.getElementById('fbNotes');
+  const fbKeepEl = document.getElementById('fbKeep');
+  const fbImproveEl = document.getElementById('fbImprove');
+  const fbFormTitleEl = document.getElementById('fbFormTitle');
+  const fbFormEl = document.getElementById('fbForm');
+  if(fbFormTitleEl) fbFormTitleEl.textContent = `📚 ${session.name} — ${session.time}`;
+  if(fbNotesEl) fbNotesEl.value = session.notes || '';
+  if(fbKeepEl) fbKeepEl.value = session.keep || '';
+  if(fbImproveEl) fbImproveEl.value = session.improve || '';
+  if(fbFormEl) fbFormEl.style.display = 'block';
+
+  updateStats();
+  renderList();
+  saveDraft();
+  showToast('✏️ הדיווח נטען לעריכה, עדכן ואז לחץ שמור שיעור');
+}
+
+function selectFbSession(sessionId, chipEl){
+  _fbSession = sessionId;
+  document.querySelectorAll('#fbSessionChips .session-chip').forEach(c=>c.classList.remove('selected'));
+  if(chipEl) chipEl.classList.add('selected');
+
+  const s = findSessionById(savedSessions, sessionId);
+  if(!s) return;
+
+  document.getElementById('fbFormTitle').textContent=`📚 ${s.name} — ${s.time}`;
+  document.getElementById('fbNotes').value   = s.notes || '';
+  document.getElementById('fbKeep').value    = s.keep || '';
+  document.getElementById('fbImprove').value = s.improve || '';
+  document.getElementById('fbForm').style.display='block';
+
+  if(_editingOriginalSessionId && _editingOriginalSessionId===sessionId){
+    const sessionNameEl = document.getElementById('sessionName');
+    const sessionNotesEl = document.getElementById('sessionNotes');
+    if(sessionNameEl) sessionNameEl.value = s.name || '';
+    if(sessionNotesEl) sessionNotesEl.value = s.notes || '';
+    instructors = Array.isArray(s.instructors) ? [...s.instructors] : [];
+    renderInstructors();
+    students = STUDENTS_DATA.map(base=>{
+      const saved = (s.students||[]).find(st=>String(st.id)===String(base.id)) || {};
+      return {
+        ...base,
+        status: saved.status || 'pending',
+        note: saved.note || ''
+      };
+    });
+    updateStats();
+    renderList();
+    saveDraft();
   }
+
+  renderFbAllSessions();
 }
 
 function refreshArchiveDates(){
@@ -1810,7 +1963,8 @@ function renderArchiveByDate(){
             <div style="font-size:16px;font-weight:900">📚 ${escHtml(s.name)}</div>
             <div style="font-size:12px;color:var(--muted)">📅 ${escHtml(s.date)} | ⏰ ${escHtml(s.time)}${s.instructors&&s.instructors.length?` | 👨‍🏫 ${escHtml(s.instructors.join(', '))}`:''}</div>
           </div>
-          <button class="btn btn-ghost" style="padding:5px 11px;font-size:12px" onclick="openSessionEditor('${safeAttr(s.sessionId)}')">✏️ ערוך</button>
+          <button class="btn btn-ghost" style="padding:5px 11px;font-size:12px" onclick="safeOpenSessionEditor('${safeAttr(s.sessionId)}')">✏️ ערוך</button>
+          <button class="btn btn-red" style="padding:5px 11px;font-size:12px" onclick="safeDeleteSessionReport('${safeAttr(s.sessionId)}')">🗑️ מחק</button>
         </div>
         ${s.notes?`<div style="font-size:13px;color:var(--muted);margin-bottom:6px">📝 <b>הערות:</b> ${escHtml(s.notes)}</div>`:''}
         ${s.keep?`<div style="font-size:13px;color:var(--green);margin-bottom:6px">⭐ <b>לשימור:</b> ${escHtml(s.keep)}</div>`:''}
@@ -1830,6 +1984,104 @@ function renderArchiveByDate(){
   }).join('');
 }
 
+function saveFbForm(){
+
+  if(!_fbSession){showToast('⚠️ לא נבחר שיעור');return;}
+
+  const s = findSessionById(savedSessions, _fbSession);
+
+  if(!s){showToast('⚠️ השיעור לא נמצא');return;}
+
+  s.notes   = document.getElementById('fbNotes').value.trim();
+  s.keep    = document.getElementById('fbKeep').value.trim();
+  s.improve = document.getElementById('fbImprove').value.trim();
+
+  if(_editingOriginalSessionId && _editingOriginalSessionId===_fbSession){
+
+    const sessionNameEl = document.getElementById('sessionName');
+    const sessionNotesEl = document.getElementById('sessionNotes');
+    if(sessionNameEl) sessionNameEl.value = s.name || '';
+    if(sessionNotesEl) sessionNotesEl.value = s.notes || '';
+
+  }
+  persistSessions();
+  refreshSummary();
+  refreshReportSelect();
+  refreshFbDates();
+  refreshArchiveDates();
+  renderFbAllSessions();
+  showToast('💾 שימור ושיפור נשמרו');
+
+}
+
+function selectFbSession(sessionId, chipEl){
+  _fbSession = sessionId;
+  document.querySelectorAll('#fbSessionChips .session-chip').forEach(c=>c.classList.remove('selected'));
+  if(chipEl) chipEl.classList.add('selected');
+
+  const s = findSessionById(savedSessions, sessionId);
+  if(!s) return;
+
+  document.getElementById('fbFormTitle').textContent=`📚 ${s.name} — ${s.time}`;
+  document.getElementById('fbNotes').value   = s.notes || '';
+  document.getElementById('fbKeep').value    = s.keep || '';
+  document.getElementById('fbImprove').value = s.improve || '';
+  document.getElementById('fbForm').style.display='block';
+
+  if(_editingOriginalSessionId && _editingOriginalSessionId===sessionId){
+    const sessionNameEl = document.getElementById('sessionName');
+    const sessionNotesEl = document.getElementById('sessionNotes');
+    if(sessionNameEl) sessionNameEl.value = s.name || '';
+    if(sessionNotesEl) sessionNotesEl.value = s.notes || '';
+
+    instructors = Array.isArray(s.instructors) ? [...s.instructors] : [];
+    renderInstructors();
+
+    students = STUDENTS_DATA.map(base=>{
+      const saved = (s.students||[]).find(st=>String(st.id)===String(base.id)) || {};
+      return {
+        ...base,
+        status: saved.status || 'pending',
+        note: saved.note || ''
+      };
+    });
+
+    updateStats();
+    renderList();
+    saveDraft();
+  }
+
+  renderFbAllSessions();
+}
+function saveFbForm(){
+  if(!_fbSession){
+    showToast('⚠️ לא נבחר שיעור');
+    return;
+  }
+
+  const s = findSessionById(savedSessions, _fbSession);
+  if(!s){
+    showToast('⚠️ השיעור לא נמצא');
+    return;
+  }
+
+  s.notes   = document.getElementById('fbNotes').value.trim();
+  s.keep    = document.getElementById('fbKeep').value.trim();
+  s.improve = document.getElementById('fbImprove').value.trim();
+
+  if(_editingOriginalSessionId && _editingOriginalSessionId===_fbSession){
+    const sessionNotesEl = document.getElementById('sessionNotes');
+    if(sessionNotesEl) sessionNotesEl.value = s.notes || '';
+  }
+
+  persistSessions();
+  refreshSummary();
+  refreshReportSelect();
+  refreshFbDates();
+  refreshArchiveDates();
+  renderFbAllSessions();
+  showToast('💾 שימור, שיפור והערות נשמרו');
+}
 // ═══════════════════════════════════════════════
 //  WHATSAPP REPORT
 // ═══════════════════════════════════════════════
@@ -1841,6 +2093,147 @@ function refreshReportSelect(){
     const o=document.createElement('option');
     o.value=s.sessionId; o.textContent=`${s.name} (${s.time})`; sel.appendChild(o);
   });
+}
+function refreshDayReportDates(){
+  const sel = document.getElementById('dayReportDate');
+  if(!sel) return;
+
+  const cur = sel.value || '';
+  const dates = [...new Set(
+    savedSessions
+      .filter(s => s && s.date)
+      .map(s => String(s.date).trim())
+  )].sort((a,b)=>dateToSort(b)-dateToSort(a));
+
+  sel.innerHTML = '<option value="">— בחר תאריך —</option>';
+
+  dates.forEach(d=>{
+    const o = document.createElement('option');
+    o.value = d;
+    o.textContent = d;
+    if(d===cur) o.selected = true;
+    sel.appendChild(o);
+  });
+}
+
+function buildDaySummaryWa(){
+  const selectedDate = document.getElementById('dayReportDate')?.value || '';
+  const box = document.getElementById('waDayBox');
+
+  if(!selectedDate){
+    box.textContent = 'בחר תאריך כדי ליצור דוח יומי…';
+    return;
+  }
+
+  const daySessions = savedSessions.filter(s => String(s.date).trim() === String(selectedDate).trim());
+
+  if(!daySessions.length){
+    box.textContent = 'אין דיווח ליום שנבחר';
+    return;
+  }
+
+  const dutyId = document.getElementById('dutySelect')?.value || '';
+  const duty = STUDENTS_DATA.find(st => String(st.id) === String(dutyId));
+  const dutyNotes = document.getElementById('dutyNotes')?.value.trim() || '';
+
+  let totalStudents = STUDENTS_DATA.length;
+  const absentMap = {};
+  let totalPresentMarks = 0;
+  let totalMarked = 0;
+
+  let msg = '';
+  msg += `📆 *דוח סיכום יומי*\n`;
+  msg += `━━━━━━━━━━━━━━━━━━\n`;
+  msg += `📅 *תאריך:* ${selectedDate}\n`;
+  if(duty) msg += `🗂️ *תורן:* ${duty.name}\n`;
+  if(dutyNotes) msg += `📝 *הערות תורן:* ${dutyNotes}\n`;
+  msg += `\n`;
+
+  daySessions.forEach((s, idx) => {
+    const present = s.students.filter(st => st.status === 'present');
+    const absent = s.students.filter(st => st.status === 'absent');
+    const sick = s.students.filter(st => st.status === 'sick');
+    const other = s.students.filter(st => st.status === 'other');
+    const marked = s.students.filter(st => st.status !== 'pending');
+    const pct = s.students.length ? Math.round((present.length / s.students.length) * 100) : 0;
+
+    totalPresentMarks += present.length;
+    totalMarked += marked.length;
+
+    [...absent, ...sick, ...other].forEach(st => {
+      if(!absentMap[st.id]) absentMap[st.id] = { name: st.name, items: [] };
+      absentMap[st.id].items.push(
+        `${s.name}: ${st.status === 'absent' ? 'נעדר' : st.status === 'sick' ? 'מרפאה' : 'אחר'}${st.note ? ` (${st.note})` : ''}`
+      );
+    });
+
+    msg += `${idx + 1}. *${s.name}*`;
+    if(s.time) msg += ` , ${s.time}`;
+    msg += `\n`;
+    if(s.instructors && s.instructors.length) msg += `👨‍🏫 ${s.instructors.join(', ')}\n`;
+    if(s.notes) msg += `📝 ${s.notes}\n`;
+    if(s.keep) msg += `⭐ לשימור: ${s.keep}\n`;
+    if(s.improve) msg += `🔧 לשיפור: ${s.improve}\n`;
+    msg += `📊 נוכחים: ${present.length}/${s.students.length} (${pct}%)\n`;
+
+    if(absent.length || sick.length || other.length){
+      msg += `חריגים:\n`;
+      [...absent, ...sick, ...other].forEach((st, i) => {
+        msg += `   ${i + 1}) ${st.status === 'absent' ? '❌' : st.status === 'sick' ? '🏥' : '📝'} ${st.name}${st.note ? ` , ${st.note}` : ''}\n`;
+      });
+    } else {
+      msg += `✅ ללא חריגים\n`;
+    }
+
+    msg += `\n`;
+  });
+
+  const uniqueAbsent = Object.values(absentMap);
+  const overallPct = totalMarked ? Math.round((totalPresentMarks / totalMarked) * 100) : 0;
+
+  msg += `━━━━━━━━━━━━━━━━━━\n`;
+  msg += `*סיכום יומי כללי*\n`;
+  msg += `📚 שיעורים: ${daySessions.length}\n`;
+  msg += `👥 חניכים ברשימה: ${totalStudents}\n`;
+  msg += `✅ סך סימוני נוכחות: ${totalPresentMarks}\n`;
+  msg += `📈 אחוז נוכחות ממוצע מסומן: ${overallPct}%\n`;
+  msg += `🚨 חניכים עם חריגים: ${uniqueAbsent.length}\n`;
+
+  if(uniqueAbsent.length){
+    msg += `\n*פירוט חריגים יומי:*\n`;
+    uniqueAbsent.forEach((item, i) => {
+      msg += `${i + 1}. ${item.name}\n`;
+      item.items.forEach(line => {
+        msg += `   • ${line}\n`;
+      });
+    });
+  }
+
+  box.textContent = msg.trim();
+}
+
+function copyWaDay(){
+  const txt = document.getElementById('waDayBox').textContent.trim();
+  if(!txt || txt.includes('בחר תאריך')){
+    showToast('⚠️ אין דוח להעתקה');
+    return;
+  }
+  navigator.clipboard.writeText(txt)
+    .then(()=>showToast('📋 דוח יומי הועתק'))
+    .catch(()=>showToast('❌ שגיאה בהעתקה'));
+}
+
+function shareWaDay(){
+  const txt = document.getElementById('waDayBox').textContent.trim();
+  if(!txt || txt.includes('בחר תאריך')){
+    showToast('⚠️ אין דוח לשיתוף');
+    return;
+  }
+  if(navigator.share){
+    navigator.share({text:txt}).catch(()=>{});
+  }else{
+    copyWaDay();
+  }
 }
 
 function buildWaReport(){
@@ -2072,6 +2465,7 @@ async function testConn(){
         refreshSessionSelects();
         refreshSummary();
         refreshReportSelect();
+        refreshDayReportDates();
         renderStudentMgmt();
         refreshFbDates();
         refreshArchiveDates();
@@ -2315,26 +2709,6 @@ function selectFbSession(sessionId, el){
   document.getElementById('fbImprove').value = s.improve||'';
   document.getElementById('fbForm').style.display='block';
   renderFbAllSessions();
-}
-
-function saveFbForm(){
-  if(!_fbDate||!_fbSession){showToast('⚠️ בחר תאריך ושיעור תחילה');return;}
-  const s=savedSessions.find(s=>s.sessionId===_fbSession);
-  if(!s) return;
-  s.notes   = document.getElementById('fbNotes').value.trim();
-  s.keep    = document.getElementById('fbKeep').value.trim();
-  s.improve = document.getElementById('fbImprove').value.trim();
-  safeStorage.setItem('sessions',JSON.stringify(savedSessions));
-  refreshSummary();
-  refreshArchiveDates();
-  onFbDateChange();
-  const selectedChip = Array.from(document.querySelectorAll('#fbSessionChips .session-chip')).find(c => {
-    const click = c.getAttribute('onclick') || '';
-    return click.includes(_fbSession);
-  });
-  if(selectedChip) selectFbSession(_fbSession, selectedChip);
-  renderFbAllSessions();
-  showToast(`✅ הערות נשמרו לשיעור "${s.name}"`);
 }
 
 function renderFbAllSessions(){
@@ -2636,7 +3010,10 @@ init();
 updateTasksBadge();
 updateLastBackupLabel();
 refreshArchiveDates();
-
+window.safeOpenSessionEditor = safeOpenSessionEditor;
+window.safeDeleteSessionReport = safeDeleteSessionReport;
+window.openSessionEditor = openSessionEditor;
+window.deleteSessionReport = deleteSessionReport;
 </script>
 </body>
 </html>
