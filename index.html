@@ -280,6 +280,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
   <button class="nav-tab" onclick="goTab('report',this)">💬 דוח וואטסאפ</button>
   <button class="nav-tab" onclick="goTab('feedback',this)">⭐ שימור ושיפור</button>
   <button class="nav-tab" onclick="goTab('students',this)">👥 חניכים</button>
+  <button class="nav-tab" onclick="goTab('archive',this)">🗃️ ארכיון דוחות</button>
 </nav>
 
 <!-- SHEETS STRIP -->
@@ -423,7 +424,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
       </div>
       <div class="field">
         <label>📅 תאריך יעד</label>
-        <input type="date" id="taskDue" style="width:145px;background:var(--s2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Heebo',sans-serif;font-size:13px;padding:7px 11px;outline:none;colorscheme:dark" />
+        <input type="date" id="taskDue" style="width:145px;background:var(--s2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Heebo',sans-serif;font-size:13px;padding:7px 11px;outline:none;color-scheme:dark" />
       </div>
       <div class="field" style="justify-content:flex-end">
         <button class="btn btn-accent" onclick="addTask()">➕ הוסף משימה</button>
@@ -610,6 +611,31 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
       </tr></thead>
       <tbody id="stuBody"></tbody>
     </table>
+  </div>
+<!-- END TAB 6 -->
+</div>
+
+<!-- ══════════════════════════════════════════════ -->
+<!--  TAB 7 — REPORT ARCHIVE                       -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="page" id="tab-archive">
+  <div class="card">
+    <div class="card-title">🗃️ ארכיון דוחות לפי תאריכים</div>
+    <div class="session-row" style="margin-bottom:14px">
+      <div class="field">
+        <label>בחר תאריך</label>
+        <select id="archiveDateSelect" style="width:220px" onchange="renderArchiveByDate()">
+          <option value="">— בחר תאריך —</option>
+        </select>
+      </div>
+      <div class="field" style="flex:1">
+        <label>חיפוש בטקסט</label>
+        <input type="text" id="archiveSearch" placeholder="חפש לפי שיעור, מדריך, הערה..." style="width:100%" oninput="renderArchiveByDate()" />
+      </div>
+    </div>
+    <div id="archiveContent">
+      <div class="empty"><div class="empty-ico">🗄️</div><div>בחר תאריך כדי לראות את כל הדוחות של אותו יום</div></div>
+    </div>
   </div>
 </div>
 
@@ -960,6 +986,7 @@ let _deleteTarget = null;
 let _editTarget   = null;
 let _fbDate       = null;
 let _fbSessionId  = null;
+let _editingSessionId = null;
 
 // ═══════════════════════════════════════════════
 //  INIT
@@ -1042,6 +1069,7 @@ function goTab(id,el){
   if(id==='report')   refreshReportSelect();
   if(id==='feedback') refreshFbDates();
   if(id==='students') renderStudentMgmt();
+  if(id==='archive')  refreshArchiveDates();
 }
 
 // ═══════════════════════════════════════════════
@@ -1305,8 +1333,7 @@ function refreshSummary(){
     return;
   }
 
-  // Per-session table
-  let html=`<table class="sum-table"><thead><tr><th>שיעור</th><th>שעה</th><th>מדריכים / מרצים</th><th>הערות</th><th>⭐ לשימור</th><th>🔧 לשיפור</th><th>נוכחים</th><th>נעדרים / מרפאה / אחר</th></tr></thead><tbody>`;
+  let html=`<table class="sum-table"><thead><tr><th>שיעור</th><th>שעה</th><th>מדריכים / מרצים</th><th>הערות</th><th>⭐ לשימור</th><th>🔧 לשיפור</th><th>נוכחים</th><th>נעדרים / מרפאה / אחר</th><th>פעולות</th></tr></thead><tbody>`;
   todaySessions.forEach(s=>{
     const present=s.students.filter(st=>st.status==='present').length;
     const notPres=s.students.filter(st=>['absent','sick','other'].includes(st.status));
@@ -1323,12 +1350,12 @@ function refreshSummary(){
         const icon=st.status==='absent'?'❌':st.status==='sick'?'🏥':'📝';
         return `${icon} ${escapeHtml(st.name)}${st.note?` <span class="absent-reason">(${escapeHtml(st.note)})</span>`:''}`;
       }).join('<br>')||'<span style="color:var(--green)">כולם נכחו</span>'}</td>
+      <td><button class="btn btn-ghost" style="padding:4px 10px;font-size:12px" onclick="openSessionEditor('${escapeAttr(s.sessionId)}')">✏️ ערוך</button></td>
     </tr>`;
   });
   html+=`</tbody></table>`;
   el.innerHTML=html;
 
-  // Multi-absent
   const absentMap={};
   todaySessions.forEach(s=>{
     s.students.filter(st=>['absent','sick','other'].includes(st.status)).forEach(st=>{
@@ -1339,10 +1366,132 @@ function refreshSummary(){
   });
   const multi=Object.values(absentMap).filter(v=>v.sessions.length>1);
   const mel=document.getElementById('multiAbsent');
-  if(!multi.length){mel.innerHTML=`<div class="empty"><div class="empty-ico">✅</div><div>אין נעדרים מרובים</div></div>`;return;}
+  if(!multi.length){
+    mel.innerHTML=`<div class="empty"><div class="empty-ico">✅</div><div>אין נעדרים מרובים</div></div>`;
+    return;
+  }
   mel.innerHTML=`<table class="sum-table"><thead><tr><th>שם חניך</th><th>נעדר משיעורים</th><th>סיבות</th></tr></thead><tbody>`+
     multi.map(v=>`<tr><td><b>${escapeHtml(v.name)}</b></td><td>${v.sessions.map(escapeHtml).join(', ')}</td><td>${v.reasons.map(escapeHtml).join(' | ')}</td></tr>`).join('')+
     `</tbody></table>`;
+}
+
+function openSessionEditor(sessionId){
+  const session = findSessionById(savedSessions, sessionId);
+  if(!session) return;
+
+  _editingSessionId = sessionId;
+
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-feedback').classList.add('active');
+
+  const feedbackTabBtn = Array.from(document.querySelectorAll('.nav-tab')).find(btn => btn.textContent.includes('שימור ושיפור'));
+  if(feedbackTabBtn) feedbackTabBtn.classList.add('active');
+
+  const dateSel = document.getElementById('fbDateSelect');
+  if(dateSel){
+    dateSel.value = session.date;
+    onFbDateChange();
+  }
+
+  const chip = Array.from(document.querySelectorAll('#fbSessionChips .session-chip')).find(c => {
+    const click = c.getAttribute('onclick') || '';
+    return click.includes(sessionId);
+  });
+
+  if(chip){
+    selectFbSession(sessionId, chip);
+  } else {
+    _fbSessionId = sessionId;
+    document.getElementById('fbFormTitle').textContent=`📚 ${escapeHtml(session.name)} — ${escapeHtml(session.time)}`;
+    document.getElementById('fbNotes').value   = session.notes||'';
+    document.getElementById('fbKeep').value    = session.keep||'';
+    document.getElementById('fbImprove').value = session.improve||'';
+    document.getElementById('fbForm').style.display='block';
+    renderFbAllSessions();
+  }
+}
+
+function refreshArchiveDates(){
+  const sel = document.getElementById('archiveDateSelect');
+  if(!sel) return;
+
+  const cur = sel.value;
+  const dates=[...new Set(savedSessions.map(s=>s.date))].sort((a,b)=>{
+    const pa=a.split('.').reverse().join('-');
+    const pb=b.split('.').reverse().join('-');
+    return pb.localeCompare(pa);
+  });
+
+  sel.innerHTML='<option value="">— בחר תאריך —</option>'+dates.map(d=>`<option value="${escapeAttr(d)}" ${d===cur?'selected':''}>${escapeHtml(d)}</option>`).join('');
+
+  if(cur) renderArchiveByDate();
+}
+
+function renderArchiveByDate(){
+  const date = document.getElementById('archiveDateSelect')?.value || '';
+  const query = (document.getElementById('archiveSearch')?.value || '').trim().toLowerCase();
+  const el = document.getElementById('archiveContent');
+  if(!el) return;
+
+  if(!date){
+    el.innerHTML=`<div class="empty"><div class="empty-ico">🗄️</div><div>בחר תאריך כדי לראות את כל הדוחות של אותו יום</div></div>`;
+    return;
+  }
+
+  let sessions = savedSessions.filter(s=>s.date===date);
+
+  if(query){
+    sessions = sessions.filter(s=>{
+      const haystack = [
+        s.name,
+        s.time,
+        ...(s.instructors||[]),
+        s.notes||'',
+        s.keep||'',
+        s.improve||'',
+        ...(s.students||[]).flatMap(st=>[st.name, st.id, st.note||'', st.status||''])
+      ].join(' ').toLowerCase();
+      return haystack.includes(query);
+    });
+  }
+
+  if(!sessions.length){
+    el.innerHTML=`<div class="empty"><div class="empty-ico">📭</div><div>לא נמצאו דוחות בתאריך זה</div></div>`;
+    return;
+  }
+
+  el.innerHTML = sessions.map(s=>{
+    const present=s.students.filter(st=>st.status==='present');
+    const absent=s.students.filter(st=>st.status==='absent');
+    const sick=s.students.filter(st=>st.status==='sick');
+    const other=s.students.filter(st=>st.status==='other');
+    const pct=Math.round((present.length/s.students.length)*100);
+    return `
+      <div class="card" style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+          <div>
+            <div style="font-size:16px;font-weight:900">📚 ${escapeHtml(s.name)}</div>
+            <div style="font-size:12px;color:var(--muted)">📅 ${escapeHtml(s.date)} | ⏰ ${escapeHtml(s.time)}${s.instructors&&s.instructors.length?` | 👨‍🏫 ${escapeHtml(s.instructors.join(', '))}`:''}</div>
+          </div>
+          <button class="btn btn-ghost" style="padding:5px 11px;font-size:12px" onclick="openSessionEditor('${escapeAttr(s.sessionId)}')">✏️ ערוך</button>
+        </div>
+        ${s.notes?`<div style="font-size:13px;color:var(--muted);margin-bottom:6px">📝 <b>הערות:</b> ${escapeHtml(s.notes)}</div>`:''}
+        ${s.keep?`<div style="font-size:13px;color:var(--green);margin-bottom:6px">⭐ <b>לשימור:</b> ${escapeHtml(s.keep)}</div>`:''}
+        ${s.improve?`<div style="font-size:13px;color:var(--orange);margin-bottom:10px">🔧 <b>לשיפור:</b> ${escapeHtml(s.improve)}</div>`:''}
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px">📊 סיכום: ${present.length}/${s.students.length} נוכחים (${pct}%)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div>
+            <div style="font-size:12px;color:var(--green);font-weight:700;margin-bottom:4px">✅ נוכחים (${present.length})</div>
+            <div style="font-size:12px;line-height:1.6">${present.length ? present.map(st=>escapeHtml(st.name)).join('<br>') : '—'}</div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--red);font-weight:700;margin-bottom:4px">❌ / 🏥 / 📝 חריגים (${absent.length+sick.length+other.length})</div>
+            <div style="font-size:12px;line-height:1.6">${[...absent,...sick,...other].length ? [...absent,...sick,...other].map(st=>`${st.status==='absent'?'❌':st.status==='sick'?'🏥':'📝'} ${escapeHtml(st.name)}${st.note?` (${escapeHtml(st.note)})`:''}`).join('<br>') : '—'}</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
 }
 
 // ═══════════════════════════════════════════════
