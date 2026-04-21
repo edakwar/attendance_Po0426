@@ -436,6 +436,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
   <!-- Task list -->
   <div class="card">
     <div class="card-title">📌 רשימת משימות</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px">משימות שבוצעו נשמרות במערכת אך אינן מוצגות כאן או בדוחות הפתוחים.</div>
     <div id="taskList"><div class="empty"><div class="empty-ico">📭</div><div>אין משימות עדיין</div></div></div>
   </div>
 </div>
@@ -482,11 +483,12 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
       </div>
     </div>
     <div class="wa-box" id="waBox">בחר שיעור מהרשימה למעלה כדי לייצר את הדוח…</div>
+ 
     <div class="wa-actions">
-      <button class="btn btn-wa" onclick="copyWa()">📋 העתק לוואטסאפ</button>
-      <button class="btn btn-ghost" onclick="shareWa()">📤 שתף</button>
-      <button class="btn btn-sheets" id="btnSaveSheets" onclick="saveAllToSheets()">📊 שמור הכל ב-Sheets</button>
+     <button class="btn btn-wa" onclick="copyWa()">📋 העתק</button>
+     <button class="btn btn-ghost" onclick="shareWa()">📤 שתף</button>
     </div>
+
   </div>
 
    <!-- Day summary WA -->
@@ -1699,14 +1701,21 @@ function formatDue(due){
 
 function renderTasks(){
   const el=document.getElementById('taskList');
-  if(!tasks.length){el.innerHTML=`<div class="empty"><div class="empty-ico">📭</div><div>אין משימות</div></div>`;return;}
-  // sort: pending first (overdue on top), then done
-  const sorted=[...tasks].sort((a,b)=>{
+  const visibleTasks = tasks.filter(t=>!t.done);
+
+  if(!visibleTasks.length){
+    el.innerHTML=`<div class="empty"><div class="empty-ico">📭</div><div>אין משימות פתוחות</div></div>`;
+    return;
+  }
+
+  const sorted=[...visibleTasks].sort((a,b)=>{
     if(a.done!==b.done) return a.done?1:-1;
     if(a.due&&b.due) return a.due.localeCompare(b.due);
-    if(a.due) return -1; if(b.due) return 1;
+    if(a.due) return -1;
+    if(b.due) return 1;
     return 0;
   });
+
   el.innerHTML=sorted.map(t=>{
     const dueHtml=formatDue(t.due||'');
     return `
@@ -2291,28 +2300,20 @@ function buildWaReport(){
     msg+=`\n`;
   }
 
-  // Tasks
-  const doneTasks=tasks.filter(t=>t.done);
+  // Tasks — only open tasks should appear in the session report
   const pendingTasks=tasks.filter(t=>!t.done);
-  if(doneTasks.length||pendingTasks.length){
+  if(pendingTasks.length){
     msg+=`━━━━━━━━━━━━━━━━━━\n`;
-    msg+=`📌 *משימות תורן:*\n`;
-    if(doneTasks.length){
-      msg+=`\n✅ *בוצע:*\n`;
-      doneTasks.forEach((t,i)=>{
-        msg+=`${i+1}. ${t.text}`;
-        if(t.doneNote) msg+=` — ${t.doneNote}`;
-        msg+=`\n`;
-      });
-    }
-    if(pendingTasks.length){
-      msg+=`\n⏳ *בביצוע / ממתין:*\n`;
-      pendingTasks.forEach((t,i)=>{
-        msg+=`${i+1}. ${t.text}`;
-        if(t.due){ const dl=new Date(t.due).toLocaleDateString('he-IL'); msg+=` (יעד: ${dl})`; }
-        msg+=`\n`;
-      });
-    }
+    msg+=`📌 *משימות פתוחות:*\n`;
+    pendingTasks.forEach((t,i)=>{
+      msg+=`${i+1}. ${t.text}`;
+      if(t.giver) msg+=` | ע"י: ${t.giver}`;
+      if(t.due){
+        const dl=new Date(t.due).toLocaleDateString('he-IL');
+        msg+=` | יעד: ${dl}`;
+      }
+      msg+=`\n`;
+    });
     msg+=`\n`;
   }
 
@@ -2409,17 +2410,31 @@ function buildDaySummaryWa(){
 }
 
 function copyWa(){
-  const txt=document.getElementById('waBox').textContent;
-  navigator.clipboard.writeText(txt).then(()=>showToast('📋 הועתק לוואטסאפ!'));
+  const txt=document.getElementById('waBox').textContent.trim();
+  if(!txt || txt.includes('בחר שיעור')){
+    showToast('⚠️ אין דוח להעתקה');
+    return;
+  }
+  navigator.clipboard.writeText(txt)
+    .then(()=>showToast('📋 דוח שיעור הועתק'))
+    .catch(()=>showToast('❌ שגיאה בהעתקה'));
 }
+
 function copyWaDay(){
   const txt=document.getElementById('waDayBox').textContent;
   navigator.clipboard.writeText(txt).then(()=>showToast('📋 הועתק!'));
 }
 function shareWa(){
-  const txt=document.getElementById('waBox').textContent;
-  if(navigator.share) navigator.share({text:txt});
-  else copyWa();
+  const txt=document.getElementById('waBox').textContent.trim();
+  if(!txt || txt.includes('בחר שיעור')){
+    showToast('⚠️ אין דוח לשיתוף');
+    return;
+  }
+  if(navigator.share){
+    navigator.share({text:txt}).catch(()=>{});
+  }else{
+    copyWa();
+  }
 }
 
 // ═══════════════════════════════════════════════
