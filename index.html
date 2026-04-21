@@ -925,6 +925,9 @@ let STUDENTS_DATA = (()=>{
 
 function saveStudentsList(){
   safeStorage.setItem('studentsList', JSON.stringify(STUDENTS_DATA));
+  if(typeof cloudSaveStudents==='function' && sheetsUrl){
+    cloudSaveStudents().catch(e=>console.warn('cloudSaveStudents failed:', e));
+  }
 }
 
 // ═══════════════════════════════════════════════
@@ -985,13 +988,178 @@ function normalizeSession(session){
   };
 }
 
+async function apiGet(action){
+  const res = await fetch(`${sheetsUrl}?action=${encodeURIComponent(action)}`, {
+    method:'GET',
+    headers:{'Accept':'application/json,text/plain,*/*'}
+  });
+  if(!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
+}
+
+async function apiPost(payload){
+  const res = await fetch(sheetsUrl, {
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'Accept':'application/json,text/plain,*/*'
+    },
+    body:JSON.stringify(payload)
+  });
+  if(!res.ok) throw new Error(`HTTP ${res.status}`);
+  return await res.json();
+}
+
+async function cloudSaveStudents(){
+  if(!sheetsUrl) return;
+  const res = await apiPost({
+    action:'saveStudents',
+    students:STUDENTS_DATA
+  });
+  if(!res.ok) throw new Error(res.error || 'saveStudents failed');
+  return res;
+}
+
+async function cloudSaveTasks(){
+  if(!sheetsUrl) return;
+  const res = await apiPost({
+    action:'saveTasks',
+    tasks:tasks
+  });
+  if(!res.ok) throw new Error(res.error || 'saveTasks failed');
+  return res;
+}
+
+async function cloudSaveSessions(){
+  if(!sheetsUrl) return;
+  const res = await apiPost({
+    action:'saveSessions',
+    sessions:savedSessions
+  });
+  if(!res.ok) throw new Error(res.error || 'saveSessions failed');
+  return res;
+}
+
+async function cloudSaveSettings(){
+  if(!sheetsUrl) return;
+  const dutyId = document.getElementById('dutySelect')?.value || '';
+  const dutyNotes = document.getElementById('dutyNotes')?.value || '';
+  const res = await apiPost({
+    action:'saveSettings',
+    settings:{ dutyId, dutyNotes }
+  });
+  if(!res.ok) throw new Error(res.error || 'saveSettings failed');
+  return res;
+}
+
+function persistTasks(){
+  safeStorage.setItem('tasks', JSON.stringify(tasks));
+  if(sheetsUrl){
+    cloudSaveTasks().catch(e=>console.warn('cloudSaveTasks failed:', e));
+  }
+}
+
+function persistSessions(){
+  safeStorage.setItem('sessions', JSON.stringify(savedSessions));
+  if(sheetsUrl){
+    cloudSaveSessions().catch(e=>console.warn('cloudSaveSessions failed:', e));
+  }
+}
+
+function rebuildStudentsFromMaster(){
+  students = STUDENTS_DATA.map(s=>{
+    const existing = students.find(x=>x.id===s.id) || {};
+    return {
+      ...s,
+      status: existing.status || 'pending',
+      note: existing.note || ''
+    };
+  });
+}
+
+function applyCloudData(data){
+  if(Array.isArray(data.students) && data.students.length){
+    STUDENTS_DATA = data.students.map(s=>({
+      id:String(s.id || ''),
+      name:String(s.name || ''),
+      room:String(s.room || '')
+    }));
+    safeStorage.setItem('studentsList', JSON.stringify(STUDENTS_DATA));
+  }
+
+  if(Array.isArray(data.tasks)){
+    tasks = data.tasks.map(t=>({
+      id: Number(t.taskId || t.id || Date.now() + Math.floor(Math.random()*1000)),
+      text: t.text || '',
+      prio: t.prio || 'med',
+      giver: t.giver || '',
+      due: t.due || '',
+      done: String(t.done) === 'true' || t.done === true,
+      doneNote: t.doneNote || '',
+      time: t.time || ''
+    }));
+    safeStorage.setItem('tasks', JSON.stringify(tasks));
+  }
+
+  if(Array.isArray(data.sessions)){
+    const sessionsMap = {};
+    data.sessions.forEach(s=>{
+      sessionsMap[s.sessionId] = normalizeSession({
+        sessionId: s.sessionId || uid(),
+        date: s.date || '',
+        time: s.time || '',
+        name: s.name || '',
+        instructors: s.instructors ? String(s.instructors).split(',').map(x=>x.trim()).filter(Boolean) : [],
+        notes: s.notes || '',
+        keep: s.keep || '',
+        improve: s.improve || '',
+        students: []
+      });
+    });
+
+    if(Array.isArray(data.sessionStudents)){
+      data.sessionStudents.forEach(st=>{
+        if(!sessionsMap[st.sessionId]) return;
+        sessionsMap[st.sessionId].students.push({
+          id: String(st.studentId || ''),
+          name: st.studentName || '',
+          status: st.status || 'pending',
+          note: st.note || ''
+        });
+      });
+    }
+
+    savedSessions = Object.values(sessionsMap).map(normalizeSession);
+    safeStorage.setItem('sessions', JSON.stringify(savedSessions));
+  }
+
+  if(Array.isArray(data.settings)){
+    const settingsObj = {};
+    data.settings.forEach(row=>{
+      settingsObj[row.key] = row.value;
+    });
+
+    const dutySel = document.getElementById('dutySelect');
+    const dutyNotesEl = document.getElementById('dutyNotes');
+
+    if(dutySel && typeof settingsObj.dutyId !== 'undefined'){
+      dutySel.value = settingsObj.dutyId || '';
+    }
+    if(dutyNotesEl && typeof settingsObj.dutyNotes !== 'undefined'){
+      dutyNotesEl.value = settingsObj.dutyNotes || '';
+    }
+  }
+
+  rebuildStudentsFromMaster();
+}
+
 savedSessions = savedSessions.map(normalizeSession);
 safeStorage.setItem('sessions', JSON.stringify(savedSessions));
 
 // ═══════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════
-function init(){
+async function init(){
   document.getElementById('todayDate').textContent = getTodayDisplay();
   if(!window.__attendanceDateTimer){
     window.__attendanceDateTimer = setInterval(()=>{
@@ -1003,6 +1171,26 @@ function init(){
   const savedUrl = safeStorage.getItem('sheetsUrl');
   if(savedUrl && savedUrl.trim()) sheetsUrl = savedUrl.trim();
 
+  const urlInput = document.getElementById('sheetsUrl');
+  if(urlInput){ urlInput.value=sheetsUrl; }
+
+  setDot(sheetsUrl ? 'spin' : 'err', sheetsUrl ? 'טוען נתונים מהענן…' : 'לא מחובר');
+
+  try{
+    if(sheetsUrl){
+      const cloudData = await apiGet('loadAll');
+      if(cloudData.ok){
+        applyCloudData(cloudData);
+        setDot('ok','✓ מחובר ונטען');
+      }else{
+        setDot('err','שגיאה בטעינה');
+      }
+    }
+  }catch(e){
+    console.warn('Cloud load failed:', e);
+    setDot('err','טעינה מקומית בלבד');
+  }
+
   const ds = document.getElementById('dutySelect');
   ds.innerHTML='<option value="">— בחר חניך —</option>';
   STUDENTS_DATA.forEach(s=>{
@@ -1010,15 +1198,45 @@ function init(){
     o.value=s.id; o.textContent=s.name; ds.appendChild(o);
   });
 
-  const urlInput = document.getElementById('sheetsUrl');
-  if(urlInput){ urlInput.value=sheetsUrl; }
-  setDot(sheetsUrl ? 'ok' : 'err', sheetsUrl ? 'מוכן לשמירה' : 'לא מחובר');
+  if(Array.isArray(savedSessions)){
+    savedSessions = savedSessions.map(normalizeSession);
+    safeStorage.setItem('sessions', JSON.stringify(savedSessions));
+  }
 
-  updateStats(); renderList(); renderTasks();
-  refreshSessionSelects(); refreshSummary();
+  rebuildStudentsFromMaster();
+  updateStats();
+  renderList();
+  renderTasks();
+  refreshSessionSelects();
+  refreshSummary();
   refreshReportSelect();
-  renderStudentMgmt(); refreshFbDates();
+  renderStudentMgmt();
+  refreshFbDates();
   refreshArchiveDates();
+
+  const dutyId = document.getElementById('dutySelect');
+  const dutyNotes = document.getElementById('dutyNotes');
+
+  if(dutyId){
+    dutyId.addEventListener('change', ()=>{
+      if(sheetsUrl){
+        cloudSaveSettings().catch(e=>console.warn('cloudSaveSettings failed:', e));
+      }
+    });
+  }
+
+  if(dutyNotes){
+    dutyNotes.addEventListener('change', ()=>{
+      if(sheetsUrl){
+        cloudSaveSettings().catch(e=>console.warn('cloudSaveSettings failed:', e));
+      }
+    });
+    dutyNotes.addEventListener('blur', ()=>{
+      if(sheetsUrl){
+        cloudSaveSettings().catch(e=>console.warn('cloudSaveSettings failed:', e));
+      }
+    });
+  }
 }
 
 // רענן רק את תפריט התורן — בלי לאפס את כל המצב
@@ -1033,39 +1251,18 @@ function refreshDutySelect(){
     if(s.id===cur) o.selected=true;
     ds.appendChild(o);
   });
+  if(sheetsUrl){
+    cloudSaveSettings().catch(e=>console.warn('cloudSaveSettings failed:', e));
+  }
 }
 async function autoSaveToSheets(sessionData){
   try{
-    const payload={
-      action:'saveAttendance',
-      date: sessionData.date,
-      duty: '',
-      sessions:[{
-        sessionId:sessionData.sessionId,
-        name:sessionData.name, time:sessionData.time,
-        instructors:sessionData.instructors,
-        notes:sessionData.notes||'',
-        keep:sessionData.keep||'', improve:sessionData.improve||'',
-        rows:sessionData.students.map(st=>({
-          id:st.id, name:st.name,
-          status:st.status==='present'?'נוכח':st.status==='absent'?'נעדר':st.status==='sick'?'מרפאה':st.status==='other'?'אחר':'לא סומן',
-          note:st.note||''
-        }))
-      }],
-      tasks:[]
-    };
-    const res = await fetch(sheetsUrl,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Accept':'application/json,text/plain,*/*'},
-      body:JSON.stringify(payload)
-    });
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    await cloudSaveSessions();
     showToast('📊 נשמר גם ב-Google Sheets');
   }catch(e){
     console.warn('Sheets auto-save failed:',e);
   }
 }
-
 // ═══════════════════════════════════════════════
 //  TABS
 // ═══════════════════════════════════════════════
@@ -1216,7 +1413,7 @@ function saveSession(){
 
   savedSessions.push(sessionData);
 
-  safeStorage.setItem('sessions',JSON.stringify(savedSessions));
+  persistSessions();
 
   if(sheetsUrl) autoSaveToSheets(sessionData);
 
@@ -1243,22 +1440,31 @@ function addTask(){
   document.getElementById('taskInput').value='';
   document.getElementById('taskGiver').value='';
   document.getElementById('taskDue').value='';
-  safeStorage.setItem('tasks',JSON.stringify(tasks));
+  persistTasks();
   renderTasks(); updateTasksBadge();
   showToast('📌 משימה נוספה');
 }
 
 function toggleTask(id,checked){
   const t=tasks.find(t=>t.id===id);
-  if(t){t.done=checked; safeStorage.setItem('tasks',JSON.stringify(tasks)); renderTasks(); updateTasksBadge();}
+  if(t){
+    t.done=checked;
+    persistTasks();
+    renderTasks();
+    updateTasksBadge();
+  }
 }
 function setTaskNote(id,val){
   const t=tasks.find(t=>t.id===id);
-  if(t){t.doneNote=val; safeStorage.setItem('tasks',JSON.stringify(tasks));}
+  if(t){
+    t.doneNote=val;
+    persistTasks();
+  }
 }
+
 function deleteTask(id){
   tasks=tasks.filter(t=>t.id!==id);
-  safeStorage.setItem('tasks',JSON.stringify(tasks));
+  persistTasks();
   renderTasks(); updateTasksBadge();
 }
 function updateTasksBadge(){
@@ -1730,6 +1936,24 @@ async function testConn(){
     }catch(_){}
     if(!ok) throw new Error('Ping failed');
     setDot('ok','✓ מחובר'); showToast('✅ חיבור תקין');
+        try{
+      const cloudData = await apiGet('loadAll');
+      if(cloudData && cloudData.ok){
+        applyCloudData(cloudData);
+        refreshDutySelect();
+        updateStats();
+        renderList();
+        renderTasks();
+        refreshSessionSelects();
+        refreshSummary();
+        refreshReportSelect();
+        renderStudentMgmt();
+        refreshFbDates();
+        refreshArchiveDates();
+      }
+    }catch(err){
+      console.warn('Cloud reload after test failed:', err);
+    }
   }catch(e){
     setDot('err','שגיאת חיבור'); showToast('❌ שגיאת חיבור');
     console.warn('Sheets connection test failed:', e);
@@ -1740,32 +1964,28 @@ async function saveAllToSheets(){
   if(!sheetsUrl){showToast('⚠️ אין חיבור ל-Sheets');return;}
   const btn=document.getElementById('btnSaveSheets');
   btn.disabled=true; btn.textContent='⏳ שומר…';
-  const todaySessions=savedSessions.filter(s=>s.date===getTodayStr());
-  const dutyId=document.getElementById('dutySelect').value;
-  const duty=STUDENTS_DATA.find(s=>s.id===dutyId);
-  const payload={
-    action:'saveAttendance',
-    date:getTodayStr(),
-    duty:duty?duty.name:'',
-    sessions: todaySessions.map(s=>({
-      sessionId:s.sessionId,
-      name:s.name, time:s.time,
-      instructors:s.instructors,
-      notes:s.notes||'',
-      keep:s.keep||'',
-      improve:s.improve||'',
-      rows:s.students.map(st=>({id:st.id,name:st.name,status:st.status==='present'?'נוכח':st.status==='absent'?'נעדר':st.status==='sick'?'מרפאה':st.status==='other'?'אחר':'לא סומן',note:st.note||''}))
-    })),
-    tasks: tasks.map(t=>({text:t.text,prio:t.prio,done:t.done,doneNote:t.doneNote||'',giver:t.giver||''}))
-  };
   try{
-    const res = await fetch(sheetsUrl,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json,text/plain,*/*'},body:JSON.stringify(payload)});
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    await apiPost({
+      action:'saveAttendance',
+      students:STUDENTS_DATA,
+      tasks:tasks,
+      sessions:savedSessions,
+      settings:{
+        dutyId:document.getElementById('dutySelect')?.value || '',
+        dutyNotes:document.getElementById('dutyNotes')?.value || ''
+      }
+    });
     showToast('📊 נשמר ב-Google Sheets!');
-  }catch(e){showToast('❌ שגיאה בשמירה'); console.warn('Sheets save failed:', e);}
-  finally{btn.disabled=false;btn.textContent='📊 שמור הכל ב-Sheets';}
+    setDot('ok','✓ נשמר לענן');
+  }catch(e){
+    showToast('❌ שגיאה בשמירה');
+    console.warn('Sheets save failed:', e);
+    setDot('err','שגיאה בשמירה');
+  }finally{
+    btn.disabled=false;
+    btn.textContent='📊 שמור הכל ב-Sheets';
+  }
 }
-
 // ═══════════════════════════════════════════════
 //  UTILS
 // ═══════════════════════════════════════════════
@@ -1788,6 +2008,8 @@ function addStudent(){
 
   STUDENTS_DATA.push({id, name, room});
   saveStudentsList();
+  refreshDutySelect();
+rebuildStudentsFromMaster();
 
   // רענן רשימת סימון נוכחות (שמור סטטוסים קיימים)
   if(!students.find(s=>s.id===id)){
@@ -1818,6 +2040,8 @@ function confirmDelete(){
   const idx = STUDENTS_DATA.findIndex(s=>s.id===_deleteTarget);
   if(idx>=0) STUDENTS_DATA.splice(idx,1);
   saveStudentsList();
+  refreshDutySelect();
+rebuildStudentsFromMaster();
 
   // הסר גם ממערך הנוכחות
   const si = students.findIndex(s=>s.id===_deleteTarget);
@@ -1864,6 +2088,8 @@ function confirmEdit(){
   // עדכן ב-STUDENTS_DATA
   STUDENTS_DATA[idx] = { ...STUDENTS_DATA[idx], name:newName, id:newId, room:newRoom };
   saveStudentsList();
+  refreshDutySelect();
+rebuildStudentsFromMaster();
 
   // עדכן גם ב-students (מערך הנוכחות) — שמור סטטוס ו-note
   const si = students.findIndex(s=>s.id===_editTarget);
@@ -2139,6 +2365,8 @@ function importBackup(input, type='full'){
             }
           });
           saveStudentsList();
+          refreshDutySelect();
+rebuildStudentsFromMaster();
           students=STUDENTS_DATA.map(s=>({...s,status:'pending',note:''}));
           init(); renderStudentMgmt();
           showBackupStatus(`✅ מוזגו ${added} חניכים חדשים`,'ok');
@@ -2146,6 +2374,8 @@ function importBackup(input, type='full'){
           STUDENTS_DATA.length=0;
           result.students.forEach(s=>STUDENTS_DATA.push(s));
           saveStudentsList();
+          refreshDutySelect();
+rebuildStudentsFromMaster();
           students=STUDENTS_DATA.map(s=>({...s,status:'pending',note:''}));
           init(); renderStudentMgmt();
           showBackupStatus(`✅ רשימה הוחלפה — ${result.students.length} חניכים`,'ok');
@@ -2262,6 +2492,8 @@ function applyBackup(data, merge=false){
   }
 
   saveStudentsList();
+  refreshDutySelect();
+rebuildStudentsFromMaster();
   safeStorage.setItem('sessions', JSON.stringify(savedSessions));
   safeStorage.setItem('tasks', JSON.stringify(tasks));
   students=STUDENTS_DATA.map(s=>({...s,status:'pending',note:''}));
