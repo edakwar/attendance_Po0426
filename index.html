@@ -1299,17 +1299,18 @@ async function init(){
     o.value=s.id; o.textContent=s.name; ds.appendChild(o);
   });
 
-  const draft = loadDraft();
-  if(draft){
-    applyDraft(draft);
-  }
-
   if(Array.isArray(savedSessions)){
     savedSessions = savedSessions.map(normalizeSession);
     safeStorage.setItem('sessions', JSON.stringify(savedSessions));
   }
 
   rebuildStudentsFromMaster();
+
+  const draft = loadDraft();
+  if(draft){
+    applyDraft(draft);
+  }
+
   updateStats();
   renderList();
   renderTasks();
