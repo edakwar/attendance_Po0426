@@ -947,6 +947,7 @@ let tasks         = JSON.parse(safeStorage.getItem('tasks')||'[]');
 const SHEETS_URL  = 'https://script.google.com/macros/s/AKfycbw-GzBPXSxCi92luXDl66rFH-6mcZ5E0M_Yz1TgMBZ0I0qkvCaNd-5d8lulPFJmwaNo7g/exec';
 let sheetsUrl     = SHEETS_URL;
 const today       = new Date();
+const DRAFT_KEY   = 'attendanceDraft';
 const todayStr    = today.toLocaleDateString('he-IL');
 let _deleteTarget = null;
 let _editTarget   = null;
@@ -991,6 +992,102 @@ function normalizeSession(session){
     instructors: Array.isArray(session.instructors) ? session.instructors : [],
     students: Array.isArray(session.students) ? session.students : []
   };
+}
+
+function getCurrentDraft(){
+  return {
+    date: getTodayStr(),
+    sessionName: document.getElementById('sessionName')?.value || '',
+    sessionNotes: document.getElementById('sessionNotes')?.value || '',
+    instructors: [...instructors],
+    students: students.map(s=>(
+      { id:s.id, name:s.name, room:s.room || '', status:s.status || 'pending', note:s.note || '' }
+    )),
+    dutyId: document.getElementById('dutySelect')?.value || '',
+    dutyNotes: document.getElementById('dutyNotes')?.value || ''
+  };
+}
+
+function saveDraft(){
+  try{
+    safeStorage.setItem(DRAFT_KEY, JSON.stringify(getCurrentDraft()));
+  }catch(e){
+    console.warn('Draft save failed:', e);
+  }
+}
+
+function loadDraft(){
+  try{
+    const raw = safeStorage.getItem(DRAFT_KEY);
+    if(!raw) return null;
+    const draft = JSON.parse(raw);
+    if(!draft || typeof draft !== 'object') return null;
+    if(draft.date !== getTodayStr()) return null;
+    return draft;
+  }catch(e){
+    console.warn('Draft load failed:', e);
+    return null;
+  }
+}
+
+function clearDraft(){
+  safeStorage.removeItem(DRAFT_KEY);
+}
+
+function applyDraft(draft){
+  if(!draft) return;
+
+  const sessionNameEl = document.getElementById('sessionName');
+  const sessionNotesEl = document.getElementById('sessionNotes');
+  const dutySelectEl = document.getElementById('dutySelect');
+  const dutyNotesEl = document.getElementById('dutyNotes');
+
+  if(sessionNameEl) sessionNameEl.value = draft.sessionName || '';
+  if(sessionNotesEl) sessionNotesEl.value = draft.sessionNotes || '';
+
+  instructors = Array.isArray(draft.instructors) ? [...draft.instructors] : [];
+  renderInstructors();
+
+  if(Array.isArray(draft.students) && draft.students.length){
+    const byId = new Map(draft.students.map(s=>[String(s.id), s]));
+    students = STUDENTS_DATA.map(base=>{
+      const saved = byId.get(String(base.id)) || {};
+      return {
+        ...base,
+        status: saved.status || 'pending',
+        note: saved.note || ''
+      };
+    });
+  }else{
+    rebuildStudentsFromMaster();
+  }
+
+  if(dutySelectEl && typeof draft.dutyId !== 'undefined') dutySelectEl.value = draft.dutyId || '';
+  if(dutyNotesEl && typeof draft.dutyNotes !== 'undefined') dutyNotesEl.value = draft.dutyNotes || '';
+}
+
+function bindDraftAutosave(){
+  const sessionNameEl = document.getElementById('sessionName');
+  const sessionNotesEl = document.getElementById('sessionNotes');
+  const dutySelectEl = document.getElementById('dutySelect');
+  const dutyNotesEl = document.getElementById('dutyNotes');
+
+  if(sessionNameEl){
+    sessionNameEl.addEventListener('input', saveDraft);
+    sessionNameEl.addEventListener('change', saveDraft);
+  }
+  if(sessionNotesEl){
+    sessionNotesEl.addEventListener('input', saveDraft);
+    sessionNotesEl.addEventListener('change', saveDraft);
+  }
+  if(dutySelectEl){
+    dutySelectEl.addEventListener('change', saveDraft);
+  }
+  if(dutyNotesEl){
+    dutyNotesEl.addEventListener('input', saveDraft);
+    dutyNotesEl.addEventListener('change', saveDraft);
+    dutyNotesEl.addEventListener('blur', saveDraft);
+  }
 }
 
 async function apiGet(action){
@@ -1202,6 +1299,11 @@ async function init(){
     o.value=s.id; o.textContent=s.name; ds.appendChild(o);
   });
 
+  const draft = loadDraft();
+  if(draft){
+    applyDraft(draft);
+  }
+
   if(Array.isArray(savedSessions)){
     savedSessions = savedSessions.map(normalizeSession);
     safeStorage.setItem('sessions', JSON.stringify(savedSessions));
@@ -1217,6 +1319,8 @@ async function init(){
   renderStudentMgmt();
   refreshFbDates();
   refreshArchiveDates();
+
+  bindDraftAutosave();
 
   const dutyId = document.getElementById('dutySelect');
   const dutyNotes = document.getElementById('dutyNotes');
@@ -1255,6 +1359,7 @@ function refreshDutySelect(){
     if(s.id===cur) o.selected=true;
     ds.appendChild(o);
   });
+  saveDraft();
   if(sheetsUrl){
     cloudSaveSettings().catch(e=>console.warn('cloudSaveSettings failed:', e));
   }
@@ -1289,14 +1394,26 @@ function setStatus(id, status){
   const s=students.find(s=>s.id===id);
   if(!s) return;
   s.status = s.status===status?'pending':status;
+  saveDraft();
   updateStats(); renderList();
 }
 function setNote(id, val){
   const s=students.find(s=>s.id===id);
-  if(s) s.note=val;
+  if(s){
+    s.note=val;
+    saveDraft();
+  }
 }
-function markAll(st){ students.forEach(s=>s.status=st); updateStats(); renderList(); }
-function resetAll(){  students.forEach(s=>{s.status='pending';s.note='';}); updateStats(); renderList(); }
+function markAll(st){
+  students.forEach(s=>s.status=st);
+  saveDraft();
+  updateStats(); renderList();
+}
+function resetAll(){
+  students.forEach(s=>{s.status='pending';s.note='';});
+  saveDraft();
+  updateStats(); renderList();
+}
 function setFilter(f,el){
   currentFilter=f;
   document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
@@ -1359,10 +1476,12 @@ function addInstructor(){
   if(!instructors.includes(name)) instructors.push(name);
   inp.value='';
   renderInstructors();
+  saveDraft();
 }
 function removeInstructor(name){
   instructors=instructors.filter(i=>i!==name);
   renderInstructors();
+  saveDraft();
 }
 function renderInstructors(){
   document.getElementById('instrTags').innerHTML=instructors.map(n=>
@@ -1428,6 +1547,7 @@ function saveSession(){
   refreshFbDates();
   refreshArchiveDates();
   showToast(`✅ שיעור "${name}" נשמר`);
+  clearDraft();
 }
 
 // ═══════════════════════════════════════════════
