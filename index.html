@@ -872,7 +872,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 //  DATA — רשימת חניכים דינמית
 // ═══════════════════════════════════════════════
 const DEFAULT_STUDENTS = [
-  {id:"1967823",  name:"בידרדובסקי ירון",   room:""},
+  {id:"1967823",  name:"ביזדרובסקי ירון",   room:""},
   {id:"1966851",  name:"גורביץ דניאל",       room:""},
   {id:"58788381", name:"דדון דנית",           room:""},
   {id:"1968388",  name:"דהן יקיר יעקב",      room:""},
@@ -936,7 +936,7 @@ let instructors   = [];
 let savedSessions = JSON.parse(safeStorage.getItem('sessions')||'[]');
 let tasks         = JSON.parse(safeStorage.getItem('tasks')||'[]');
 // כתובת ה-Web App קבועה — מוטמעת ישירות
-const SHEETS_URL  = 'https://script.google.com/macros/s/AKfycbyp9mC0LHtRnO1xrLTyR6DEJl1G70wqIMQQEnCQh5OdDgWRGxGDcCiMRjydh31J3kP1Ng/exec';
+const SHEETS_URL  = 'https://script.google.com/macros/s/AKfycbw-GzBPXSxCi92luXDl66rFH-6mcZ5E0M_Yz1TgMBZ0I0qkvCaNd-5d8lulPFJmwaNo7g/exec';
 let sheetsUrl     = SHEETS_URL;
 const today       = new Date();
 const todayStr    = today.toLocaleDateString('he-IL');
