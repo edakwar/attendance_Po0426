@@ -193,9 +193,90 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
   .stats-row{grid-template-columns:repeat(2,1fr)}
   .s-actions{flex-direction:column;align-items:flex-start}
 }
+
+/* ── LOGIN SCREEN ── */
+#loginScreen{
+  position:fixed;inset:0;background:var(--bg);z-index:9999;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:0;
+}
+#loginScreen::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(88,166,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(88,166,255,.05) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;
+}
+.login-box{
+  background:var(--s1);border:1px solid var(--border);border-radius:20px;
+  padding:40px 36px;max-width:380px;width:90%;text-align:center;
+  box-shadow:0 24px 64px rgba(0,0,0,.6);position:relative;z-index:1;
+  animation:modalIn .3s ease;
+}
+.login-logo{font-size:48px;margin-bottom:12px}
+.login-title{font-size:24px;font-weight:900;margin-bottom:4px;
+  background:linear-gradient(135deg,var(--text) 40%,var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.login-sub{font-size:13px;color:var(--muted);margin-bottom:28px}
+.login-dots{display:flex;gap:10px;justify-content:center;margin-bottom:10px}
+.login-dot{
+  width:44px;height:56px;background:var(--s2);border:2px solid var(--border);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:900;color:var(--text);transition:all .15s;
+  cursor:default;user-select:none;
+}
+.login-dot.filled{background:rgba(88,166,255,.15);border-color:var(--accent);color:var(--accent)}
+.login-dot.error{background:rgba(248,81,73,.15);border-color:var(--red);animation:shake .3s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.login-hint{font-size:12px;color:var(--muted);height:18px;margin-bottom:20px;transition:color .2s}
+.login-hint.err{color:var(--red)}
+.login-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:260px;margin:0 auto}
+.kbtn{
+  height:54px;border-radius:12px;background:var(--s2);border:1px solid var(--border);
+  color:var(--text);font-family:'Heebo',sans-serif;font-size:20px;font-weight:700;
+  cursor:pointer;transition:all .15s;user-select:none;-webkit-tap-highlight-color:transparent;
+}
+.kbtn:hover{background:var(--s3);border-color:var(--accent)}
+.kbtn:active{transform:scale(.93)}
+.kbtn.del{font-size:16px;color:var(--muted)}
+.kbtn.del:hover{color:var(--red);border-color:var(--red)}
 </style>
 </head>
 <body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">🎯</div>
+    <div class="login-title">מערכת נוכחות</div>
+    <div class="login-sub" id="loginSub">טוען…</div>
+
+    <!-- אינדיקטור ספרות — 4 עד 8 -->
+    <div class="login-dots" id="loginDots"></div>
+    <div class="login-hint" id="loginHint">&#8203;</div>
+
+    <!-- לוח מקשים -->
+    <div class="login-keypad">
+      <button class="kbtn" onclick="kbPress('1')">1</button>
+      <button class="kbtn" onclick="kbPress('2')">2</button>
+      <button class="kbtn" onclick="kbPress('3')">3</button>
+      <button class="kbtn" onclick="kbPress('4')">4</button>
+      <button class="kbtn" onclick="kbPress('5')">5</button>
+      <button class="kbtn" onclick="kbPress('6')">6</button>
+      <button class="kbtn" onclick="kbPress('7')">7</button>
+      <button class="kbtn" onclick="kbPress('8')">8</button>
+      <button class="kbtn" onclick="kbPress('9')">9</button>
+      <button class="kbtn" style="visibility:hidden"></button>
+      <button class="kbtn" onclick="kbPress('0')">0</button>
+      <button class="kbtn del" onclick="kbDel()">⌫</button>
+    </div>
+
+    <!-- כפתור שינוי קוד (מוצג רק אחרי כניסה מוצלחת) -->
+    <button id="changeCodeBtn" onclick="startChangeCode()"
+      style="display:none;margin-top:18px;background:none;border:none;color:var(--muted);
+             font-family:'Heebo',sans-serif;font-size:12px;cursor:pointer;text-decoration:underline">
+      שינוי קוד כניסה
+    </button>
+  </div>
+</div>
 
 <!-- NAV -->
 <nav class="nav">
@@ -206,6 +287,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
   <button class="nav-tab" onclick="goTab('report',this)">💬 דוח וואטסאפ</button>
   <button class="nav-tab" onclick="goTab('feedback',this)">⭐ שימור ושיפור</button>
   <button class="nav-tab" onclick="goTab('students',this)">👥 חניכים</button>
+  <button class="nav-tab" onclick="startChangeCode()" style="margin-right:auto;color:var(--muted);font-size:12px">🔑 שינוי קוד</button>
 </nav>
 
 <!-- SHEETS STRIP -->
@@ -607,6 +689,289 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
 
 <script>
 // ═══════════════════════════════════════════════
+//  LOGIN — מאובטח עם SHA-256
+//  • פעם ראשונה: הגדרת קוד + אימות כפול
+//  • כניסות הבאות: השוואת hash בלבד
+//  • הקוד עצמו לעולם לא נשמר — רק ה-hash
+//  • נעילה אחרי 5 ניסיונות כושלים (5 דקות)
+//  • קוד 4–8 ספרות לבחירתך
+// ═══════════════════════════════════════════════
+const LS_HASH      = 'appCodeHash';
+const LS_SALT      = 'appCodeSalt';
+const LS_LOCK_UNTIL= 'appLockUntil';
+const LS_ATTEMPTS  = 'appFailAttempts';
+const MAX_ATTEMPTS = 5;
+const LOCK_MINUTES = 5;
+const MIN_LEN = 4;
+const MAX_LEN = 8;
+
+// מצבי מסך: 'login' | 'setup1' | 'setup2' | 'change_old' | 'change_new1' | 'change_new2'
+let loginMode   = 'login';
+let loginInput  = '';
+let setupFirst  = '';   // שמור ערך ראשון בהגדרת קוד
+
+// ── SHA-256 באמצעות Web Crypto API ──────────────
+async function sha256(str){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// ── salt אקראי ──────────────────────────────────
+function genSalt(){
+  return Array.from(crypto.getRandomValues(new Uint8Array(16))).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// ── אתחול מסך הכניסה ────────────────────────────
+async function initLogin(){
+  // בדוק נעילה
+  const lockUntil = Number(localStorage.getItem(LS_LOCK_UNTIL)||0);
+  if(Date.now() < lockUntil){
+    const mins = Math.ceil((lockUntil-Date.now())/60000);
+    setHint(`🔒 המערכת נעולה ${mins} דקות נוספות`, true);
+    setSub('נסיונות כניסה חרגו');
+    return;
+  }
+
+  const hasHash = !!localStorage.getItem(LS_HASH);
+  if(hasHash){
+    loginMode = 'login';
+    setSub('הזן קוד כניסה');
+    setHint('\u200B');
+  } else {
+    loginMode = 'setup1';
+    setSub('ברוך הבא! הגדר קוד כניסה');
+    setHint(`בחר קוד בין ${MIN_LEN} ל-${MAX_LEN} ספרות`);
+  }
+  renderDots(0);
+}
+
+// ── עדכון תצוגה ─────────────────────────────────
+function setSub(t){ document.getElementById('loginSub').textContent=t; }
+function setHint(t, isErr=false){
+  const el=document.getElementById('loginHint');
+  el.textContent=t; el.className='login-hint'+(isErr?' err':'');
+}
+function renderDots(filled, state='normal'){
+  const max = loginMode.startsWith('setup')||loginMode.startsWith('change_new') ? MAX_LEN : MAX_LEN;
+  const show = Math.max(MIN_LEN, filled || MIN_LEN);
+  const container=document.getElementById('loginDots');
+  container.innerHTML='';
+  for(let i=0;i<show;i++){
+    const d=document.createElement('div');
+    d.style.cssText=`width:${i<4?44:36}px;height:${i<4?56:46}px`;
+    d.className='login-dot'
+      +(i<filled?' filled':'')
+      +(state==='error'?' error':'');
+    d.textContent = i<filled ? '●' : '•';
+    container.appendChild(d);
+  }
+}
+
+// ── לחיצת מקש ───────────────────────────────────
+async function kbPress(digit){
+  const lockUntil = Number(localStorage.getItem(LS_LOCK_UNTIL)||0);
+  if(Date.now()<lockUntil) return;
+  if(loginInput.length>=MAX_LEN) return;
+
+  loginInput += digit;
+  renderDots(loginInput.length);
+
+  // הצג כמה עוד צריך
+  if(loginMode!=='login' && loginInput.length < MIN_LEN){
+    setHint(`עוד ${MIN_LEN-loginInput.length} ספרות לפחות`);
+  } else {
+    setHint('\u200B');
+  }
+
+  // בדוק אם אפשר לאשר (לפחות MIN_LEN ספרות)
+  if(loginInput.length >= MIN_LEN){
+    // נתן ל-user להמשיך עד MAX_LEN — כאן לא מאשרים אוטומטית
+  }
+}
+
+function kbDel(){
+  if(!loginInput.length) return;
+  loginInput = loginInput.slice(0,-1);
+  renderDots(loginInput.length);
+  setHint('\u200B');
+}
+
+// ── כפתור אישור (Enter / לחיצה ארוכה) ──────────
+async function kbConfirm(){
+  if(loginInput.length < MIN_LEN){
+    setHint(`קוד חייב להכיל לפחות ${MIN_LEN} ספרות`, true);
+    return;
+  }
+
+  if(loginMode==='login')         await doLogin();
+  else if(loginMode==='setup1')   doSetup1();
+  else if(loginMode==='setup2')   await doSetup2();
+  else if(loginMode==='change_old')  await doChangeOld();
+  else if(loginMode==='change_new1') doChangeNew1();
+  else if(loginMode==='change_new2') await doChangeNew2();
+}
+
+// ── כניסה רגילה ─────────────────────────────────
+async function doLogin(){
+  const salt    = localStorage.getItem(LS_SALT)||'';
+  const stored  = localStorage.getItem(LS_HASH)||'';
+  const attempt = await sha256(loginInput + salt);
+
+  if(attempt === stored){
+    // הצלחה — אפס ניסיונות
+    localStorage.removeItem(LS_ATTEMPTS);
+    localStorage.removeItem(LS_LOCK_UNTIL);
+    loginSuccess();
+  } else {
+    loginFail();
+  }
+}
+
+// ── כישלון כניסה עם נעילה ────────────────────────
+function loginFail(){
+  const attempts = Number(localStorage.getItem(LS_ATTEMPTS)||0) + 1;
+  localStorage.setItem(LS_ATTEMPTS, attempts);
+  const remaining = MAX_ATTEMPTS - attempts;
+
+  if(attempts >= MAX_ATTEMPTS){
+    const until = Date.now() + LOCK_MINUTES*60*1000;
+    localStorage.setItem(LS_LOCK_UNTIL, until);
+    localStorage.removeItem(LS_ATTEMPTS);
+    shakeAndReset(`🔒 נעול ל-${LOCK_MINUTES} דקות אחרי ${MAX_ATTEMPTS} ניסיונות כושלים`);
+  } else {
+    shakeAndReset(`קוד שגוי — נותרו ${remaining} ניסיונות`);
+  }
+}
+
+function shakeAndReset(msg){
+  renderDots(loginInput.length, 'error');
+  setHint(msg, true);
+  setTimeout(()=>{
+    loginInput='';
+    renderDots(0);
+    setHint('\u200B');
+  }, 1200);
+}
+
+// ── הגדרת קוד — שלב 1 ───────────────────────────
+function doSetup1(){
+  setupFirst = loginInput;
+  loginInput = '';
+  loginMode  = 'setup2';
+  setSub('אמת את הקוד שבחרת');
+  setHint('הזן את הקוד שוב לאישור');
+  renderDots(0);
+}
+
+// ── הגדרת קוד — שלב 2 (אימות) ──────────────────
+async function doSetup2(){
+  if(loginInput !== setupFirst){
+    setupFirst='';
+    loginInput='';
+    loginMode='setup1';
+    setSub('הקודים לא תואמים — נסה שוב');
+    setHint(`בחר קוד בין ${MIN_LEN} ל-${MAX_LEN} ספרות`, true);
+    renderDots(0);
+    return;
+  }
+  await saveCode(loginInput);
+  loginSuccess();
+}
+
+// ── שמור hash של הקוד ────────────────────────────
+async function saveCode(code){
+  const salt = genSalt();
+  const hash = await sha256(code + salt);
+  localStorage.setItem(LS_SALT, salt);
+  localStorage.setItem(LS_HASH, hash);
+}
+
+// ── שינוי קוד — ישן ─────────────────────────────
+async function doChangeOld(){
+  const salt   = localStorage.getItem(LS_SALT)||'';
+  const stored = localStorage.getItem(LS_HASH)||'';
+  const attempt= await sha256(loginInput + salt);
+  if(attempt!==stored){ shakeAndReset('קוד נוכחי שגוי'); return; }
+  loginInput='';
+  loginMode='change_new1';
+  setSub('הזן קוד חדש');
+  setHint(`בחר קוד בין ${MIN_LEN} ל-${MAX_LEN} ספרות`);
+  renderDots(0);
+}
+
+// ── שינוי קוד — חדש שלב 1 ───────────────────────
+function doChangeNew1(){
+  setupFirst=loginInput; loginInput='';
+  loginMode='change_new2';
+  setSub('אמת את הקוד החדש');
+  setHint('הזן שוב לאישור');
+  renderDots(0);
+}
+
+// ── שינוי קוד — חדש שלב 2 ───────────────────────
+async function doChangeNew2(){
+  if(loginInput!==setupFirst){
+    setupFirst=''; loginInput=''; loginMode='change_new1';
+    setSub('הקודים לא תואמים — נסה שוב');
+    setHint(`הזן קוד חדש (${MIN_LEN}-${MAX_LEN} ספרות)`, true);
+    renderDots(0); return;
+  }
+  await saveCode(loginInput);
+  // חזור למסך כניסה
+  hideLoginScreen();
+  showToast('✅ הקוד עודכן בהצלחה');
+}
+
+// ── הצלחת כניסה ─────────────────────────────────
+function loginSuccess(){
+  hideLoginScreen();
+}
+
+function hideLoginScreen(){
+  loginInput=''; setupFirst='';
+  const screen=document.getElementById('loginScreen');
+  screen.style.transition='opacity .35s';
+  screen.style.opacity='0';
+  setTimeout(()=>{ screen.style.display='none'; }, 360);
+}
+
+// ── פתח מסך שינוי קוד ───────────────────────────
+function startChangeCode(){
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('loginScreen').style.opacity='1';
+  loginMode='change_old'; loginInput=''; setupFirst='';
+  setSub('הזן את הקוד הנוכחי');
+  setHint('לאימות לפני שינוי');
+  renderDots(0);
+}
+
+// ── מקלדת פיזית ─────────────────────────────────
+document.addEventListener('keydown', e=>{
+  const screen=document.getElementById('loginScreen');
+  if(!screen||screen.style.display==='none') return;
+  if(e.key>='0'&&e.key<='9') kbPress(e.key);
+  else if(e.key==='Backspace') kbDel();
+  else if(e.key==='Enter') kbConfirm();
+});
+
+// ── הוסף כפתור ✓ לוח המקשים ─────────────────────
+// (מחליף את הכפתור הסמוי)
+document.addEventListener('DOMContentLoaded', ()=>{
+  // מחלף את הכפתור הריק ב-✓
+  const emptyBtn = document.querySelector('.kbtn[style*="visibility:hidden"]');
+  if(emptyBtn){
+    emptyBtn.style.visibility='visible';
+    emptyBtn.style.background='rgba(63,185,80,.15)';
+    emptyBtn.style.borderColor='var(--green)';
+    emptyBtn.style.color='var(--green)';
+    emptyBtn.style.fontSize='20px';
+    emptyBtn.textContent='✓';
+    emptyBtn.onclick = kbConfirm;
+  }
+  initLogin();
+});
+
+// ═══════════════════════════════════════════════
 //  DATA
 // ═══════════════════════════════════════════════
 const STUDENTS_DATA = [
@@ -655,7 +1020,9 @@ let currentFilter = 'all';
 let instructors   = [];
 let savedSessions = JSON.parse(localStorage.getItem('sessions')||'[]');
 let tasks         = JSON.parse(localStorage.getItem('tasks')||'[]');
-let sheetsUrl     = localStorage.getItem('sheetsUrl')||'';
+// כתובת ה-Web App קבועה — מוטמעת ישירות
+const SHEETS_URL  = 'https://script.google.com/macros/s/AKfycbyp9mC0LHtRnO1xrLTyR6DEJl1G70wqIMQQEnCQh5OdDgWRGxGDcCiMRjydh31J3kP1Ng/exec';
+let sheetsUrl     = SHEETS_URL;
 const today       = new Date();
 const todayStr    = today.toLocaleDateString('he-IL');
 let _deleteTarget = null;
@@ -678,14 +1045,41 @@ function init(){
     o.value=s.id; o.textContent=s.name; ds.appendChild(o);
   });
 
-  if(sheetsUrl){
-    document.getElementById('sheetsUrl').value=sheetsUrl;
-    setDot('spin','כתובת שמורה');
-  }
+  // הצג כתובת Sheets
+  const urlInput = document.getElementById('sheetsUrl');
+  if(urlInput){ urlInput.value=sheetsUrl; }
+  setDot('ok','מחובר אוטומטית');
 
   updateStats(); renderList(); renderTasks();
   refreshSessionSelects(); refreshSummary();
   renderStudentMgmt(); refreshFbDates();
+}
+
+// שמירה אוטומטית ב-Sheets לאחר כל שיעור
+async function autoSaveToSheets(sessionData){
+  try{
+    const payload={
+      action:'saveAttendance',
+      date: sessionData.date,
+      duty: '',
+      sessions:[{
+        name:sessionData.name, time:sessionData.time,
+        instructors:sessionData.instructors,
+        notes:sessionData.notes||'',
+        keep:sessionData.keep||'', improve:sessionData.improve||'',
+        rows:sessionData.students.map(st=>({
+          id:st.id, name:st.name,
+          status:st.status==='present'?'נוכח':st.status==='absent'?'נעדר':st.status==='sick'?'מרפאה':st.status==='other'?'אחר':'לא סומן',
+          note:st.note||''
+        }))
+      }],
+      tasks:[]
+    };
+    await fetch(sheetsUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    showToast('📊 נשמר גם ב-Google Sheets');
+  }catch(e){
+    console.warn('Sheets auto-save failed:',e);
+  }
 }
 
 // ═══════════════════════════════════════════════
@@ -819,14 +1213,16 @@ function openSaveModal(){
 function closeSaveModal(){ document.getElementById('saveModal').classList.remove('open'); }
 
 function saveSession(){
-  const name=document.getElementById('sessionName').value.trim();
-  const time=new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
-  const notes  =document.getElementById('sessionNotes').value.trim();
-  const keep   =document.getElementById('sessionKeep').value.trim();
-  const improve=document.getElementById('sessionImprove').value.trim();
+  const name   = document.getElementById('sessionName').value.trim();
+  const time   = new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
+  const notes  = document.getElementById('sessionNotes').value.trim();
+  // keep/improve נערכים בטאב שימור ושיפור — לא כאן
+  const existing = savedSessions.find(s=>s.name===name&&s.date===todayStr);
+  const keep    = existing?.keep    || '';
+  const improve = existing?.improve || '';
 
-  const idx=savedSessions.findIndex(s=>s.name===name&&s.date===todayStr);
-  const sessionData={
+  const idx = savedSessions.findIndex(s=>s.name===name&&s.date===todayStr);
+  const sessionData = {
     name, date:todayStr, time,
     instructors:[...instructors],
     notes, keep, improve,
@@ -836,10 +1232,13 @@ function saveSession(){
   else savedSessions.push(sessionData);
 
   localStorage.setItem('sessions',JSON.stringify(savedSessions));
+
+  // שמור אוטומטית ב-Google Sheets אם מחובר
+  if(sheetsUrl) autoSaveToSheets(sessionData);
+
   closeSaveModal();
   refreshSessionSelects();
   refreshSummary();
-  renderFeedbackList();
   showToast(`✅ שיעור "${name}" נשמר`);
 }
 
