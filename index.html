@@ -1248,16 +1248,17 @@ function applyCloudData(data){
   }
 
   if(Array.isArray(data.tasks)){
-    tasks = data.tasks.map(t=>({
-      id: Number(t.taskId || t.id || Date.now() + Math.floor(Math.random()*1000)),
-      text: t.text || '',
-      prio: t.prio || 'med',
-      giver: t.giver || '',
-      due: t.due || '',
-      done: String(t.done) === 'true' || t.done === true,
-      doneNote: t.doneNote || '',
-      time: t.time || ''
-    }));
+  tasks = data.tasks.map(t=>({
+    id: Number(t.taskId || t.id || Date.now() + Math.floor(Math.random()*1000)),
+    text: t.text || '',
+    prio: t.prio || 'med',
+    giver: t.giver || '',
+    due: t.due || '',
+    done: String(t.done) === 'true' || t.done === true,
+    note: t.note || '',
+    doneNote: t.doneNote || '',
+    time: normalizeTimeValue(t.time || '')
+  }));
     safeStorage.setItem('tasks', JSON.stringify(tasks));
   }
 
@@ -1692,7 +1693,7 @@ function addTask(){
   const giver=document.getElementById('taskGiver').value.trim();
   const due  =document.getElementById('taskDue').value; // YYYY-MM-DD or ''
   const now  =new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
-  tasks.push({id:Date.now(),text:txt,prio,giver,due,done:false,doneNote:'',time:now});
+  tasks.push({id:Date.now(),text:txt,prio,giver,due,done:false,note:'',doneNote:'',time:now});
   document.getElementById('taskInput').value='';
   document.getElementById('taskGiver').value='';
   document.getElementById('taskDue').value='';
@@ -1714,6 +1715,13 @@ function setTaskNote(id,val){
   const t=tasks.find(t=>t.id===id);
   if(t){
     t.doneNote=val;
+    persistTasks();
+  }
+}
+function setTaskOpenNote(id,val){
+  const t=tasks.find(t=>t.id===id);
+  if(t){
+    t.note=val;
     persistTasks();
   }
 }
@@ -1772,14 +1780,24 @@ function renderTasks(){
         <span class="task-priority ${prioClass[t.prio]}">${prioLabel[t.prio]}</span>
         <button class="btn btn-ghost" style="padding:3px 8px;font-size:11px" onclick="deleteTask(${t.id})">🗑️</button>
       </div>
+
       <div class="task-meta" style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-top:5px">
-        <span>${t.giver?`ניתנה ע"י: ${t.giver} | `:''}נוסף: ${t.time}</span>
+        <span>${t.giver?`ניתנה ע"י: ${t.giver} | `:''}נוסף: ${normalizeTimeValue(t.time||'')}</span>
         ${dueHtml?`<span>${dueHtml}</span>`:''}
       </div>
+
+      <div class="task-note-row">
+        <input type="text"
+               placeholder="הערה למשימה פתוחה…"
+               value="${safeAttr(t.note||'')}"
+               oninput="setTaskOpenNote(${t.id},this.value)"
+               onchange="setTaskOpenNote(${t.id},this.value)" />
+      </div>
+
       ${t.done && t.doneNote ? `<div class="task-done-note">✅ ${t.doneNote}</div>` : ''}
       ${t.done && !t.doneNote ? `
         <div class="task-note-row">
-          <input type="text" placeholder="הוסף פירוט ביצוע (אופציונלי)…" value="${t.doneNote||''}"
+          <input type="text" placeholder="הוסף פירוט ביצוע (אופציונלי)…" value="${safeAttr(t.doneNote||'')}"
             oninput="setTaskNote(${t.id},this.value)" onchange="setTaskNote(${t.id},this.value)" />
         </div>` : ''}
     </div>`;
@@ -2351,6 +2369,7 @@ function buildWaReport(){
   }
 
   // Tasks — only open tasks should appear in the session report
+   // Tasks — only open tasks should appear in the session report
   const pendingTasks=tasks.filter(t=>!t.done);
   if(pendingTasks.length){
     msg+=`━━━━━━━━━━━━━━━━━━\n`;
@@ -2362,6 +2381,7 @@ function buildWaReport(){
         const dl=new Date(t.due).toLocaleDateString('he-IL');
         msg+=` | יעד: ${dl}`;
       }
+      if(t.note) msg+=` | הערה: ${t.note}`;
       msg+=`\n`;
     });
     msg+=`\n`;
