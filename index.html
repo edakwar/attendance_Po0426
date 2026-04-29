@@ -276,6 +276,7 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
   <div class="nav-brand">🎯 <span>מערכת נוכחות</span></div>
   <button class="nav-tab active" onclick="goTab('attendance',this)">📋 נוכחות</button>
   <button class="nav-tab" onclick="goTab('duty',this)">🗂️ תורן ומשימות <span class="nav-badge" id="tasksBadge" style="display:none">0</span></button>
+  <button class="nav-tab" onclick="goTab('after',this)">🏠 אפטרים ולינה</button>
   <button class="nav-tab" onclick="goTab('summary',this)">📊 סיכום יום</button>
   <button class="nav-tab" onclick="goTab('report',this)">💬 דוח וואטסאפ</button>
   <button class="nav-tab" onclick="goTab('feedback',this)">⭐ שימור ושיפור</button>
@@ -441,6 +442,55 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════ -->
+<!--  TAB 2B — AFTER + LODGING                     -->
+<!-- ══════════════════════════════════════════════ -->
+<div class="page" id="tab-after">
+  <div class="card">
+    <div class="card-title">🏠 ניהול אפטרים ולינה</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:14px">
+      כאן ניתן לסמן עבור כל חניך האם הוא במכללה, בבית, אפטר קצר, אפטר ארוך או הגעה במוצ״ש. הנתונים נשמרים מקומית וייכנסו בהמשך לדוחות בוקר/ערב/סוף שבוע.
+    </div>
+    <div class="session-row">
+      <div class="field">
+        <label>תאריך סטטוס</label>
+        <input type="date" id="afterDate" style="width:160px;color-scheme:dark" onchange="renderAfterList()" />
+      </div>
+      <div class="field">
+        <label>סינון</label>
+        <select id="afterFilter" style="width:180px" onchange="renderAfterList()">
+          <option value="all">הכל</option>
+          <option value="college">מכללה</option>
+          <option value="home">בית</option>
+          <option value="short">אפטר קצר</option>
+          <option value="long">אפטר ארוך</option>
+          <option value="motzash">הגעה במוצ״ש</option>
+          <option value="sunday">הגעה בראשון בבוקר</option>
+        </select>
+      </div>
+      <div class="field" style="justify-content:flex-end">
+        <button class="btn btn-ghost" onclick="resetAfterStatuses()">🔄 אפס סטטוסים</button>
+      </div>
+      <div class="field" style="justify-content:flex-end">
+        <button class="btn btn-accent" onclick="buildAfterReport()">📋 צור דוח אפטרים</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">👥 סימון חניכים</div>
+    <div id="afterList"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📤 דוח אפטרים ולינה לסגל</div>
+    <div class="wa-box" id="afterReportBox">לחץ ״צור דוח אפטרים״ כדי להפיק דוח…</div>
+    <div class="wa-actions">
+      <button class="btn btn-wa" onclick="copyAfterReport()">📋 העתק</button>
+      <button class="btn btn-ghost" onclick="shareAfterReport()">📤 שתף</button>
+    </div>
+  </div>
+</div>
 <!-- ══════════════════════════════════════════════ -->
 <!--  TAB 3 — DAY SUMMARY                          -->
 <!-- ══════════════════════════════════════════════ -->
@@ -958,6 +1008,7 @@ let currentFilter = 'all';
 let instructors   = [];
 let savedSessions = JSON.parse(safeStorage.getItem('sessions')||'[]');
 let tasks         = JSON.parse(safeStorage.getItem('tasks')||'[]');
+let afterStatuses = JSON.parse(safeStorage.getItem('afterStatuses')||'{}');
 // כתובת ה-Web App קבועה — מוטמעת ישירות
 const SHEETS_URL  = 'https://script.google.com/macros/s/AKfycbw-GzBPXSxCi92luXDl66rFH-6mcZ5E0M_Yz1TgMBZ0I0qkvCaNd-5d8lulPFJmwaNo7g/exec';
 let sheetsUrl     = SHEETS_URL;
@@ -1382,6 +1433,8 @@ async function init(){
   updateStats();
   renderList();
   renderTasks();
+  initAfterDate();
+  renderAfterList();
   refreshSessionSelects();
   refreshSummary();
   refreshReportSelect();
@@ -1460,6 +1513,7 @@ function goTab(id,el){
   if(id==='report')   refreshReportSelect();
   if(id==='report')   refreshDayReportDates();
   if(id==='feedback') refreshFbDates();
+  if(id==='after')    renderAfterList();
   if(id==='students') renderStudentMgmt();
   if(id==='archive')  refreshArchiveDates();
 }
@@ -1804,6 +1858,177 @@ function renderTasks(){
   }).join('');
 }
 
+// ═══════════════════════════════════════════════
+//  AFTER + LODGING STATUS
+// ═══════════════════════════════════════════════
+function getAfterDateKey(){
+  const el=document.getElementById('afterDate');
+  if(el && el.value) return el.value;
+  const d=new Date();
+  return d.toISOString().slice(0,10);
+}
+
+function initAfterDate(){
+  const el=document.getElementById('afterDate');
+  if(!el) return;
+  if(!el.value) el.value = new Date().toISOString().slice(0,10);
+}
+
+function getAfterDayData(){
+  const key=getAfterDateKey();
+  if(!afterStatuses[key]) afterStatuses[key]={};
+  return afterStatuses[key];
+}
+
+function saveAfterStatuses(){
+  safeStorage.setItem('afterStatuses', JSON.stringify(afterStatuses));
+}
+
+function setAfterStatus(studentId, field, value){
+  const day=getAfterDayData();
+  if(!day[studentId]) day[studentId]={status:'college',returned:false,returnTime:'',note:''};
+  day[studentId][field]=value;
+  saveAfterStatuses();
+  renderAfterList();
+}
+
+function getAfterStatusForStudent(studentId){
+  const day=getAfterDayData();
+  return day[studentId] || {status:'college',returned:false,returnTime:'',note:''};
+}
+
+function resetAfterStatuses(){
+  const ok=confirm('לאפס את סטטוס האפטרים לתאריך הנבחר?');
+  if(!ok) return;
+  const key=getAfterDateKey();
+  afterStatuses[key]={};
+  saveAfterStatuses();
+  renderAfterList();
+  document.getElementById('afterReportBox').textContent='הסטטוסים אופסו. לחץ ״צור דוח אפטרים״ כדי להפיק דוח חדש…';
+}
+
+const afterStatusLabels={
+  college:'מכללה',
+  home:'בית',
+  short:'אפטר קצר',
+  long:'אפטר ארוך',
+  motzash:'הגעה במוצ״ש',
+  sunday:'הגעה בראשון בבוקר'
+};
+
+function renderAfterList(){
+  const el=document.getElementById('afterList');
+  if(!el) return;
+  initAfterDate();
+  const filter=document.getElementById('afterFilter')?.value || 'all';
+  const list=STUDENTS_DATA.filter(s=>{
+    const st=getAfterStatusForStudent(s.id);
+    return filter==='all' || st.status===filter;
+  });
+  if(!list.length){
+    el.innerHTML=`<div class="empty"><div class="empty-ico">🔍</div><div>לא נמצאו חניכים בסינון זה</div></div>`;
+    return;
+  }
+  el.innerHTML=list.map(s=>{
+    const st=getAfterStatusForStudent(s.id);
+    return `
+      <div class="s-card" style="align-items:flex-start">
+        <div class="s-num">${escHtml(s.id.slice(-4))}</div>
+        <div class="s-info">
+          <div class="s-name">${escHtml(s.name)}</div>
+          <div class="s-meta">מ״א: ${escHtml(s.id)} | סטטוס: ${escHtml(afterStatusLabels[st.status]||'מכללה')}</div>
+          <div class="session-row" style="margin-top:9px;margin-bottom:0">
+            <div class="field">
+              <label>סטטוס</label>
+              <select style="width:150px" onchange="setAfterStatus('${safeAttr(s.id)}','status',this.value)">
+                <option value="college" ${st.status==='college'?'selected':''}>מכללה</option>
+                <option value="home" ${st.status==='home'?'selected':''}>בית</option>
+                <option value="short" ${st.status==='short'?'selected':''}>אפטר קצר</option>
+                <option value="long" ${st.status==='long'?'selected':''}>אפטר ארוך</option>
+                <option value="motzash" ${st.status==='motzash'?'selected':''}>הגעה במוצ״ש</option>
+                <option value="sunday" ${st.status==='sunday'?'selected':''}>הגעה בראשון בבוקר</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>חזר / הגיע</label>
+              <select style="width:110px" onchange="setAfterStatus('${safeAttr(s.id)}','returned',this.value==='true')">
+                <option value="false" ${!st.returned?'selected':''}>לא</option>
+                <option value="true" ${st.returned?'selected':''}>כן</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>שעת חזרה / הגעה</label>
+              <input type="time" style="width:120px" value="${safeAttr(st.returnTime||'')}" onchange="setAfterStatus('${safeAttr(s.id)}','returnTime',this.value)" />
+            </div>
+            <div class="field" style="flex:1;min-width:180px">
+              <label>הערה</label>
+              <input type="text" value="${safeAttr(st.note||'')}" placeholder="הערה לסגל…" oninput="setAfterStatus('${safeAttr(s.id)}','note',this.value)" />
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function groupAfterStudents(){
+  const groups={college:[],home:[],short:[],long:[],motzash:[],sunday:[]};
+  STUDENTS_DATA.forEach(s=>{
+    const st=getAfterStatusForStudent(s.id);
+    const status=st.status || 'college';
+    if(!groups[status]) groups[status]=[];
+    groups[status].push({...s,...st});
+  });
+  return groups;
+}
+
+function numberedNames(list, includeReturn=false){
+  if(!list.length) return 'ללא';
+  return list.map((s,i)=>{
+    let line=`${i+1}. ${s.name}`;
+    if(includeReturn){
+      line += s.returned ? ` , חזר/ה${s.returnTime?` בשעה ${s.returnTime}`:''}` : ' , טרם דווח חזרה/הגעה';
+    }
+    if(s.note) line += ` , ${s.note}`;
+    return line;
+  }).join('\n');
+}
+
+function buildAfterReport(){
+  const groups=groupAfterStudents();
+  const dateKey=getAfterDateKey();
+  let msg='';
+  msg+=`🏠 *דוח אפטרים ולינה*\n`;
+  msg+=`━━━━━━━━━━━━━━━━━━\n`;
+  msg+=`📅 *תאריך:* ${dateKey}\n`;
+  msg+=`👥 *מצבה:* ${STUDENTS_DATA.length}/${STUDENTS_DATA.length}\n\n`;
+  msg+=`📥 *מכללה:*\n${numberedNames(groups.college)}\n\n`;
+  msg+=`📤 *בית:*\n${numberedNames(groups.home)}\n\n`;
+  msg+=`🟢 *אפטר קצר, חזרה עד 22:45:*\n${numberedNames(groups.short,true)}\n\n`;
+  msg+=`🟣 *אפטר ארוך:*\n${numberedNames(groups.long,true)}\n\n`;
+  msg+=`🌙 *יגיעו למכללה במוצ״ש עד 23:00:*\n${numberedNames(groups.motzash,true)}\n\n`;
+  msg+=`☀️ *יגיעו בראשון בבוקר ללוז:*\n${numberedNames(groups.sunday,true)}\n\n`;
+  msg+=`━━━━━━━━━━━━━━━━━━\n`;
+  msg+=`🕐 נשלח: ${new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'})}`;
+  document.getElementById('afterReportBox').textContent=msg.trim();
+}
+
+function copyAfterReport(){
+  const txt=document.getElementById('afterReportBox').textContent.trim();
+  if(!txt || txt.includes('לחץ ״צור דוח')){showToast('⚠️ אין דוח להעתקה');return;}
+  const rtlTxt='\u202B'+txt+'\u202C';
+  navigator.clipboard.writeText(rtlTxt).then(()=>showToast('📋 דוח אפטרים הועתק')).catch(()=>showToast('❌ שגיאה בהעתקה'));
+}
+
+function shareAfterReport(){
+  const txt=document.getElementById('afterReportBox').textContent.trim();
+  if(!txt || txt.includes('לחץ ״צור דוח')){showToast('⚠️ אין דוח לשיתוף');return;}
+  const rtlTxt='\u202B'+txt+'\u202C';
+  if(navigator.share){
+    navigator.share({text:rtlTxt}).catch(()=>{});
+  }else{
+    copyAfterReport();
+  }
+}
 // ═══════════════════════════════════════════════
 //  SUMMARY
 // ═══════════════════════════════════════════════
