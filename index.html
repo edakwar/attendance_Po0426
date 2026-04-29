@@ -189,6 +189,20 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
 .modal-x{background:var(--s2);border:none;color:var(--muted);width:30px;height:30px;border-radius:7px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
 .modal-x:hover{color:var(--text)}
 
+/* ── STUDENT AFTER PORTAL ── */
+.student-portal{display:none;min-height:100vh;padding:18px;background:var(--bg)}
+.student-portal.active{display:block}
+.portal-wrap{max-width:520px;margin:0 auto}
+.portal-hero{background:linear-gradient(135deg,rgba(88,166,255,.18),rgba(188,140,255,.12));border:1px solid var(--border);border-radius:18px;padding:22px 18px;margin-bottom:14px;text-align:center}
+.portal-hero h1{font-size:22px;font-weight:900;margin-bottom:6px}
+.portal-hero p{font-size:13px;color:var(--muted);line-height:1.7}
+.portal-card{background:var(--s1);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:14px}
+.portal-card label{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:5px}
+.portal-card input,.portal-card select,.portal-card textarea{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Heebo',sans-serif;font-size:15px;padding:11px 12px;outline:none;margin-bottom:12px}
+.portal-card textarea{min-height:78px;resize:vertical}
+.portal-hint{font-size:12px;color:var(--muted);line-height:1.7;margin-top:8px}
+.portal-success{display:none;background:rgba(63,185,80,.12);border:1px solid rgba(63,185,80,.35);color:var(--green);border-radius:12px;padding:12px 14px;font-size:14px;font-weight:700;margin-top:12px;text-align:center}
+.portal-success.show{display:block}
 @media(max-width:600px){
   .stats-row{grid-template-columns:repeat(2,1fr)}
   .s-actions{flex-direction:column;align-items:flex-start}
@@ -267,6 +281,50 @@ body{font-family:'Heebo',sans-serif;background:var(--bg);color:var(--text);min-h
       <button class="kbtn" style="visibility:hidden"></button>
       <button class="kbtn" onclick="kbPress('0')">0</button>
       <button class="kbtn del" onclick="kbDel()">⌫</button>
+    </div>
+  </div>
+<!-- STUDENT AFTER PORTAL -->
+<div id="studentAfterPortal" class="student-portal">
+  <div class="portal-wrap">
+    <div class="portal-hero">
+      <h1>🏠 עדכון אפטרים ולינה</h1>
+      <p>דף זה מיועד לחניכים בלבד. יש לעדכן יציאה לאפטר, חזרה למכללה, הגעה במוצ״ש או הגעה בראשון בבוקר.</p>
+    </div>
+
+    <div class="portal-card">
+      <label>שם חניך</label>
+      <select id="portalStudentId">
+        <option value="">— בחר שם —</option>
+      </select>
+
+      <label>תאריך דיווח</label>
+      <input type="date" id="portalAfterDate" style="color-scheme:dark" />
+
+      <label>סוג דיווח</label>
+      <select id="portalAfterStatus">
+        <option value="short">אפטר קצר, חזרה עד 22:45</option>
+        <option value="long">אפטר ארוך</option>
+        <option value="motzash">הגעה במוצ״ש עד 23:00</option>
+        <option value="sunday">הגעה בראשון בבוקר ללוז</option>
+        <option value="college">אני במכללה</option>
+        <option value="home">אני בבית</option>
+      </select>
+
+      <label>האם חזרת / הגעת?</label>
+      <select id="portalReturned">
+        <option value="false">לא</option>
+        <option value="true">כן</option>
+      </select>
+
+      <label>שעת חזרה / הגעה</label>
+      <input type="time" id="portalReturnTime" style="color-scheme:dark" />
+
+      <label>הערה לסגל, אופציונלי</label>
+      <textarea id="portalAfterNote" placeholder="לדוגמה: הגעתי למכללה, בדרך ללוז, עיכוב קצר וכו׳"></textarea>
+
+      <button class="btn btn-accent" style="width:100%;justify-content:center;font-size:15px;padding:12px" onclick="saveStudentAfterPortal()">✅ שלח עדכון</button>
+      <div class="portal-success" id="portalSuccess">העדכון נשמר. תודה.</div>
+      <div class="portal-hint">לאחר השליחה ניתן לעדכן שוב אם הסטטוס השתנה, למשל לאחר חזרה מאפטר קצר או הגעה במוצ״ש.</div>
     </div>
   </div>
 </div>
@@ -797,6 +855,14 @@ const safeStorage = (()=>{
   };
 })();
 
+function isAfterPortalMode(){
+  try{
+    return new URLSearchParams(window.location.search).get('portal') === 'after';
+  }catch(e){
+    return false;
+  }
+}
+
 let loginInput = '';
 
 // ── אתחול מסך הכניסה ────────────────────────────
@@ -930,6 +996,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
     emptyBtn.textContent='✓';
     emptyBtn.onclick = kbConfirm;
   }
+
+  if(isAfterPortalMode()){
+    initStudentAfterPortal();
+    return;
+  }
+
   initLogin();
   try{
     init();
@@ -937,6 +1009,82 @@ document.addEventListener('DOMContentLoaded', ()=>{
     console.error('App init failed:', e);
   }
 });
+// ═══════════════════════════════════════════════
+//  STUDENT AFTER PORTAL MODE
+// ═══════════════════════════════════════════════
+function initStudentAfterPortal(){
+  const login=document.getElementById('loginScreen');
+  const portal=document.getElementById('studentAfterPortal');
+  const nav=document.querySelector('.nav');
+  const strips=document.querySelectorAll('.sheets-strip');
+  const pages=document.querySelectorAll('.page');
+
+  if(login) login.style.display='none';
+  if(nav) nav.style.display='none';
+  strips.forEach(s=>s.style.display='none');
+  pages.forEach(p=>p.style.display='none');
+  if(portal) portal.classList.add('active');
+
+  const dateEl=document.getElementById('portalAfterDate');
+  if(dateEl && !dateEl.value) dateEl.value=new Date().toISOString().slice(0,10);
+
+  const timeEl=document.getElementById('portalReturnTime');
+  if(timeEl && !timeEl.value) timeEl.value=new Date().toLocaleTimeString('he-IL',{hour:'2-digit',minute:'2-digit'});
+
+  populatePortalStudents();
+}
+
+function populatePortalStudents(){
+  const sel=document.getElementById('portalStudentId');
+  if(!sel) return;
+  sel.innerHTML='<option value="">— בחר שם —</option>';
+  STUDENTS_DATA.forEach(s=>{
+    const o=document.createElement('option');
+    o.value=s.id;
+    o.textContent=s.name;
+    sel.appendChild(o);
+  });
+}
+
+function saveStudentAfterPortal(){
+  const studentId=document.getElementById('portalStudentId')?.value || '';
+  const date=document.getElementById('portalAfterDate')?.value || new Date().toISOString().slice(0,10);
+  const status=document.getElementById('portalAfterStatus')?.value || 'short';
+  const returned=document.getElementById('portalReturned')?.value === 'true';
+  const returnTime=document.getElementById('portalReturnTime')?.value || '';
+  const note=document.getElementById('portalAfterNote')?.value.trim() || '';
+
+  if(!studentId){
+    alert('יש לבחור שם חניך');
+    return;
+  }
+
+  const student=STUDENTS_DATA.find(s=>String(s.id)===String(studentId));
+  if(!student){
+    alert('החניך לא נמצא ברשימה');
+    return;
+  }
+
+  const raw=safeStorage.getItem('afterStatuses') || '{}';
+  let data={};
+  try{ data=JSON.parse(raw) || {}; }catch(e){ data={}; }
+  if(!data[date]) data[date]={};
+  data[date][studentId]={
+    status,
+    returned,
+    returnTime,
+    note,
+    updatedAt:new Date().toISOString(),
+    updatedBy:'studentPortal'
+  };
+  safeStorage.setItem('afterStatuses', JSON.stringify(data));
+
+  const success=document.getElementById('portalSuccess');
+  if(success){
+    success.textContent=`העדכון נשמר עבור ${student.name}`;
+    success.classList.add('show');
+  }
+}
 
 // ═══════════════════════════════════════════════
 //  DATA — רשימת חניכים דינמית
